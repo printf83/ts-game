@@ -1,5 +1,9 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
+const newId = () => `id-${Math.floor(Math.random() * 10000000000)}`;
+
+let id: string = newId();
+
 const db = {
 	idle: {
 		frame_y: 0,
@@ -70,18 +74,21 @@ const getInfo = (action: string) => {
 	}
 };
 
-function main(opt: { frame_y: number; sprite_length: number }) {
+const main = (opt: { frame_y: number; sprite_length: number }) => {
 	const canvas = document.getElementById("canvas1") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d");
 
-	const CANVAS_WIDTH = (canvas.width = 600);
-	const CANVAS_HEIGHT = (canvas.height = 600);
+	const CANVAS_WIDTH = (canvas.width = 500);
+	const CANVAS_HEIGHT = (canvas.height = 500);
 
 	const playerImage = new Image();
 	playerImage.src = "./res/player.png";
 
 	if (ctx) {
+		id = newId();
+
 		animate({
+			id,
 			ctx,
 			img: playerImage,
 			frame_stagger: 5,
@@ -93,9 +100,10 @@ function main(opt: { frame_y: number; sprite_length: number }) {
 			canvas_height: CANVAS_HEIGHT,
 		});
 	}
-}
+};
 
 interface option {
+	id: string;
 	ctx: CanvasRenderingContext2D;
 	img: HTMLImageElement;
 	game_frame?: number;
@@ -109,7 +117,7 @@ interface option {
 	canvas_height: number;
 }
 
-function animate(opt: option) {
+const animate = (opt: option) => {
 	opt.game_frame ??= 0;
 	opt.frame_x ??= 0;
 
@@ -120,10 +128,13 @@ function animate(opt: option) {
 	opt.ctx.drawImage(opt.img, opt.frame_x, opt.sprite_height * opt.frame_y, opt.sprite_width, opt.sprite_height, 0, 0, opt.canvas_width, opt.canvas_height);
 
 	opt.game_frame++;
-	requestAnimationFrame(() => {
-		animate(opt);
-	});
-}
+
+	if (id === opt.id) {
+		requestAnimationFrame(() => {
+			animate(opt);
+		});
+	}
+};
 
 (function () {
 	const dropdown = document.getElementById("animation") as HTMLSelectElement;
