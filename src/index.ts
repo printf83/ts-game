@@ -6,10 +6,10 @@
 	const CANVAS_HEIGHT = (canvas.height = 600);
 	const sprite_width = 575;
 	const sprite_height = 523;
-	const sprite_length = 10;
+	const sprite_length = 4;
 
 	let frame_x = 0;
-	let frame_y = 4;
+	let frame_y = 5;
 	let game_frame = 0;
 	let frame_stagger = 5;
 
