@@ -1,6 +1,76 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
-(function () {
+const db = {
+	idle: {
+		frame_y: 0,
+		sprite_length: 7,
+	},
+	jump: {
+		frame_y: 1,
+		sprite_length: 7,
+	},
+	fall: {
+		frame_y: 2,
+		sprite_length: 7,
+	},
+	run: {
+		frame_y: 3,
+		sprite_length: 9,
+	},
+	dizzy: {
+		frame_y: 4,
+		sprite_length: 11,
+	},
+	sit: {
+		frame_y: 5,
+		sprite_length: 5,
+	},
+	roll: {
+		frame_y: 6,
+		sprite_length: 7,
+	},
+	bite: {
+		frame_y: 7,
+		sprite_length: 7,
+	},
+	ko: {
+		frame_y: 8,
+		sprite_length: 12,
+	},
+	gethit: {
+		frame_y: 9,
+		sprite_length: 4,
+	},
+};
+
+const getInfo = (action: string) => {
+	switch (action) {
+		case "idle":
+			return db.idle;
+		case "jump":
+			return db.jump;
+		case "fall":
+			return db.fall;
+		case "run":
+			return db.run;
+		case "dizzy":
+			return db.dizzy;
+		case "sit":
+			return db.sit;
+		case "roll":
+			return db.roll;
+		case "bite":
+			return db.bite;
+		case "ko":
+			return db.ko;
+		case "gethit":
+			return db.gethit;
+		default:
+			return db.idle;
+	}
+};
+
+function main(opt: { frame_y: number; sprite_length: number }) {
 	const canvas = document.getElementById("canvas1") as HTMLCanvasElement;
 	const ctx = canvas.getContext("2d");
 
@@ -15,15 +85,15 @@
 			ctx,
 			img: playerImage,
 			frame_stagger: 5,
-			frame_y: 4,
+			frame_y: opt.frame_y,
 			sprite_width: 575,
 			sprite_height: 523,
-			sprite_length: 11,
+			sprite_length: opt.sprite_length,
 			canvas_width: CANVAS_WIDTH,
 			canvas_height: CANVAS_HEIGHT,
 		});
 	}
-})();
+}
 
 interface option {
 	ctx: CanvasRenderingContext2D;
@@ -49,13 +119,19 @@ function animate(opt: option) {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 	opt.ctx.drawImage(opt.img, opt.frame_x, opt.sprite_height * opt.frame_y, opt.sprite_width, opt.sprite_height, 0, 0, opt.canvas_width, opt.canvas_height);
 
-	// if (opt.game_frame % opt.frame_stagger === 0) {
-	// 	if (opt.frame_x < opt.sprite_length) opt.frame_x++;
-	// 	else opt.frame_x = 0;
-	// }
-
 	opt.game_frame++;
 	requestAnimationFrame(() => {
 		animate(opt);
 	});
 }
+
+(function () {
+	const dropdown = document.getElementById("animation") as HTMLSelectElement;
+	dropdown.addEventListener("change", (event: Event) => {
+		const target = event.currentTarget as HTMLSelectElement;
+		const value = target.value;
+		main(getInfo(value));
+	});
+
+	main(getInfo("idle"));
+})();
