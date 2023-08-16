@@ -1,6 +1,7 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
 import { bg, bgDB, update_game_speed } from "./bg.js";
+import { enemy, enemyDBType, enemyType } from "./enemy.js";
 import { player, playerAct, actionDBType } from "./player.js";
 
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -11,6 +12,17 @@ const playerAnimationChange = (event: Event) => {
 	const value = target.value;
 	if (value) {
 		player(playerAct(playerCanvas, value as actionDBType));
+	}
+};
+
+const enemyCanvas = document.getElementById("enemyCanvas") as HTMLCanvasElement;
+const cboEnemyType = document.getElementById("enemyType") as HTMLSelectElement;
+
+const enemyTypeChange = (event: Event) => {
+	const target = event.currentTarget as HTMLSelectElement;
+	const value = target.value;
+	if (value) {
+		enemy(enemyType(enemyCanvas, 400, 800, value as enemyDBType));
 	}
 };
 
@@ -28,6 +40,12 @@ const inputBgSpeedChange = (event: Event) => {
 (function () {
 	cboPlayerAnimation.addEventListener("change", playerAnimationChange);
 	cboPlayerAnimation.dispatchEvent(new Event("change"));
+
+	enemyCanvas.width = 400;
+	enemyCanvas.height = 800;
+
+	cboEnemyType.addEventListener("change", enemyTypeChange);
+	cboEnemyType.dispatchEvent(new Event("change"));
 
 	bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });
 	inputBgSpeed.addEventListener("change", inputBgSpeedChange);
