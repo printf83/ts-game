@@ -91,6 +91,8 @@ export const player = (opt: { canvas: HTMLCanvasElement; img: HTMLImageElement; 
 			img: opt.img,
 			location: opt.location,
 			frame_stagger: 0.2,
+			game_frame: 0,
+			frame_x: 0,
 			sprite_width: opt.sprite_width,
 			sprite_height: opt.sprite_height,
 			canvas_width: CANVAS_WIDTH,
@@ -104,9 +106,9 @@ interface option {
 	ctx: CanvasRenderingContext2D;
 	img: HTMLImageElement;
 	location: location[];
-	game_frame?: number;
+	game_frame: number;
 	frame_stagger: number;
-	frame_x?: number;
+	frame_x: number;
 	sprite_width: number;
 	sprite_height: number;
 	canvas_width: number;
@@ -114,8 +116,6 @@ interface option {
 }
 
 const animatePlayer = (opt: option) => {
-	opt.game_frame ??= 0;
-	opt.frame_x ??= 0;
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	let position = Math.floor(opt.game_frame * opt.frame_stagger) % opt.location.length;

@@ -1,6 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
-import { bg, update_game_speed } from "./bg.js";
+import { bg, bgDB, update_game_speed } from "./bg.js";
 import { player, playerAct, actionDBType } from "./player.js";
 
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -29,7 +29,7 @@ const inputBgSpeedChange = (event: Event) => {
 	cboPlayerAnimation.addEventListener("change", playerAnimationChange);
 	cboPlayerAnimation.dispatchEvent(new Event("change"));
 
-	bg({ canvas: bgCanvas, game_speed: 5 });
+	bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });
 	inputBgSpeed.addEventListener("change", inputBgSpeedChange);
 	inputBgSpeed.dispatchEvent(new Event("change"));
 })();
