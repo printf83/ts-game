@@ -8,11 +8,19 @@
 		<title>Testing website</title>
 	</head>
 	<body>
-		<div id="main">
-			<canvas id="canvas1"></canvas>
-			<div class="control">
-				<label for="animation">Choose animation</label>
-				<select name="animation" id="animation">
+		<div id="bg">
+			<canvas id="bgCanvas"></canvas>
+			<div class="bgControl">
+				<label for="bgSpeed">Game speed :</label>
+				<input type="range" name="bgSpeed" id="bgSpeed" min="0" max="50" value="5" />
+			</div>
+		</div>
+
+		<div id="player">
+			<canvas id="playerCanvas"></canvas>
+			<div class="playerControl">
+				<label for="playerAnimation">Choose animation :</label>
+				<select name="playerAnimation" id="playerAnimation">
 					<option value="idle">Idle</option>
 					<option value="jump">Jump</option>
 					<option value="fall">Fall</option>
@@ -26,6 +34,7 @@
 				</select>
 			</div>
 		</div>
+
 		<script type="module" src="./src/main.js"></script>
 	</body>
 </html>

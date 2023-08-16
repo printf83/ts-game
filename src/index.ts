@@ -1,129 +1,35 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
-const newId = () => `id-${Math.floor(Math.random() * 10000000000)}`;
-let id: string = newId();
+import { bg, update_game_speed } from "./bg.js";
+import { player, playerAct, actionDBType } from "./player.js";
 
-const db = {
-	idle: {
-		frame_y: 0,
-		sprite_length: 7,
-	},
-	jump: {
-		frame_y: 1,
-		sprite_length: 7,
-	},
-	fall: {
-		frame_y: 2,
-		sprite_length: 7,
-	},
-	run: {
-		frame_y: 3,
-		sprite_length: 9,
-	},
-	dizzy: {
-		frame_y: 4,
-		sprite_length: 11,
-	},
-	sit: {
-		frame_y: 5,
-		sprite_length: 5,
-	},
-	roll: {
-		frame_y: 6,
-		sprite_length: 7,
-	},
-	bite: {
-		frame_y: 7,
-		sprite_length: 7,
-	},
-	ko: {
-		frame_y: 8,
-		sprite_length: 12,
-	},
-	gethit: {
-		frame_y: 9,
-		sprite_length: 4,
-	},
-};
+const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
+const cboPlayerAnimation = document.getElementById("playerAnimation") as HTMLSelectElement;
 
-type dbTypeAction = keyof typeof db;
-
-const dbAction = (action: dbTypeAction) => {
-	let item = db[action];
-	return item;
-};
-
-const main = (opt: { frame_y: number; sprite_length: number }) => {
-	const canvas = document.getElementById("canvas1") as HTMLCanvasElement;
-	const ctx = canvas.getContext("2d");
-
-	const CANVAS_WIDTH = (canvas.width = 500);
-	const CANVAS_HEIGHT = (canvas.height = 500);
-
-	const playerImage = new Image();
-	playerImage.src = "./res/player.png";
-
-	if (ctx) {
-		id = newId();
-
-		animate({
-			id,
-			ctx,
-			img: playerImage,
-			frame_stagger: 5,
-			frame_y: opt.frame_y,
-			sprite_width: 575,
-			sprite_height: 523,
-			sprite_length: opt.sprite_length,
-			canvas_width: CANVAS_WIDTH,
-			canvas_height: CANVAS_HEIGHT,
-		});
+const playerAnimationChange = (event: Event) => {
+	const target = event.currentTarget as HTMLSelectElement;
+	const value = target.value;
+	if (value) {
+		player(playerAct(playerCanvas, value as actionDBType));
 	}
 };
 
-interface option {
-	id: string;
-	ctx: CanvasRenderingContext2D;
-	img: HTMLImageElement;
-	game_frame?: number;
-	frame_stagger: number;
-	frame_x?: number;
-	frame_y: number;
-	sprite_width: number;
-	sprite_height: number;
-	sprite_length: number;
-	canvas_width: number;
-	canvas_height: number;
-}
+const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
+const inputBgSpeed = document.getElementById("bgSpeed") as HTMLInputElement;
 
-const animate = (opt: option) => {
-	opt.game_frame ??= 0;
-	opt.frame_x ??= 0;
-
-	let position = Math.floor(opt.game_frame / opt.frame_stagger) % opt.sprite_length;
-	opt.frame_x = opt.sprite_width * position;
-
-	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-	opt.ctx.drawImage(opt.img, opt.frame_x, opt.sprite_height * opt.frame_y, opt.sprite_width, opt.sprite_height, 0, 0, opt.canvas_width, opt.canvas_height);
-
-	opt.game_frame++;
-
-	if (id === opt.id) {
-		requestAnimationFrame(() => {
-			animate(opt);
-		});
+const inputBgSpeedChange = (event: Event) => {
+	const target = event.currentTarget as HTMLInputElement;
+	const value = target.value;
+	if (value) {
+		update_game_speed(parseInt(value));
 	}
 };
 
 (function () {
-	const dropdown = document.getElementById("animation") as HTMLSelectElement;
-	dropdown.addEventListener("change", (event: Event) => {
-		const target = event.currentTarget as HTMLSelectElement;
-		const value = target.value;
-		if (value) {
-			main(dbAction(value as dbTypeAction));
-		}
-	});
+	cboPlayerAnimation.addEventListener("change", playerAnimationChange);
+	cboPlayerAnimation.dispatchEvent(new Event("change"));
 
-	main(dbAction("idle"));
+	bg({ canvas: bgCanvas, game_speed: 5 });
+	inputBgSpeed.addEventListener("change", inputBgSpeedChange);
+	inputBgSpeed.dispatchEvent(new Event("change"));
 })();
