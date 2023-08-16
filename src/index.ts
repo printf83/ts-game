@@ -1,7 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
 const newId = () => `id-${Math.floor(Math.random() * 10000000000)}`;
-
 let id: string = newId();
 
 const db = {
@@ -47,31 +46,11 @@ const db = {
 	},
 };
 
-const getInfo = (action: string) => {
-	switch (action) {
-		case "idle":
-			return db.idle;
-		case "jump":
-			return db.jump;
-		case "fall":
-			return db.fall;
-		case "run":
-			return db.run;
-		case "dizzy":
-			return db.dizzy;
-		case "sit":
-			return db.sit;
-		case "roll":
-			return db.roll;
-		case "bite":
-			return db.bite;
-		case "ko":
-			return db.ko;
-		case "gethit":
-			return db.gethit;
-		default:
-			return db.idle;
-	}
+type dbTypeAction = keyof typeof db;
+
+const dbAction = (action: dbTypeAction) => {
+	let item = db[action];
+	return item;
 };
 
 const main = (opt: { frame_y: number; sprite_length: number }) => {
@@ -141,8 +120,10 @@ const animate = (opt: option) => {
 	dropdown.addEventListener("change", (event: Event) => {
 		const target = event.currentTarget as HTMLSelectElement;
 		const value = target.value;
-		main(getInfo(value));
+		if (value) {
+			main(dbAction(value as dbTypeAction));
+		}
 	});
 
-	main(getInfo("idle"));
+	main(dbAction("idle"));
 })();
