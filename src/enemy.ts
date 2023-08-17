@@ -19,7 +19,7 @@ const enemyDB = {
 	},
 	enemy4: {
 		img: "./res/enemy4.png",
-		sprite_length: 5,
+		sprite_length: 8,
 		sprite_width: 213,
 		sprite_height: 213,
 	},
@@ -27,143 +27,200 @@ const enemyDB = {
 
 export type enemyDBType = keyof typeof enemyDB;
 
-export const enemyType = (canvas: HTMLCanvasElement, canvas_width: number, canvas_height: number, action: enemyDBType) => {
+export const enemyType = (canvas: HTMLCanvasElement, canvas_width: number, canvas_height: number, action: enemyDBType, count: number) => {
 	let item = enemyDB[action];
 
 	const img = new Image();
 	img.src = item.img;
 
+	const sprite_width = item.sprite_width;
+	const sprite_height = item.sprite_height;
+	const sprite_length = item.sprite_length;
+
 	switch (action) {
 		case "enemy1":
 			return {
 				canvas,
-				canvas_width: canvas_width,
-				canvas_height: canvas_height,
-				enemy: setupEnemy1(5, {
+				canvas_width,
+				canvas_height,
+				enemy: setupEnemy1(count, {
 					img,
-					sprite_width: item.sprite_width,
-					sprite_height: item.sprite_height,
-					sprite_length: item.sprite_length,
-					canvas_height: canvas_height,
-					canvas_width: canvas_width,
+					sprite_width,
+					sprite_height,
+					sprite_length,
+					canvas_height,
+					canvas_width,
 				}),
 			};
 		case "enemy2":
 			return {
 				canvas,
-				canvas_width: canvas_width,
-				canvas_height: canvas_height,
-				enemy: setupEnemy2(5, {
+				canvas_width,
+				canvas_height,
+				enemy: setupEnemy2(count, {
 					img,
-					sprite_width: item.sprite_width,
-					sprite_height: item.sprite_height,
-					sprite_length: item.sprite_length,
-					canvas_height: canvas_height,
-					canvas_width: canvas_width,
+					sprite_width,
+					sprite_height,
+					sprite_length,
+					canvas_height,
+					canvas_width,
 				}),
 			};
 
 		case "enemy3":
 			return {
 				canvas,
-				canvas_width: canvas_width,
-				canvas_height: canvas_height,
-				enemy: setupEnemy3(5, {
+				canvas_width,
+				canvas_height,
+				enemy: setupEnemy3(count, {
 					img,
-					sprite_width: item.sprite_width,
-					sprite_height: item.sprite_height,
-					sprite_length: item.sprite_length,
-					canvas_height: canvas_height,
-					canvas_width: canvas_width,
+					sprite_width,
+					sprite_height,
+					sprite_length,
+					canvas_height,
+					canvas_width,
 				}),
 			};
 		case "enemy4":
 			return {
 				canvas,
-				canvas_width: canvas_width,
-				canvas_height: canvas_height,
-				enemy: setupEnemy4(5, {
+				canvas_width,
+				canvas_height,
+				enemy: setupEnemy4(count, {
 					img,
-					sprite_width: item.sprite_width,
-					sprite_height: item.sprite_height,
-					sprite_length: item.sprite_length,
-					canvas_height: canvas_height,
-					canvas_width: canvas_width,
+					sprite_width,
+					sprite_height,
+					sprite_length,
+					canvas_height,
+					canvas_width,
 				}),
 			};
 
 		default:
 			return {
 				canvas,
-				canvas_width: canvas_width,
-				canvas_height: canvas_height,
-				enemy: setupEnemy1(5, {
+				canvas_width,
+				canvas_height,
+				enemy: setupEnemy1(count, {
 					img,
-					sprite_width: item.sprite_width,
-					sprite_height: item.sprite_height,
-					sprite_length: item.sprite_length,
-					canvas_height: canvas_height,
-					canvas_width: canvas_width,
+					sprite_width,
+					sprite_height,
+					sprite_length,
+					canvas_height,
+					canvas_width,
 				}),
 			};
 	}
 };
 
 class baseEnemy {
-	constructor() {}
-	update(_game_frame: number) {}
-	draw(_ctx: CanvasRenderingContext2D) {}
-}
+	frame: number;
 
-//enemy 4
-class enemy4 extends baseEnemy {
 	img: HTMLImageElement;
 
 	x: number;
 	y: number;
-	newX: number;
-	newY: number;
 	width: number;
 	height: number;
+
 	sprite_width: number;
 	sprite_height: number;
 	sprite_length: number;
-	canvas_width: number;
-	canvas_height: number;
 
-	speed: number;
-	flap_speed: number;
+	game_speed: number;
+	animation_speed: number;
 
-	frame: number;
-	angle: number;
-	angle_speed: number;
-	interval: number;
+	constructor(opt: {
+		img: HTMLImageElement;
 
-	constructor(opt: { img: HTMLImageElement; x: number; y: number; newX: number; newY: number; width: number; height: number; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number; speed: number; flap_speed: number }) {
-		super();
+		x: number;
+		y: number;
+		width: number;
+		height: number;
 
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+
+		game_speed: number;
+		animation_speed: number;
+	}) {
 		this.frame = 0;
-		this.angle = Math.random() * 2;
-		this.angle_speed = Math.random() * 0.5 + 0.5;
-		this.interval = Math.floor(Math.random() * 200 + 50);
-
-		this.flap_speed = opt.flap_speed;
 
 		this.img = opt.img;
 
-		this.canvas_width = opt.canvas_width;
-		this.canvas_height = opt.canvas_height;
+		this.x = opt.x;
+		this.y = opt.y;
+		this.width = opt.width;
+		this.height = opt.height;
+
 		this.sprite_length = opt.sprite_length;
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
-		this.width = opt.width;
-		this.height = opt.height;
-		this.x = opt.x;
-		this.y = opt.y;
+
+		this.game_speed = opt.game_speed;
+		this.animation_speed = opt.animation_speed;
+	}
+
+	update(game_frame: number) {
+		if (game_frame % this.animation_speed === 0) {
+			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
+		}
+	}
+
+	draw(ctx: CanvasRenderingContext2D) {
+		ctx.drawImage(
+			this.img,
+			this.frame * this.sprite_width,
+			0,
+			this.sprite_width,
+			this.sprite_height,
+			this.x,
+			this.y,
+			this.width,
+			this.height
+		);
+	}
+}
+
+//enemy 4
+class enemy4 extends baseEnemy {
+	canvas_width: number;
+	canvas_height: number;
+
+	newX: number;
+	newY: number;
+	interval: number;
+
+	constructor(opt: {
+		img: HTMLImageElement;
+
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+
+		canvas_width: number;
+		canvas_height: number;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+
+		game_speed: number;
+		animation_speed: number;
+
+		newX: number;
+		newY: number;
+		interval: number;
+	}) {
+		super(opt);
+
+		this.canvas_width = opt.canvas_width;
+		this.canvas_height = opt.canvas_height;
+
 		this.newX = opt.newX;
 		this.newY = opt.newY;
-
-		this.speed = opt.speed;
+		this.interval = opt.interval;
 	}
 
 	update(game_frame: number) {
@@ -178,19 +235,25 @@ class enemy4 extends baseEnemy {
 		this.x -= dx / 20;
 		this.y -= dy / 20;
 
-		this.angle += this.angle_speed;
-
-		if (game_frame % this.flap_speed === 0) {
-			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
-		}
+		super.update(game_frame);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		super.draw(ctx);
 	}
 }
 
-const setupEnemy4 = (count: number, opt: { img: HTMLImageElement; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number }) => {
+const setupEnemy4 = (
+	count: number,
+	opt: {
+		img: HTMLImageElement;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+		canvas_width: number;
+		canvas_height: number;
+	}
+) => {
 	const width = opt.sprite_width / 2.5;
 	const height = opt.sprite_height / 2.5;
 
@@ -199,86 +262,93 @@ const setupEnemy4 = (count: number, opt: { img: HTMLImageElement; sprite_width: 
 		.map((_i) => {
 			return new enemy4({
 				img: opt.img,
+
 				x: Math.random() * (opt.canvas_width - width),
 				y: Math.random() * (opt.canvas_height - height),
-				newX: Math.random() * (opt.canvas_width - width),
-				newY: Math.random() * (opt.canvas_height - height),
-				canvas_width: opt.canvas_width,
-				canvas_height: opt.canvas_height,
 				width,
 				height,
+
+				canvas_width: opt.canvas_width,
+				canvas_height: opt.canvas_height,
 				sprite_width: opt.sprite_width,
 				sprite_height: opt.sprite_height,
 				sprite_length: opt.sprite_length,
-				speed: Math.random() * 4 + 1,
-				flap_speed: Math.floor(Math.random() * 3 + 1),
+
+				game_speed: Math.random() * 4 + 1,
+				animation_speed: Math.floor(Math.random() * 3 + 1),
+
+				newX: Math.random() * (opt.canvas_width - width),
+				newY: Math.random() * (opt.canvas_height - height),
+				interval: Math.floor(Math.random() * 200 + 50),
 			});
 		});
 };
 
 //enemy 3
 class enemy3 extends baseEnemy {
-	img: HTMLImageElement;
-
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	sprite_width: number;
-	sprite_height: number;
-	sprite_length: number;
 	canvas_width: number;
 	canvas_height: number;
 
-	speed: number;
-	flap_speed: number;
-
-	frame: number;
 	angle: number;
 	angle_speed: number;
 
-	constructor(opt: { img: HTMLImageElement; x: number; y: number; width: number; height: number; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number; speed: number; flap_speed: number }) {
-		super();
+	constructor(opt: {
+		img: HTMLImageElement;
 
-		this.frame = 0;
-		this.angle = Math.random() * 2;
-		this.angle_speed = Math.random() * 0.5 + 0.5;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
 
-		this.flap_speed = opt.flap_speed;
+		canvas_width: number;
+		canvas_height: number;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
 
-		this.img = opt.img;
+		game_speed: number;
+		animation_speed: number;
+
+		angle: number;
+		angle_speed: number;
+	}) {
+		super(opt);
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
-		this.sprite_length = opt.sprite_length;
-		this.sprite_width = opt.sprite_width;
-		this.sprite_height = opt.sprite_height;
-		this.width = opt.width;
-		this.height = opt.height;
-		this.x = opt.x;
-		this.y = opt.y;
 
-		this.speed = opt.speed;
+		this.angle = opt.angle;
+		this.angle_speed = opt.angle_speed;
 	}
 
 	update(game_frame: number) {
 		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
+		if (this.x + this.width < 0) this.x = this.canvas_width;
 
 		this.y = (this.canvas_height / 2) * Math.sin((this.angle * Math.PI) / 270) + (this.canvas_height / 2 - this.height / 2);
+		if (this.y + this.height < 0) this.y = this.canvas_height;
 
 		this.angle += this.angle_speed;
 
-		if (game_frame % this.flap_speed === 0) {
-			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
-		}
+		super.update(game_frame);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		super.draw(ctx);
 	}
 }
 
-const setupEnemy3 = (count: number, opt: { img: HTMLImageElement; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number }) => {
+const setupEnemy3 = (
+	count: number,
+	opt: {
+		img: HTMLImageElement;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+		canvas_width: number;
+		canvas_height: number;
+	}
+) => {
 	const width = opt.sprite_width / 2.5;
 	const height = opt.sprite_height / 2.5;
 
@@ -287,87 +357,94 @@ const setupEnemy3 = (count: number, opt: { img: HTMLImageElement; sprite_width: 
 		.map((_i) => {
 			return new enemy3({
 				img: opt.img,
+
 				x: Math.random() * (opt.canvas_width - width),
 				y: Math.random() * (opt.canvas_height - height),
-				canvas_width: opt.canvas_width,
-				canvas_height: opt.canvas_height,
 				width,
 				height,
+
+				canvas_width: opt.canvas_width,
+				canvas_height: opt.canvas_height,
 				sprite_width: opt.sprite_width,
 				sprite_height: opt.sprite_height,
 				sprite_length: opt.sprite_length,
-				speed: Math.random() * 4 + 1,
-				flap_speed: Math.floor(Math.random() * 3 + 1),
+
+				game_speed: Math.random() * 4 + 1,
+				animation_speed: Math.floor(Math.random() * 3 + 1),
+
+				angle: Math.random() * 2,
+				angle_speed: Math.random() * 0.5 + 0.5,
 			});
 		});
 };
 
 //enemy 2
 class enemy2 extends baseEnemy {
-	img: HTMLImageElement;
-
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	sprite_width: number;
-	sprite_height: number;
-	sprite_length: number;
 	canvas_width: number;
 	canvas_height: number;
 
-	speed: number;
-	flap_speed: number;
-
-	frame: number;
 	angle: number;
 	angle_speed: number;
 	curve: number;
 
-	constructor(opt: { img: HTMLImageElement; x: number; y: number; width: number; height: number; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number; speed: number; flap_speed: number }) {
-		super();
+	constructor(opt: {
+		img: HTMLImageElement;
 
-		this.frame = 0;
-		this.angle = Math.random() * 2;
-		this.angle_speed = Math.random() * 0.2;
-		this.curve = Math.random() * 5;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
 
-		this.flap_speed = opt.flap_speed;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+		canvas_width: number;
+		canvas_height: number;
 
-		this.img = opt.img;
+		game_speed: number;
+		animation_speed: number;
+
+		angle: number;
+		angle_speed: number;
+		curve: number;
+	}) {
+		super(opt);
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
-		this.sprite_length = opt.sprite_length;
-		this.sprite_width = opt.sprite_width;
-		this.sprite_height = opt.sprite_height;
-		this.width = opt.width;
-		this.height = opt.height;
-		this.x = opt.x;
-		this.y = opt.y;
 
-		this.speed = opt.speed;
+		this.angle = opt.angle;
+		this.angle_speed = opt.angle_speed;
+		this.curve = opt.curve;
 	}
 
 	update(game_frame: number) {
-		this.x -= this.speed;
+		this.x -= this.game_speed;
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
 		this.y += this.curve * Math.sin(this.angle);
 
 		this.angle += this.angle_speed;
 
-		if (game_frame % this.flap_speed === 0) {
-			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
-		}
+		super.update(game_frame);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		super.draw(ctx);
 	}
 }
 
-const setupEnemy2 = (count: number, opt: { img: HTMLImageElement; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number }) => {
+const setupEnemy2 = (
+	count: number,
+	opt: {
+		img: HTMLImageElement;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+		canvas_width: number;
+		canvas_height: number;
+	}
+) => {
 	const width = opt.sprite_width / 2.5;
 	const height = opt.sprite_height / 2.5;
 
@@ -376,72 +453,71 @@ const setupEnemy2 = (count: number, opt: { img: HTMLImageElement; sprite_width: 
 		.map((_i) => {
 			return new enemy2({
 				img: opt.img,
+
 				x: Math.random() * (opt.canvas_width - width),
 				y: Math.random() * (opt.canvas_height - height),
-				canvas_width: opt.canvas_width,
-				canvas_height: opt.canvas_height,
 				width,
 				height,
+
+				canvas_width: opt.canvas_width,
+				canvas_height: opt.canvas_height,
 				sprite_width: opt.sprite_width,
 				sprite_height: opt.sprite_height,
 				sprite_length: opt.sprite_length,
-				speed: Math.random() * 4 + 1,
-				flap_speed: Math.floor(Math.random() * 3 + 1),
+
+				game_speed: Math.random() * 4 + 1,
+				animation_speed: Math.floor(Math.random() * 3 + 1),
+
+				angle: Math.random() * 2,
+				angle_speed: Math.random() * 0.2,
+				curve: Math.random() * 5,
 			});
 		});
 };
 
 //enemy 1
 class enemy1 extends baseEnemy {
-	img: HTMLImageElement;
+	constructor(opt: {
+		img: HTMLImageElement;
 
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	sprite_width: number;
-	sprite_height: number;
-	sprite_length: number;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
 
-	speed: number;
-	flap_speed: number;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
 
-	frame: number;
-
-	constructor(opt: { img: HTMLImageElement; x: number; y: number; width: number; height: number; sprite_width: number; sprite_height: number; sprite_length: number; speed: number; flap_speed: number }) {
-		super();
-
-		this.frame = 0;
-		this.flap_speed = opt.flap_speed;
-
-		this.img = opt.img;
-
-		this.sprite_length = opt.sprite_length;
-		this.sprite_width = opt.sprite_width;
-		this.sprite_height = opt.sprite_height;
-		this.width = opt.width;
-		this.height = opt.height;
-		this.x = opt.x;
-		this.y = opt.y;
-
-		this.speed = opt.speed;
+		game_speed: number;
+		animation_speed: number;
+	}) {
+		super(opt);
 	}
 
 	update(game_frame: number) {
-		this.x += Math.random() * 5 - 2.5;
-		this.y += Math.random() * 5 - 2.5;
+		this.x += Math.random() * 7 - 3.5;
+		this.y += Math.random() * 7 - 3.5;
 
-		if (game_frame % this.flap_speed === 0) {
-			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
-		}
+		super.update(game_frame);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		super.draw(ctx);
 	}
 }
 
-const setupEnemy1 = (count: number, opt: { img: HTMLImageElement; sprite_width: number; sprite_height: number; sprite_length: number; canvas_width: number; canvas_height: number }) => {
+const setupEnemy1 = (
+	count: number,
+	opt: {
+		img: HTMLImageElement;
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+		canvas_width: number;
+		canvas_height: number;
+	}
+) => {
 	const width = opt.sprite_width / 2.5;
 	const height = opt.sprite_height / 2.5;
 
@@ -450,15 +526,18 @@ const setupEnemy1 = (count: number, opt: { img: HTMLImageElement; sprite_width: 
 		.map((_i) => {
 			return new enemy1({
 				img: opt.img,
+
 				x: Math.random() * (opt.canvas_width - width),
 				y: Math.random() * (opt.canvas_height - height),
 				width,
 				height,
+
 				sprite_width: opt.sprite_width,
 				sprite_height: opt.sprite_height,
 				sprite_length: opt.sprite_length,
-				speed: Math.random() * 4 - 2,
-				flap_speed: Math.floor(Math.random() * 3 + 1),
+
+				game_speed: Math.random() * 4 - 2,
+				animation_speed: Math.floor(Math.random() * 3 + 1),
 			});
 		});
 };

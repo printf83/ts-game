@@ -1,28 +1,29 @@
-let bg_game_speed = 5;
+let BG_GAME_SPEED = 5;
 
 export const update_game_speed = (value: number) => {
-	bg_game_speed = value;
+	BG_GAME_SPEED = value;
 };
 
 class layer {
+	img: HTMLImageElement;
+
 	x: number;
 	y: number;
 	width: number;
 	height: number;
-	img: HTMLImageElement;
+
 	game_speed: number;
 	speed_modifier: number;
-	constructor(img: string, width: number, height: number, speed_modifier: number) {
+	constructor(opt: { img: HTMLImageElement; width: number; height: number; speed_modifier: number }) {
+		this.img = opt.img;
+
 		this.x = 0;
 		this.y = 0;
-		this.width = width;
-		this.height = height;
+		this.width = opt.width;
+		this.height = opt.height;
 
-		this.img = new Image();
-		this.img.src = img;
-
-		this.speed_modifier = speed_modifier;
-		this.game_speed = bg_game_speed * this.speed_modifier;
+		this.speed_modifier = opt.speed_modifier;
+		this.game_speed = BG_GAME_SPEED * this.speed_modifier;
 	}
 
 	update(game_frame: number, game_speed: number) {
@@ -35,11 +36,25 @@ class layer {
 	}
 }
 
-export const bgDB = [new layer("./res/layer-1.png", 2400, 700, 0.2), new layer("./res/layer-2.png", 2400, 700, 0.4), new layer("./res/layer-3.png", 2400, 700, 0.6), new layer("./res/layer-4.png", 2400, 700, 0.8), new layer("./res/layer-5.png", 2400, 700, 1)];
+const img_width = 2400;
+const img_height = 700;
+const img = (src: string) => {
+	const result = new Image();
+	result.src = src;
+	return result;
+};
+
+export const bgDB = [
+	new layer({ img: img("./res/layer-1.png"), width: img_width, height: img_height, speed_modifier: 0.2 }),
+	new layer({ img: img("./res/layer-2.png"), width: img_width, height: img_height, speed_modifier: 0.4 }),
+	new layer({ img: img("./res/layer-3.png"), width: img_width, height: img_height, speed_modifier: 0.6 }),
+	new layer({ img: img("./res/layer-4.png"), width: img_width, height: img_height, speed_modifier: 0.8 }),
+	new layer({ img: img("./res/layer-5.png"), width: img_width, height: img_height, speed_modifier: 1 }),
+];
 
 let bgAnimatedId = "";
 export const bg = (opt: { canvas: HTMLCanvasElement; game_speed: number; bg: layer[] }) => {
-	bg_game_speed = bg_game_speed;
+	BG_GAME_SPEED = BG_GAME_SPEED;
 
 	const ctx = opt.canvas.getContext("2d");
 
@@ -75,7 +90,7 @@ const animateBg = (opt: option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	opt.bg.forEach((i) => {
-		i.update(opt.game_frame, bg_game_speed);
+		i.update(opt.game_frame, BG_GAME_SPEED);
 		i.draw(opt.ctx);
 	});
 

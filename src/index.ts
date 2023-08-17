@@ -17,22 +17,26 @@ const playerAnimationChange = (event: Event) => {
 
 const enemyCanvas = document.getElementById("enemyCanvas") as HTMLCanvasElement;
 const cboEnemyType = document.getElementById("enemyType") as HTMLSelectElement;
+const cboEnemyCount = document.getElementById("enemyCount") as HTMLInputElement;
 
-const enemyTypeChange = (event: Event) => {
-	const target = event.currentTarget as HTMLSelectElement;
-	const value = target.value;
-	if (value) {
-		enemy(enemyType(enemyCanvas, 400, 800, value as enemyDBType));
+const enemyTypeOrCountChange = () => {
+	const enemy_type = cboEnemyType.value;
+	const enemy_count = cboEnemyCount.value;
+
+	if (enemy_type && enemy_count) {
+		enemy(enemyType(enemyCanvas, 400, 750, enemy_type as enemyDBType, parseInt(enemy_count)));
 	}
 };
 
 const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
 const inputBgSpeed = document.getElementById("bgSpeed") as HTMLInputElement;
+const bgSpeedValue = document.getElementById("bgSpeedValue") as HTMLSpanElement;
 
 const inputBgSpeedChange = (event: Event) => {
 	const target = event.currentTarget as HTMLInputElement;
 	const value = target.value;
 	if (value) {
+		bgSpeedValue.innerText = `[${value}]`;
 		update_game_speed(parseInt(value));
 	}
 };
@@ -42,9 +46,10 @@ const inputBgSpeedChange = (event: Event) => {
 	cboPlayerAnimation.dispatchEvent(new Event("change"));
 
 	enemyCanvas.width = 400;
-	enemyCanvas.height = 800;
+	enemyCanvas.height = 750;
 
-	cboEnemyType.addEventListener("change", enemyTypeChange);
+	cboEnemyCount.addEventListener("change", enemyTypeOrCountChange);
+	cboEnemyType.addEventListener("change", enemyTypeOrCountChange);
 	cboEnemyType.dispatchEvent(new Event("change"));
 
 	bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });

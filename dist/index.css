@@ -9,52 +9,73 @@ body {
     margin:0;
 }
 
-/*
-ENEMY */
-#enemy {
-    position: relative;
-    width: 100;
-    height: 100vh;
-    padding: 3rem;
-    background-color: antiquewhite;
+/*ALL*/
+
+label,
+input,
+select,
+option,
+span {
+    font-size: 1.5rem;
 }
 
-#enemyCanvas{
-    width: 400px;
-    height: 800px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);    
-
-    border: 3px solid black;
+input, select{
+    width: 15rem;
 }
 
-.enemyControl {
+label{
+    width: auto;
+    margin-right: 1rem;
+}
+
+.control{
     display: flex;
-    align-items: center;
+    flex-direction: column;
     position: absolute;
     z-index: 1;
     left: 50%;
     transform: translateX(-50%);
+    width: 30rem;
 }
 
-.enemyControl,
-select,
-option {
-    font-size: 1.5rem;
+.control > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
 }
 
-/*
-BG */
-#bg {
+.container {
     position: relative;
     width: 100;
     height: 100vh;
-    padding:3rem;
+    padding: 3rem;
+    background-color: lavender;
+}
+
+.container-dark {
     background-color: black;
 }
 
+.container-dark label,
+.container-dark span {
+    color:white;
+}
+
+/*
+ENEMY */
+#enemyCanvas{
+    width: 400px;
+    height: 750px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);    
+    border: 3px solid black;
+}
+
+
+/*
+BG */
 #bgCanvas{
     width: 800px;
     height: 700px;
@@ -64,28 +85,8 @@ BG */
     transform: translate(-50%, -50%);    
 }
 
-.bgControl {
-    display: flex;
-    align-items: center;
-    color:white;
-    position: absolute;
-    z-index: 1;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-
 /*
 PLAYER */
-
-#player{
-    position: relative;
-    width: 100;
-    height: 100vh;
-    padding: 3rem;
-    background-color: antiquewhite;
-}
-
 #playerCanvas {
     width: 575px;
     height: 523px;
@@ -93,17 +94,4 @@ PLAYER */
     top:50%;
     left: 50%;
     transform: translate(-50%,-50%);
-}
-
-.playerControl{
-    display: flex;
-    align-items: center;
-    position: absolute;
-    z-index: 1;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.playerControl, select, option{
-    font-size: 1.5rem;
 }
