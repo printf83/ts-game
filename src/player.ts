@@ -13,7 +13,7 @@ const actionDB = {
 	},
 	run: {
 		frame_y: 3,
-		sprite_length: 9,
+		sprite_length: 8,
 	},
 	dizzy: {
 		frame_y: 4,
@@ -74,7 +74,13 @@ export const playerAct = (canvas: HTMLCanvasElement, action: actionDBType) => {
 };
 
 let playerAnimatedId: string = "";
-export const player = (opt: { canvas: HTMLCanvasElement; img: HTMLImageElement; sprite_width: number; sprite_height: number; location: location[] }) => {
+export const player = (opt: {
+	canvas: HTMLCanvasElement;
+	img: HTMLImageElement;
+	sprite_width: number;
+	sprite_height: number;
+	location: location[];
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	const CANVAS_WIDTH = (opt.canvas.width = 500);
