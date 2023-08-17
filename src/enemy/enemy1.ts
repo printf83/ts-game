@@ -31,37 +31,29 @@ class enemy1 extends baseEnemy {
 	}
 }
 
-export const setupEnemy1 = (
-	count: number,
-	opt: {
-		img: HTMLImageElement;
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
-		canvas_width: number;
-		canvas_height: number;
-	}
-) => {
-	const width = opt.sprite_width / 2.5;
-	const height = opt.sprite_height / 2.5;
+const imgEnemy1 = new Image();
+imgEnemy1.src = "./res/enemy1.png";
 
-	return Array(count)
-		.fill("")
-		.map((_i) => {
-			return new enemy1({
-				img: opt.img,
+export const createEnemy1 = (opt: { canvas_width: number; canvas_height: number }) => {
+	const sprite_length = 5;
+	const sprite_width = 293;
+	const sprite_height = 155;
+	const width = sprite_width / 2.5;
+	const height = sprite_height / 2.5;
 
-				x: Math.random() * (opt.canvas_width - width),
-				y: Math.random() * (opt.canvas_height - height),
-				width,
-				height,
+	return new enemy1({
+		img: imgEnemy1,
 
-				sprite_width: opt.sprite_width,
-				sprite_height: opt.sprite_height,
-				sprite_length: opt.sprite_length,
+		x: Math.random() * (opt.canvas_width - width),
+		y: Math.random() * (opt.canvas_height - height),
+		width,
+		height,
 
-				game_speed: Math.random() * 4 - 2,
-				animation_speed: Math.floor(Math.random() * 3 + 1),
-			});
-		});
+		sprite_width,
+		sprite_height,
+		sprite_length,
+
+		game_speed: Math.random() * 4 - 2,
+		animation_speed: Math.floor(Math.random() * 3 + 1),
+	});
 };

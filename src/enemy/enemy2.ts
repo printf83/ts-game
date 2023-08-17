@@ -55,43 +55,35 @@ class enemy2 extends baseEnemy {
 	}
 }
 
-export const setupEnemy2 = (
-	count: number,
-	opt: {
-		img: HTMLImageElement;
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
-		canvas_width: number;
-		canvas_height: number;
-	}
-) => {
-	const width = opt.sprite_width / 2.5;
-	const height = opt.sprite_height / 2.5;
+const imgEnemy2 = new Image();
+imgEnemy2.src = "./res/enemy2.png";
 
-	return Array(count)
-		.fill("")
-		.map((_i) => {
-			return new enemy2({
-				img: opt.img,
+export const createEnemy2 = (opt: { canvas_width: number; canvas_height: number }) => {
+	const sprite_length = 5;
+	const sprite_width = 266;
+	const sprite_height = 188;
+	const width = sprite_width / 2.5;
+	const height = sprite_height / 2.5;
 
-				x: Math.random() * (opt.canvas_width - width),
-				y: Math.random() * (opt.canvas_height - height),
-				width,
-				height,
+	return new enemy2({
+		img: imgEnemy2,
 
-				canvas_width: opt.canvas_width,
-				canvas_height: opt.canvas_height,
-				sprite_width: opt.sprite_width,
-				sprite_height: opt.sprite_height,
-				sprite_length: opt.sprite_length,
+		x: Math.random() * (opt.canvas_width - width),
+		y: Math.random() * (opt.canvas_height - height),
+		width,
+		height,
 
-				game_speed: Math.random() * 4 + 1,
-				animation_speed: Math.floor(Math.random() * 3 + 1),
+		canvas_width: opt.canvas_width,
+		canvas_height: opt.canvas_height,
+		sprite_width,
+		sprite_height,
+		sprite_length,
 
-				angle: Math.random() * 2,
-				angle_speed: Math.random() * 0.2,
-				curve: Math.random() * 5,
-			});
-		});
+		game_speed: Math.random() * 4 + 1,
+		animation_speed: Math.floor(Math.random() * 3 + 1),
+
+		angle: Math.random() * 2,
+		angle_speed: Math.random() * 0.2,
+		curve: Math.random() * 5,
+	});
 };

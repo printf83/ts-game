@@ -1,6 +1,6 @@
 import { baseEnemy } from "./base.js";
 
-class enemy5 extends baseEnemy {
+class enemy8 extends baseEnemy {
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -31,18 +31,18 @@ class enemy5 extends baseEnemy {
 	}
 }
 
-const imgEnemy5 = new Image();
-imgEnemy5.src = "./res/enemy5.png";
+const imgEnemy8 = new Image();
+imgEnemy8.src = "./res/enemy8.png";
 
-export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number }) => {
+export const createEnemy8 = (opt: { canvas_width: number; canvas_height: number }) => {
 	const sprite_length = 5;
-	const sprite_width = 271;
-	const sprite_height = 194;
+	const sprite_width = 310;
+	const sprite_height = 175;
 	const width = sprite_width / 2.5;
 	const height = sprite_height / 2.5;
 
-	return new enemy5({
-		img: imgEnemy5,
+	return new enemy8({
+		img: imgEnemy8,
 
 		x: Math.random() * (opt.canvas_width - width),
 		y: Math.random() * (opt.canvas_height - height),

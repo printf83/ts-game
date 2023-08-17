@@ -17,14 +17,12 @@ const playerAnimationChange = (event: Event) => {
 
 const enemyCanvas = document.getElementById("enemyCanvas") as HTMLCanvasElement;
 const cboEnemyType = document.getElementById("enemyType") as HTMLSelectElement;
-const cboEnemyCount = document.getElementById("enemyCount") as HTMLInputElement;
 
-const enemyTypeOrCountChange = () => {
+const enemyTypeChange = () => {
 	const enemy_type = cboEnemyType.value;
-	const enemy_count = cboEnemyCount.value;
 
-	if (enemy_type && enemy_count) {
-		enemy(enemyType(enemyCanvas, 400, 750, enemy_type as enemyDBType, parseInt(enemy_count)));
+	if (enemy_type) {
+		enemy(enemyType(enemyCanvas, 400, 750, enemy_type as enemyDBType));
 	}
 };
 
@@ -48,8 +46,7 @@ const inputBgSpeedChange = (event: Event) => {
 	enemyCanvas.width = 400;
 	enemyCanvas.height = 750;
 
-	cboEnemyCount.addEventListener("change", enemyTypeOrCountChange);
-	cboEnemyType.addEventListener("change", enemyTypeOrCountChange);
+	cboEnemyType.addEventListener("change", enemyTypeChange);
 	cboEnemyType.dispatchEvent(new Event("change"));
 
 	bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });

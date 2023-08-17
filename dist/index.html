@@ -1,22 +1,10 @@
 <!DOCTYPE html>
-<html
-	lang="en"
-	data-bs-theme="dark"
->
+<html lang="en" data-bs-theme="dark">
 	<head>
 		<meta charset="utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1"
-		/>
-		<meta
-			name="description"
-			content="Testing website"
-		/>
-		<link
-			rel="stylesheet"
-			href="index.css"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content="Testing website" />
+		<link rel="stylesheet" href="index.css" />
 		<title>Testing website</title>
 	</head>
 	<body>
@@ -25,36 +13,17 @@
 			<div class="control">
 				<div>
 					<label for="enemyType">Choose enemy :</label>
-					<select
-						name="enemyType"
-						id="enemyType"
-					>
+					<select name="enemyType" id="enemyType">
 						<option value="enemy1">Enemy 1</option>
 						<option value="enemy2">Enemy 2</option>
 						<option value="enemy3">Enemy 3</option>
-						<option value="enemy3">Enemy 3</option>
-						<option
-							value="enemy4"
-							selected="selected"
-						>
-							Enemy 4
-						</option>
+
+						<option value="enemy4" selected="selected">Enemy 4</option>
 						<option value="enemy5">Enemy 5</option>
 						<option value="enemy6">Enemy 6</option>
 						<option value="enemy7">Enemy 7</option>
 						<option value="enemy8">Enemy 8</option>
 					</select>
-				</div>
-				<div>
-					<label for="enemyCount">Enemy count :</label>
-					<input
-						type="number"
-						name="enemyCount"
-						id="enemyCount"
-						min="1"
-						max="100"
-						value="3"
-					/>
 				</div>
 			</div>
 		</div>
@@ -64,14 +33,7 @@
 			<div class="control">
 				<div>
 					<label for="bgSpeed">Game speed :</label>
-					<input
-						type="range"
-						name="bgSpeed"
-						id="bgSpeed"
-						min="0"
-						max="50"
-						value="5"
-					/>
+					<input type="range" name="bgSpeed" id="bgSpeed" min="0" max="50" value="5" />
 					<span id="bgSpeedValue">[5]</span>
 				</div>
 			</div>
@@ -82,19 +44,11 @@
 			<div class="control">
 				<div>
 					<label for="playerAnimation">Choose animation :</label>
-					<select
-						name="playerAnimation"
-						id="playerAnimation"
-					>
+					<select name="playerAnimation" id="playerAnimation">
 						<option value="idle">Idle</option>
 						<option value="jump">Jump</option>
 						<option value="fall">Fall</option>
-						<option
-							value="run"
-							selected="selected"
-						>
-							Run
-						</option>
+						<option value="run" selected="selected">Run</option>
 						<option value="dizzy">Dizzy</option>
 						<option value="sit">Sit</option>
 						<option value="roll">Roll</option>
@@ -106,9 +60,6 @@
 			</div>
 		</div>
 
-		<script
-			type="module"
-			src="./src/main.js"
-		></script>
+		<script type="module" src="./src/main.js"></script>
 	</body>
 </html>
