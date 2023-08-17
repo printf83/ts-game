@@ -1,6 +1,8 @@
 import { baseEnemy } from "./base.js";
 
 class enemy7 extends baseEnemy {
+	speed: number;
+
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -15,14 +17,15 @@ class enemy7 extends baseEnemy {
 
 		game_speed: number;
 		animation_speed: number;
+
+		speed: number;
 	}) {
 		super(opt);
+		this.speed = opt.speed;
 	}
 
 	update(game_frame: number) {
-		this.x += Math.random() * 7 - 3.5;
-		this.y += Math.random() * 7 - 3.5;
-
+		this.x -= Math.random() * this.speed;
 		super.update(game_frame);
 	}
 
@@ -44,8 +47,8 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 	return new enemy7({
 		img: imgEnemy7,
 
-		x: Math.random() * (opt.canvas_width - width),
-		y: Math.random() * (opt.canvas_height - height),
+		x: opt.canvas_width + width,
+		y: opt.canvas_height - height,
 		width,
 		height,
 
@@ -55,5 +58,7 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 
 		game_speed: Math.random() * 4 - 2,
 		animation_speed: Math.floor(Math.random() * 3 + 1),
+
+		speed: Math.random() * 10,
 	});
 };
