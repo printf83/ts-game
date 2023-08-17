@@ -3,6 +3,7 @@ import { setupEnemy1 } from "./enemy/enemy1.js";
 import { setupEnemy2 } from "./enemy/enemy2.js";
 import { setupEnemy3 } from "./enemy/enemy3.js";
 import { setupEnemy4 } from "./enemy/enemy4.js";
+import { setupEnemy5 } from "./enemy/enemy5.js";
 
 const enemyDB = {
 	enemy1: {
@@ -32,6 +33,34 @@ const enemyDB = {
 		sprite_width: 213,
 		sprite_height: 213,
 		action: setupEnemy4,
+	},
+	enemy5: {
+		img: "./res/enemy5.png",
+		sprite_length: 5,
+		sprite_width: 271,
+		sprite_height: 194,
+		action: setupEnemy5,
+	},
+	enemy6: {
+		img: "./res/enemy6.png",
+		sprite_length: 5,
+		sprite_width: 261,
+		sprite_height: 209,
+		action: setupEnemy5,
+	},
+	enemy7: {
+		img: "./res/enemy7.png",
+		sprite_length: 5,
+		sprite_width: 229,
+		sprite_height: 171,
+		action: setupEnemy5,
+	},
+	enemy8: {
+		img: "./res/enemy8.png",
+		sprite_length: 5,
+		sprite_width: 310,
+		sprite_height: 175,
+		action: setupEnemy5,
 	},
 };
 
