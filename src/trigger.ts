@@ -1,8 +1,7 @@
 const imgExplosion = new Image();
 imgExplosion.src = "./res/boom.png";
 
-const soundExplosion = new Audio();
-soundExplosion.src = "./res/boom.wav";
+const soundExplosion = "./res/boom.wav";
 
 class explosion {
 	frame: number;
@@ -11,7 +10,7 @@ class explosion {
 	sound_play: boolean;
 
 	img: HTMLImageElement;
-	sound: HTMLAudioElement;
+	sound: string;
 
 	x: number;
 	y: number;
@@ -24,7 +23,7 @@ class explosion {
 
 	angle: number;
 
-	constructor(opt: { img: HTMLImageElement; sound: HTMLAudioElement; x: number; y: number; sprite_width: number; sprite_height: number; sprite_length: number; angle: number }) {
+	constructor(opt: { img: HTMLImageElement; sound: string; x: number; y: number; sprite_width: number; sprite_height: number; sprite_length: number; angle: number }) {
 		this.frame = 0;
 		this.timer = 0;
 		this.mark_delete = false;
@@ -49,7 +48,7 @@ class explosion {
 	update() {
 		if (!this.sound_play) {
 			this.sound_play = true;
-			this.sound.play();
+			new Audio(this.sound).play();
 		}
 
 		this.timer++;
@@ -84,7 +83,7 @@ const createExplosion = (x: number, y: number) => {
 		sprite_width: 200,
 		sprite_height: 179,
 		sprite_length: 5,
-		angle: Math.random() * 6.2,
+		angle: Math.random() * 180,
 	});
 };
 
@@ -97,7 +96,7 @@ export const trigger = (opt: { canvas: HTMLCanvasElement }) => {
 		const container_position = container.getBoundingClientRect();
 
 		if (ctx) {
-			window.addEventListener("click", (event: MouseEvent) => {
+			opt.canvas.addEventListener("click", (event: MouseEvent) => {
 				const position_x = event.x - canvas_position.left + container_position.left + window.scrollX;
 				const position_y = event.y - canvas_position.top + container_position.top + window.scrollY;
 

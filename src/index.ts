@@ -39,7 +39,7 @@ const enemyTypeChange = () => {
 	const enemy_type = cboEnemyType.value;
 
 	if (enemy_type) {
-		enemy(enemyType(enemyCanvas, 400, 750, enemy_type as enemyDBType));
+		enemy(enemyType(enemyCanvas, 400, 700, enemy_type as enemyDBType));
 	}
 };
 
@@ -49,13 +49,13 @@ const triggerCanvas = document.getElementById("triggerCanvas") as HTMLCanvasElem
 //start
 (function () {
 	//trigger
-	triggerCanvas.width = 500;
+	triggerCanvas.width = 400;
 	triggerCanvas.height = 700;
 	trigger({ canvas: triggerCanvas });
 
 	//enemy
 	enemyCanvas.width = 400;
-	enemyCanvas.height = 750;
+	enemyCanvas.height = 700;
 	cboEnemyType.addEventListener("change", enemyTypeChange);
 	cboEnemyType.dispatchEvent(new Event("change"));
 
