@@ -21,7 +21,7 @@ class enemy3 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		game_speed: number;
+		move_speed: number;
 		animation_speed: number;
 
 		angle: number;
@@ -77,7 +77,7 @@ export const createEnemy3 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		game_speed: Math.random() * 4 + 1,
+		move_speed: Math.random() * 4 + 1,
 		animation_speed: Math.floor(Math.random() * 3 + 1),
 
 		angle: Math.random() * 2,

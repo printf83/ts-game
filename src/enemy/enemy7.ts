@@ -11,11 +11,14 @@ class enemy7 extends baseEnemy {
 		width: number;
 		height: number;
 
+		canvas_width: number;
+		canvas_height: number;
+
 		sprite_width: number;
 		sprite_height: number;
 		sprite_length: number;
 
-		game_speed: number;
+		move_speed: number;
 		animation_speed: number;
 
 		speed: number;
@@ -52,11 +55,14 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 		width,
 		height,
 
+		canvas_width: opt.canvas_width,
+		canvas_height: opt.canvas_height,
+
 		sprite_width,
 		sprite_height,
 		sprite_length,
 
-		game_speed: Math.random() * 4 - 2,
+		move_speed: Math.random() * 4 - 2,
 		animation_speed: Math.floor(Math.random() * 3 + 1),
 
 		speed: Math.random() * 10,

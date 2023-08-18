@@ -22,7 +22,7 @@ class enemy2 extends baseEnemy {
 		canvas_width: number;
 		canvas_height: number;
 
-		game_speed: number;
+		move_speed: number;
 		animation_speed: number;
 
 		angle: number;
@@ -40,7 +40,7 @@ class enemy2 extends baseEnemy {
 	}
 
 	update(game_frame: number) {
-		this.x -= this.game_speed;
+		this.x -= this.move_speed;
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
 		this.y += this.curve * Math.sin(this.angle);
@@ -79,7 +79,7 @@ export const createEnemy2 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		game_speed: Math.random() * 4 + 1,
+		move_speed: Math.random() * 4 + 1,
 		animation_speed: Math.floor(Math.random() * 3 + 1),
 
 		angle: Math.random() * 2,

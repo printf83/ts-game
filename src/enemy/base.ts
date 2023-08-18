@@ -8,11 +8,14 @@ export class baseEnemy {
 	width: number;
 	height: number;
 
+	canvas_width: number;
+	canvas_height: number;
+
 	sprite_width: number;
 	sprite_height: number;
 	sprite_length: number;
 
-	game_speed: number;
+	move_speed: number;
 	animation_speed: number;
 
 	constructor(opt: {
@@ -23,11 +26,14 @@ export class baseEnemy {
 		width: number;
 		height: number;
 
+		canvas_width: number;
+		canvas_height: number;
+
 		sprite_width: number;
 		sprite_height: number;
 		sprite_length: number;
 
-		game_speed: number;
+		move_speed: number;
 		animation_speed: number;
 	}) {
 		this.frame = 0;
@@ -39,11 +45,14 @@ export class baseEnemy {
 		this.width = opt.width;
 		this.height = opt.height;
 
+		this.canvas_width = opt.canvas_width;
+		this.canvas_height = opt.canvas_height;
+
 		this.sprite_length = opt.sprite_length;
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
 
-		this.game_speed = opt.game_speed;
+		this.move_speed = opt.move_speed;
 		this.animation_speed = opt.animation_speed;
 	}
 
@@ -54,16 +63,6 @@ export class baseEnemy {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(
-			this.img,
-			this.frame * this.sprite_width,
-			0,
-			this.sprite_width,
-			this.sprite_height,
-			this.x,
-			this.y,
-			this.width,
-			this.height
-		);
+		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 	}
 }
