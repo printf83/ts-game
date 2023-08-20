@@ -1,6 +1,9 @@
 import { baseEnemy } from "./base.js";
 
 class enemy1 extends baseEnemy {
+	life_index: number;
+	life_length: number;
+
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -18,15 +21,23 @@ class enemy1 extends baseEnemy {
 
 		move_speed: number;
 		animation_speed: number;
+
+		life_length: number;
 	}) {
 		super(opt);
+
+		this.life_index = 0;
+		this.life_length = opt.life_length;
 	}
 
-	update(game_frame: number) {
+	update(timestamp: number) {
 		this.x += Math.random() * 7 - 3.5;
 		this.y += Math.random() * 7 - 3.5;
 
-		super.update(game_frame);
+		this.life_index += timestamp;
+		if (this.life_index > this.life_length) this.mark_delete = true;
+
+		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -41,8 +52,9 @@ export const createEnemy1 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 293;
 	const sprite_height = 155;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy1({
 		img: imgEnemy1,
@@ -60,6 +72,7 @@ export const createEnemy1 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
+		animation_speed: Math.random() * 50 + 25,
+		life_length: Math.random() * 10000 - 5000,
 	});
 };

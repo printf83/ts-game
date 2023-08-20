@@ -1,9 +1,6 @@
 import { baseEnemy } from "./base.js";
 
 class enemy2 extends baseEnemy {
-	canvas_width: number;
-	canvas_height: number;
-
 	angle: number;
 	angle_speed: number;
 	curve: number;
@@ -31,23 +28,20 @@ class enemy2 extends baseEnemy {
 	}) {
 		super(opt);
 
-		this.canvas_width = opt.canvas_width;
-		this.canvas_height = opt.canvas_height;
-
 		this.angle = opt.angle;
 		this.angle_speed = opt.angle_speed;
 		this.curve = opt.curve;
 	}
 
-	update(game_frame: number) {
+	update(timestamp: number) {
 		this.x -= this.move_speed;
-		if (this.x + this.width < 0) this.x = this.canvas_width;
+		if (this.x < 0 - this.width) this.mark_delete = true;
 
 		this.y += this.curve * Math.sin(this.angle);
 
 		this.angle += this.angle_speed;
 
-		super.update(game_frame);
+		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -62,13 +56,14 @@ export const createEnemy2 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 266;
 	const sprite_height = 188;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy2({
 		img: imgEnemy2,
 
-		x: Math.random() * (opt.canvas_width - width),
+		x: opt.canvas_width,
 		y: Math.random() * (opt.canvas_height - height),
 		width,
 		height,
@@ -80,8 +75,7 @@ export const createEnemy2 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 + 1,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
-
+		animation_speed: Math.random() * 50 + 25,
 		angle: Math.random() * 2,
 		angle_speed: Math.random() * 0.2,
 		curve: Math.random() * 5,

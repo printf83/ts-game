@@ -22,11 +22,11 @@ class enemy6 extends baseEnemy {
 		super(opt);
 	}
 
-	update(game_frame: number) {
+	update(timestamp: number) {
 		this.x += Math.random() * 7 - 3.5;
 		this.y += Math.random() * 7 - 3.5;
 
-		super.update(game_frame);
+		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -41,8 +41,9 @@ export const createEnemy6 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 261;
 	const sprite_height = 209;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy6({
 		img: imgEnemy6,
@@ -60,6 +61,6 @@ export const createEnemy6 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
+		animation_speed: Math.random() * 50 + 25,
 	});
 };

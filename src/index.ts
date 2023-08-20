@@ -3,7 +3,8 @@
 import { bg, bgDB, update_game_speed } from "./bg.js";
 import { enemy, enemyDBType, enemyType } from "./enemy.js";
 import { player, playerAct, actionDBType } from "./player.js";
-import { trigger } from "./trigger.js";
+import { bindExplosion } from "./explosion.js";
+import { enemyRaven } from "./enemyRaven.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -43,15 +44,31 @@ const enemyTypeChange = () => {
 	}
 };
 
-//trigger
-const triggerCanvas = document.getElementById("triggerCanvas") as HTMLCanvasElement;
+//explosion
+const explosionCanvas = document.getElementById("explosionCanvas") as HTMLCanvasElement;
+
+//enemyRaven
+const enemyCollisionCanvas = document.getElementById("enemyCollisionCanvas") as HTMLCanvasElement;
+const enemyRavenCanvas = document.getElementById("enemyRavenCanvas") as HTMLCanvasElement;
 
 //start
 (function () {
-	//trigger
-	triggerCanvas.width = 400;
-	triggerCanvas.height = 700;
-	trigger({ canvas: triggerCanvas });
+	//enemyRaven
+	enemyRavenCanvas.width = 800;
+	enemyRavenCanvas.height = 700;
+	enemyCollisionCanvas.width = 800;
+	enemyCollisionCanvas.height = 700;
+	enemyRaven({
+		collision_canvas: enemyCollisionCanvas,
+		canvas: enemyRavenCanvas,
+		canvas_width: 800,
+		canvas_height: 700,
+	});
+
+	//explosion
+	explosionCanvas.width = 400;
+	explosionCanvas.height = 700;
+	bindExplosion({ canvas: explosionCanvas });
 
 	//enemy
 	enemyCanvas.width = 400;

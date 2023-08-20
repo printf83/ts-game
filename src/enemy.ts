@@ -48,7 +48,7 @@ export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; ca
 			animateId: enemAnimationId,
 			ctx,
 			enemy: opt.enemy,
-			game_frame: 0,
+			timestamp: 0,
 			canvas_width: opt.canvas_width,
 			canvas_height: opt.canvas_height,
 		});
@@ -59,7 +59,7 @@ interface option {
 	animateId: string;
 	ctx: CanvasRenderingContext2D;
 	enemy: baseEnemy;
-	game_frame: number;
+	timestamp: number;
 	canvas_width: number;
 	canvas_height: number;
 }
@@ -67,12 +67,12 @@ interface option {
 const animateEnemy = (opt: option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	opt.enemy.update(opt.game_frame);
+	opt.enemy.update(opt.timestamp);
 	opt.enemy.draw(opt.ctx);
 
-	opt.game_frame++;
-	requestAnimationFrame(() => {
+	requestAnimationFrame((timestamp) => {
 		if (enemAnimationId === opt.animateId) {
+			opt.timestamp = timestamp;
 			animateEnemy(opt);
 		}
 	});

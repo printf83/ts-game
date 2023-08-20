@@ -1,6 +1,9 @@
 import { baseEnemy } from "./base.js";
 
-class enemy5 extends baseEnemy {
+export class enemy5 extends baseEnemy {
+	directionX: number;
+	directionY: number;
+
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -18,19 +21,30 @@ class enemy5 extends baseEnemy {
 
 		move_speed: number;
 		animation_speed: number;
+
+		directionX: number;
+		directionY: number;
 	}) {
 		super(opt);
+
+		this.directionX = opt.directionX;
+		this.directionY = opt.directionY;
 	}
 
-	update(game_frame: number) {
-		this.x += Math.random() * 7 - 3.5;
-		this.y += Math.random() * 7 - 3.5;
+	update(timestamp: number) {
+		this.x -= this.directionX;
+		this.y -= this.directionY;
 
-		super.update(game_frame);
+		if (this.x < 0 - this.width) this.mark_delete = true;
+		if (this.y < 0 || this.y > this.canvas_height - this.height) {
+			this.directionY = this.directionY * -1;
+		}
+
+		super.update(timestamp);
 	}
 
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
+	draw(ctx: CanvasRenderingContext2D, ctx_collision: CanvasRenderingContext2D) {
+		super.draw(ctx, ctx_collision);
 	}
 }
 
@@ -41,13 +55,17 @@ export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 271;
 	const sprite_height = 194;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+
+	const animation_speed = Math.random() * 50 + 25;
+	const move_speed = Math.random() * 4 - 2;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy5({
 		img: imgEnemy5,
 
-		x: Math.random() * (opt.canvas_width - width),
+		x: opt.canvas_width,
 		y: Math.random() * (opt.canvas_height - height),
 		width,
 		height,
@@ -59,7 +77,10 @@ export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
+		move_speed,
+		animation_speed,
+
+		directionX: Math.random() * 5 + 3,
+		directionY: Math.random() * 5 - 2.5,
 	});
 };

@@ -27,9 +27,11 @@ class enemy7 extends baseEnemy {
 		this.speed = opt.speed;
 	}
 
-	update(game_frame: number) {
+	update(timestamp: number) {
 		this.x -= Math.random() * this.speed;
-		super.update(game_frame);
+		if (this.x < 0 - this.width) this.mark_delete = true;
+
+		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -44,8 +46,9 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 229;
 	const sprite_height = 171;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy7({
 		img: imgEnemy7,
@@ -63,8 +66,7 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
-
+		animation_speed: Math.random() * 50 + 25,
 		speed: Math.random() * 10,
 	});
 };

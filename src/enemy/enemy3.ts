@@ -1,11 +1,11 @@
 import { baseEnemy } from "./base.js";
 
 class enemy3 extends baseEnemy {
-	canvas_width: number;
-	canvas_height: number;
-
 	angle: number;
 	angle_speed: number;
+
+	life_index: 0;
+	life_length: number;
 
 	constructor(opt: {
 		img: HTMLImageElement;
@@ -26,17 +26,18 @@ class enemy3 extends baseEnemy {
 
 		angle: number;
 		angle_speed: number;
+		life_length: number;
 	}) {
 		super(opt);
 
-		this.canvas_width = opt.canvas_width;
-		this.canvas_height = opt.canvas_height;
-
 		this.angle = opt.angle;
 		this.angle_speed = opt.angle_speed;
+
+		this.life_index = 0;
+		this.life_length = opt.life_length;
 	}
 
-	update(game_frame: number) {
+	update(timestamp: number) {
 		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
@@ -45,7 +46,10 @@ class enemy3 extends baseEnemy {
 
 		this.angle += this.angle_speed;
 
-		super.update(game_frame);
+		this.life_index += timestamp;
+		if (this.life_index > this.life_length) this.mark_delete = true;
+
+		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
@@ -60,8 +64,9 @@ export const createEnemy3 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_length = 5;
 	const sprite_width = 218;
 	const sprite_height = 177;
-	const width = sprite_width / 2.5;
-	const height = sprite_height / 2.5;
+	const size_modifier = Math.random() * 0.1 + 0.4;
+	const width = sprite_width * size_modifier;
+	const height = sprite_height * size_modifier;
 
 	return new enemy3({
 		img: imgEnemy3,
@@ -78,9 +83,10 @@ export const createEnemy3 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 + 1,
-		animation_speed: Math.floor(Math.random() * 3 + 1),
-
+		animation_speed: Math.random() * 50 + 25,
 		angle: Math.random() * 2,
 		angle_speed: Math.random() * 0.5 + 0.5,
+
+		life_length: Math.random() * 10000 - 5000,
 	});
 };

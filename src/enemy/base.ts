@@ -1,5 +1,14 @@
+const genUID = () => {
+	return [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)];
+};
+
 export class baseEnemy {
+	uid: number[];
+	uid_text: string;
+
 	frame: number;
+	timestamp: number;
+	mark_delete: boolean;
 
 	img: HTMLImageElement;
 
@@ -36,7 +45,12 @@ export class baseEnemy {
 		move_speed: number;
 		animation_speed: number;
 	}) {
+		this.uid = genUID();
+		this.uid_text = `rgba(${this.uid[0]},${this.uid[1]},${this.uid[2]})`;
+
 		this.frame = 0;
+		this.timestamp = 0;
+		this.mark_delete = false;
 
 		this.img = opt.img;
 
@@ -56,13 +70,25 @@ export class baseEnemy {
 		this.animation_speed = opt.animation_speed;
 	}
 
-	update(game_frame: number) {
-		if (game_frame % this.animation_speed === 0) {
-			this.frame >= this.sprite_length ? (this.frame = 0) : this.frame++;
+	update(timestamp: number) {
+		this.timestamp += timestamp;
+		if (this.timestamp >= this.animation_speed) {
+			this.timestamp = 0;
+
+			if (this.frame >= this.sprite_length) {
+				this.frame = 0;
+			} else {
+				this.frame++;
+			}
 		}
 	}
 
-	draw(ctx: CanvasRenderingContext2D) {
+	draw(ctx: CanvasRenderingContext2D, ctx_collision?: CanvasRenderingContext2D) {
 		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+
+		if (ctx_collision) {
+			ctx_collision.fillStyle = this.uid_text;
+			ctx_collision.fillRect(this.x, this.y, this.width, this.height);
+		}
 	}
 }
