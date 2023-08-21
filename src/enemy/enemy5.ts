@@ -28,7 +28,7 @@ export class enemy5 extends baseEnemy {
 		this.directionY = opt.directionY;
 	}
 
-	update(timestamp: number) {
+	update(timestamp: number, onframechange?: () => void) {
 		this.x -= this.directionX;
 		this.y -= this.directionY;
 
@@ -37,7 +37,7 @@ export class enemy5 extends baseEnemy {
 			this.directionY = this.directionY * -1;
 		}
 
-		super.update(timestamp);
+		super.update(timestamp, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D, ctx_collision: CanvasRenderingContext2D) {
@@ -72,7 +72,7 @@ export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		directionX: Math.random() * 5 + 3,
+		directionX: Math.random() * 3 + 1.5,
 		directionY: Math.random() * 5 - 2.5,
 	});
 };

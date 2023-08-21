@@ -47,11 +47,11 @@ export class baseAnimation {
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
 
-		this.animation_speed = opt.animation_speed ? opt.animation_speed : Math.random() * 50 + 25;
+		this.animation_speed = opt.animation_speed ? opt.animation_speed : Math.random() * 30 + 15;
 		this.animation_repeat = opt.animation_repeat ? opt.animation_repeat : true;
 	}
 
-	update(timestamp: number) {
+	update(timestamp: number, onframechange?: () => void) {
 		this.timestamp += timestamp;
 		if (this.timestamp >= this.animation_speed) {
 			this.timestamp = 0;
@@ -61,6 +61,10 @@ export class baseAnimation {
 				else this.mark_delete = true;
 			} else {
 				this.frame++;
+			}
+
+			if (onframechange) {
+				onframechange();
 			}
 		}
 	}

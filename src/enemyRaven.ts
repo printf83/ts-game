@@ -8,6 +8,7 @@ import { createEnemy6 } from "./enemy/enemy6.js";
 import { createEnemy7 } from "./enemy/enemy7.js";
 import { createEnemy8 } from "./enemy/enemy8.js";
 import { createExplosion, explosion } from "./explosion.js";
+import { particle } from "./particle.js";
 
 const enemyDB = {
 	enemy1: createEnemy1,
@@ -22,18 +23,14 @@ const enemyDB = {
 export type enemyDBType = keyof typeof enemyDB;
 
 let timeToNextEnemy = 0;
-let enemyInterval = 500;
+let enemyInterval = 3000;
 let lastTime = 0;
 let enemy_list: baseEnemy[] = [];
 let explosion_list: explosion[] = [];
+let particle_list: particle[] = [];
 let score = 0;
 
-export const enemyRaven = (opt: {
-	collision_canvas: HTMLCanvasElement;
-	canvas: HTMLCanvasElement;
-	canvas_width: number;
-	canvas_height: number;
-}) => {
+export const enemyRaven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
 	const ctx = opt.canvas.getContext("2d");
 	const ctx_collision = opt.collision_canvas.getContext("2d");
 
@@ -55,6 +52,8 @@ export const enemyRaven = (opt: {
 						explosion_list.push(createExplosion(i.x + i.width / 2, i.y + i.height / 2, i.width / i.sprite_width));
 						i.mark_delete = true;
 						score++;
+
+						enemyInterval = 3000 - score * 50;
 					}
 				});
 			});
@@ -103,20 +102,28 @@ const animateEnemyRaven = (opt: optionEnemyRaven) => {
 	draw_score(opt.ctx, score);
 
 	[...enemy_list].forEach((i) => {
+		i.update(deltaTime, () => {
+			particle_list.push(
+				new particle({
+					x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
+					y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
+					size: i.width * 0.5,
+					color: i.uid_text,
+				})
+			);
+		});
+	});
+
+	[...particle_list, ...explosion_list].forEach((i) => {
 		i.update(deltaTime);
 	});
-	[...enemy_list].forEach((i) => {
+
+	[...particle_list, ...enemy_list, ...explosion_list].forEach((i) => {
 		i.draw(opt.ctx, opt.ctx_collision);
 	});
 	enemy_list = enemy_list.filter((i) => !i.mark_delete);
-
-	[...explosion_list].forEach((i) => {
-		i.update(deltaTime);
-	});
-	[...explosion_list].forEach((i) => {
-		i.draw(opt.ctx);
-	});
 	explosion_list = explosion_list.filter((i) => !i.mark_delete);
+	particle_list = particle_list.filter((i) => !i.mark_delete);
 
 	requestAnimationFrame((timestamp) => {
 		opt.timestamp = timestamp;

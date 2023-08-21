@@ -35,8 +35,8 @@ export class baseEnemy extends baseAnimation {
 		this.canvas_height = opt.canvas_height;
 	}
 
-	update(timestamp: number) {
-		super.update(timestamp);
+	update(timestamp: number, onframechange?: () => void) {
+		super.update(timestamp, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D, ctx_collision?: CanvasRenderingContext2D) {
