@@ -1,89 +1,99 @@
+import { baseEnemy } from "./enemy/base.js";
+
 const imgExplosion = new Image();
 imgExplosion.src = "./res/boom.png";
 
 const soundExplosion = "./res/boom.wav";
 
-export class explosion {
-	frame: number;
-	timer: number;
-	mark_delete: boolean;
+export class explosion extends baseEnemy {
 	sound_play: boolean;
-
-	img: HTMLImageElement;
 	sound: string;
-
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-
-	sprite_width: number;
-	sprite_height: number;
-	sprite_length: number;
-
 	angle: number;
 
-	constructor(opt: { img: HTMLImageElement; sound: string; x: number; y: number; scale: number; sprite_width: number; sprite_height: number; sprite_length: number; angle: number }) {
-		this.frame = 0;
-		this.timer = 0;
-		this.mark_delete = false;
+	constructor(opt: {
+		img: HTMLImageElement;
+		sound: string;
+
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+
+		canvas_width: number;
+		canvas_height: number;
+
+		sprite_width: number;
+		sprite_height: number;
+		sprite_length: number;
+
+		move_speed: number;
+		animation_speed: number;
+
+		angle: number;
+	}) {
+		super(opt);
+
 		this.sound_play = false;
-
-		this.img = opt.img;
 		this.sound = opt.sound;
-
-		this.sprite_width = opt.sprite_width;
-		this.sprite_height = opt.sprite_height;
-		this.sprite_length = opt.sprite_length;
-
-		this.width = this.sprite_width * opt.scale;
-		this.height = this.sprite_height * opt.scale;
-
-		this.x = opt.x;
-		this.y = opt.y;
-
 		this.angle = opt.angle;
 	}
 
-	update() {
+	update(timestamp: number) {
 		if (!this.sound_play) {
 			this.sound_play = true;
 			new Audio(this.sound).play();
 		}
 
-		this.timer++;
-		if (this.timer % 5 === 0) {
-			this.frame++;
-			this.timer = 0;
-		}
-
 		if (this.frame > this.sprite_length) {
 			this.mark_delete = true;
 		}
+
+		super.update(timestamp);
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
+		ctx.drawImage(
+			this.img,
+			this.sprite_width * this.frame,
+			0,
+			this.sprite_width,
+			this.sprite_width,
+			0 - this.width * 0.5,
+			0 - this.height * 0.5,
+			this.width,
+			this.height
+		);
 
 		ctx.restore();
+		super.draw(ctx);
 	}
 }
 
-const explosions: explosion[] = [];
+let explosion_list: explosion[] = [];
 
 export const createExplosion = (x: number, y: number, scale: number) => {
 	return new explosion({
-		x,
-		y,
-		scale,
 		img: imgExplosion,
 		sound: soundExplosion,
+
+		x,
+		y,
+		width: 200 * scale,
+		height: 179 * scale,
+
+		canvas_width: 0,
+		canvas_height: 0,
+
 		sprite_width: 200,
 		sprite_height: 179,
 		sprite_length: 5,
+
+		move_speed: Math.random() * 4 - 2,
+		animation_speed: Math.random() * 50 + 25,
+
 		angle: Math.random() * 180,
 	});
 };
@@ -101,7 +111,7 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 				const position_x = event.x - canvas_position.left + container_position.left + window.scrollX;
 				const position_y = event.y - canvas_position.top + container_position.top + window.scrollY;
 
-				explosions.push(createExplosion(position_x, position_y, 0.5));
+				explosion_list.push(createExplosion(position_x, position_y, 0.5));
 			});
 		}
 	}
@@ -110,23 +120,30 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 	const canvas_height = opt.canvas.height;
 
 	if (ctx) {
-		animateExplosion({ ctx, canvas_width, canvas_height });
+		animateExplosion({ ctx, canvas_width, canvas_height, timestamp: 0 });
 	}
 };
 
-const animateExplosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) => {
+let lastTime = 0;
+
+const animateExplosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; timestamp: number }) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	for (let i = 0; i < explosions.length; i++) {
-		explosions[i]?.update();
-		explosions[i]?.draw(opt.ctx);
-		if (explosions[i]?.mark_delete) {
-			explosions.splice(i, 1);
-			i--;
-		}
-	}
+	let deltaTime = opt.timestamp - lastTime;
+	lastTime = opt.timestamp;
 
-	requestAnimationFrame(() => {
+	[...explosion_list].forEach((i) => {
+		i.update(deltaTime);
+	});
+
+	[...explosion_list].forEach((i) => {
+		i.draw(opt.ctx);
+	});
+
+	explosion_list = explosion_list.filter((i) => !i.mark_delete);
+
+	requestAnimationFrame((timestamp) => {
+		opt.timestamp = timestamp;
 		animateExplosion(opt);
 	});
 };

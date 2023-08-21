@@ -28,7 +28,12 @@ let enemy_list: baseEnemy[] = [];
 let explosion_list: explosion[] = [];
 let score = 0;
 
-export const enemyRaven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
+export const enemyRaven = (opt: {
+	collision_canvas: HTMLCanvasElement;
+	canvas: HTMLCanvasElement;
+	canvas_width: number;
+	canvas_height: number;
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 	const ctx_collision = opt.collision_canvas.getContext("2d");
 
@@ -106,7 +111,7 @@ const animateEnemyRaven = (opt: optionEnemyRaven) => {
 	enemy_list = enemy_list.filter((i) => !i.mark_delete);
 
 	[...explosion_list].forEach((i) => {
-		i.update();
+		i.update(deltaTime);
 	});
 	[...explosion_list].forEach((i) => {
 		i.draw(opt.ctx);
