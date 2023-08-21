@@ -21,9 +21,6 @@ class enemy3 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		move_speed: number;
-		animation_speed: number;
-
 		angle: number;
 		angle_speed: number;
 		life_length: number;
@@ -82,11 +79,9 @@ export const createEnemy3 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 + 1,
-		animation_speed: Math.random() * 50 + 25,
 		angle: Math.random() * 2,
 		angle_speed: Math.random() * 0.5 + 0.5,
 
-		life_length: Math.random() * 10000 - 5000,
+		life_length: Math.random() * 5000 + 5000,
 	});
 };

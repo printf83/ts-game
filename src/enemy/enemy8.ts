@@ -15,9 +15,6 @@ class enemy8 extends baseEnemy {
 		sprite_width: number;
 		sprite_height: number;
 		sprite_length: number;
-
-		move_speed: number;
-		animation_speed: number;
 	}) {
 		super(opt);
 	}
@@ -59,8 +56,5 @@ export const createEnemy8 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_width,
 		sprite_height,
 		sprite_length,
-
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.random() * 50 + 25,
 	});
 };

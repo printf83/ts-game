@@ -44,31 +44,25 @@ export class explosion extends baseEnemy {
 			new Audio(this.sound).play();
 		}
 
-		if (this.frame > this.sprite_length) {
-			this.mark_delete = true;
-		}
+		this.timestamp += timestamp;
+		if (this.timestamp >= this.animation_speed) {
+			this.timestamp = 0;
 
-		super.update(timestamp);
+			if (this.frame >= this.sprite_length) {
+				this.mark_delete = true;
+			} else {
+				this.frame++;
+			}
+		}
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(
-			this.img,
-			this.sprite_width * this.frame,
-			0,
-			this.sprite_width,
-			this.sprite_width,
-			0 - this.width * 0.5,
-			0 - this.height * 0.5,
-			this.width,
-			this.height
-		);
+		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
 
 		ctx.restore();
-		super.draw(ctx);
 	}
 }
 

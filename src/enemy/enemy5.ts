@@ -19,9 +19,6 @@ export class enemy5 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		move_speed: number;
-		animation_speed: number;
-
 		directionX: number;
 		directionY: number;
 	}) {
@@ -56,8 +53,6 @@ export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number 
 	const sprite_width = 271;
 	const sprite_height = 194;
 
-	const animation_speed = Math.random() * 50 + 25;
-	const move_speed = Math.random() * 4 - 2;
 	const size_modifier = Math.random() * 0.1 + 0.4;
 	const width = sprite_width * size_modifier;
 	const height = sprite_height * size_modifier;
@@ -76,9 +71,6 @@ export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_width,
 		sprite_height,
 		sprite_length,
-
-		move_speed,
-		animation_speed,
 
 		directionX: Math.random() * 5 + 3,
 		directionY: Math.random() * 5 - 2.5,

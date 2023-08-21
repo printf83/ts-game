@@ -19,9 +19,6 @@ class enemy1 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		move_speed: number;
-		animation_speed: number;
-
 		life_length: number;
 	}) {
 		super(opt);
@@ -71,8 +68,6 @@ export const createEnemy1 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.random() * 50 + 25,
-		life_length: Math.random() * 10000 - 5000,
+		life_length: Math.random() * 5000 + 5000,
 	});
 };

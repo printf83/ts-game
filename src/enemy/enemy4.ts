@@ -3,6 +3,7 @@ import { baseEnemy } from "./base.js";
 class enemy4 extends baseEnemy {
 	newX: number;
 	newY: number;
+	last_move: number;
 	interval: number;
 
 	life_index: number;
@@ -22,9 +23,6 @@ class enemy4 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		move_speed: number;
-		animation_speed: number;
-
 		newX: number;
 		newY: number;
 		interval: number;
@@ -35,6 +33,7 @@ class enemy4 extends baseEnemy {
 
 		this.newX = opt.newX;
 		this.newY = opt.newY;
+		this.last_move = 0;
 		this.interval = opt.interval;
 
 		this.life_index = 0;
@@ -42,10 +41,13 @@ class enemy4 extends baseEnemy {
 	}
 
 	update(timestamp: number) {
-		if (timestamp % this.interval === 0) {
+		if (this.last_move % this.interval === 0) {
+			this.last_move = 0;
 			this.newX = Math.random() * (this.canvas_width - this.width);
 			this.newY = Math.random() * (this.canvas_height - this.height);
 		}
+
+		this.last_move++;
 
 		let dx = this.x - this.newX;
 		let dy = this.y - this.newY;
@@ -89,12 +91,10 @@ export const createEnemy4 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 + 1,
-		animation_speed: Math.random() * 50 + 25,
 		newX: Math.random() * (opt.canvas_width - width),
 		newY: Math.random() * (opt.canvas_height - height),
 		interval: Math.floor(Math.random() * 200 + 50),
 
-		life_length: Math.random() * 10000 - 5000,
+		life_length: Math.random() * 5000 + 5000,
 	});
 };

@@ -1,6 +1,9 @@
 import { baseEnemy } from "./base.js";
 
 class enemy6 extends baseEnemy {
+	direction_x: number;
+	direction_y: number;
+
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -16,21 +19,29 @@ class enemy6 extends baseEnemy {
 		sprite_height: number;
 		sprite_length: number;
 
-		move_speed: number;
-		animation_speed: number;
+		direction_x: number;
+		direction_y: number;
 	}) {
 		super(opt);
+
+		this.direction_x = opt.direction_x;
+		this.direction_y = opt.direction_y;
 	}
 
 	update(timestamp: number) {
-		this.x += Math.random() * 7 - 3.5;
-		this.y += Math.random() * 7 - 3.5;
+		this.x -= this.direction_x;
+		this.y -= this.direction_y;
+
+		if (this.x < 0 - this.width) this.mark_delete = true;
 
 		super.update(timestamp);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
+		ctx.save();
+		ctx.globalAlpha = 0.5;
 		super.draw(ctx);
+		ctx.restore();
 	}
 }
 
@@ -48,8 +59,8 @@ export const createEnemy6 = (opt: { canvas_width: number; canvas_height: number 
 	return new enemy6({
 		img: imgEnemy6,
 
-		x: Math.random() * (opt.canvas_width - width),
-		y: Math.random() * (opt.canvas_height - height),
+		x: opt.canvas_width,
+		y: Math.random() * ((opt.canvas_height - height) * 0.2),
 		width,
 		height,
 
@@ -60,7 +71,7 @@ export const createEnemy6 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.random() * 50 + 25,
+		direction_x: Math.random() * 2 + 2,
+		direction_y: Math.random() * 2 - 2,
 	});
 };

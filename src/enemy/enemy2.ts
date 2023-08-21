@@ -1,6 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 class enemy2 extends baseEnemy {
+	move_speed: number;
 	angle: number;
 	angle_speed: number;
 	curve: number;
@@ -20,7 +21,6 @@ class enemy2 extends baseEnemy {
 		canvas_height: number;
 
 		move_speed: number;
-		animation_speed: number;
 
 		angle: number;
 		angle_speed: number;
@@ -28,6 +28,7 @@ class enemy2 extends baseEnemy {
 	}) {
 		super(opt);
 
+		this.move_speed = opt.move_speed;
 		this.angle = opt.angle;
 		this.angle_speed = opt.angle_speed;
 		this.curve = opt.curve;
@@ -75,7 +76,6 @@ export const createEnemy2 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_length,
 
 		move_speed: Math.random() * 4 + 1,
-		animation_speed: Math.random() * 50 + 25,
 		angle: Math.random() * 2,
 		angle_speed: Math.random() * 0.2,
 		curve: Math.random() * 5,

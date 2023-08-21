@@ -22,21 +22,18 @@ const enemyDB = {
 export type enemyDBType = keyof typeof enemyDB;
 
 export const enemyType = (canvas: HTMLCanvasElement, canvas_width: number, canvas_height: number, action: enemyDBType) => {
-	let actionFn = enemyDB[action];
-
 	return {
 		canvas,
 		canvas_width,
 		canvas_height,
-		enemy: actionFn({
-			canvas_width,
-			canvas_height,
-		}),
+		enemy: (canvas_width: number, canvas_height: number) => {
+			return enemyDB[action]({ canvas_width, canvas_height });
+		},
 	};
 };
 
 let enemAnimationId: string = "";
-export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number; enemy: baseEnemy }) => {
+export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number; enemy: (canvas_width: number, canvas_height: number) => baseEnemy }) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	if (ctx) {
@@ -58,17 +55,36 @@ export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; ca
 interface option {
 	animateId: string;
 	ctx: CanvasRenderingContext2D;
-	enemy: baseEnemy;
+	enemy: (canvas_width: number, canvas_height: number) => baseEnemy;
 	timestamp: number;
 	canvas_width: number;
 	canvas_height: number;
 }
 
+let enemyInterval = 1000;
+let timeToNextEnemy = 0;
+let enemy_list: baseEnemy[] = [];
+
+let lastTime: number = 0;
 const animateEnemy = (opt: option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	opt.enemy.update(opt.timestamp);
-	opt.enemy.draw(opt.ctx);
+	let deltaTime = opt.timestamp - lastTime;
+	lastTime = opt.timestamp;
+
+	timeToNextEnemy += deltaTime;
+	if (timeToNextEnemy > enemyInterval) {
+		enemy_list.push(opt.enemy(opt.canvas_width, opt.canvas_height));
+		timeToNextEnemy = 0;
+	}
+
+	[...enemy_list].forEach((i) => {
+		i.update(deltaTime);
+	});
+	[...enemy_list].forEach((i) => {
+		i.draw(opt.ctx);
+	});
+	enemy_list = enemy_list.filter((i) => !i.mark_delete);
 
 	requestAnimationFrame((timestamp) => {
 		if (enemAnimationId === opt.animateId) {

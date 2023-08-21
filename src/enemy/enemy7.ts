@@ -1,7 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 class enemy7 extends baseEnemy {
-	speed: number;
+	move_speed: number;
 
 	constructor(opt: {
 		img: HTMLImageElement;
@@ -19,16 +19,14 @@ class enemy7 extends baseEnemy {
 		sprite_length: number;
 
 		move_speed: number;
-		animation_speed: number;
-
-		speed: number;
 	}) {
 		super(opt);
-		this.speed = opt.speed;
+
+		this.move_speed = opt.move_speed;
 	}
 
 	update(timestamp: number) {
-		this.x -= Math.random() * this.speed;
+		this.x -= Math.random() * this.move_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
 		super.update(timestamp);
@@ -65,8 +63,6 @@ export const createEnemy7 = (opt: { canvas_width: number; canvas_height: number 
 		sprite_height,
 		sprite_length,
 
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.random() * 50 + 25,
-		speed: Math.random() * 10,
+		move_speed: Math.random() * 10,
 	});
 };
