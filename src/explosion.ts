@@ -102,8 +102,8 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 
 		if (ctx) {
 			opt.canvas.addEventListener("click", (event: MouseEvent) => {
-				const position_x = event.x - canvas_position.left + container_position.left + window.scrollX;
-				const position_y = event.y - canvas_position.top + container_position.top + window.scrollY;
+				const position_x = event.x - canvas_position.left + container_position.left;
+				const position_y = event.y - canvas_position.top + container_position.top;
 
 				explosion_list.push(createExplosion(position_x, position_y, 0.5));
 			});
