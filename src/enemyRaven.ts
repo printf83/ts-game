@@ -46,19 +46,20 @@ export const enemyRaven = (opt: {
 			const container_position = container.getBoundingClientRect();
 
 			opt.canvas.addEventListener("click", (event) => {
-				const position_x = event.x - canvas_position.left + container_position.left + window.scrollX;
-				const position_y = event.y - canvas_position.top + container_position.top + window.scrollY;
+				const position_x = event.x - canvas_position.left + container_position.left + container.scrollTop;
+				const position_y = event.y - canvas_position.top + container_position.top + container.scrollLeft;
 
 				const detectPixelColor = ctx_collision.getImageData(position_x, position_y, 1, 1);
 				const pixel_color = detectPixelColor.data;
+				console.log(pixel_color);
 
 				enemy_list.forEach((i) => {
 					if (i.uid[0] === pixel_color[0] && i.uid[1] === pixel_color[1] && i.uid[2] === pixel_color[2]) {
 						explosion_list.push(
 							new explosion({
-								x: i.x, // + i.width / 2,
-								y: i.y, // + i.height / 2,
-								scale: 1, //i.width / i.sprite_width,
+								x: i.x + i.width / 2,
+								y: i.y + i.height / 2,
+								scale: (i.width / i.sprite_width) * 1.5,
 							})
 						);
 						i.mark_delete = true;
@@ -93,7 +94,7 @@ const draw_score = (ctx: CanvasRenderingContext2D, score: number) => {
 	ctx.fillStyle = "black";
 	ctx.fillText(`Score: ${score}`, 50, 75);
 	ctx.fillStyle = "white";
-	ctx.fillText(`Score: ${score}`, 52, 77);
+	ctx.fillText(`Score: ${score}`, 51, 76);
 };
 
 const animateEnemyRaven = (opt: optionEnemyRaven) => {

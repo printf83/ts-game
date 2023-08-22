@@ -18,8 +18,6 @@ export class explosion extends baseAnimation {
 		const height = sprite_height * opt.scale;
 
 		super({
-			...opt,
-
 			img: imgExplosion,
 
 			x: opt.x,
@@ -31,7 +29,7 @@ export class explosion extends baseAnimation {
 			sprite_height,
 			sprite_length,
 
-			animation_speed: Math.random() * 50 + 25,
+			animation_speed: 75,
 			animation_repeat: false,
 		});
 
@@ -68,10 +66,10 @@ export class explosion extends baseAnimation {
 			0,
 			this.sprite_width,
 			this.sprite_width,
-			0 - this.width,
-			0 - this.height,
-			this.width * 0.5,
-			this.height * 0.5
+			0 - this.width * 0.5,
+			0 - this.height * 0.5,
+			this.width,
+			this.height
 		);
 
 		ctx.restore();
@@ -90,14 +88,14 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 
 		if (ctx) {
 			opt.canvas.addEventListener("click", (event: MouseEvent) => {
-				const position_x = event.x - canvas_position.left + container_position.left;
-				const position_y = event.y - canvas_position.top + container_position.top;
+				const position_x = event.x - canvas_position.left + container_position.left + container.scrollTop;
+				const position_y = event.y - canvas_position.top + container_position.top + container.scrollLeft;
 
 				explosion_list.push(
 					new explosion({
 						x: position_x,
 						y: position_y,
-						scale: 1,
+						scale: 0.5,
 					})
 				);
 			});
