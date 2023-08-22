@@ -1,56 +1,60 @@
 import { baseEnemy } from "./base.js";
 
-class enemy4 extends baseEnemy {
-	newX: number;
-	newY: number;
+const imgEnemy4 = new Image();
+imgEnemy4.src = "./res/enemy4.png";
+
+export class enemy4 extends baseEnemy {
+	new_x: number;
+	new_y: number;
 	last_move: number;
 	interval: number;
 
 	life_index: number;
 	life_length: number;
 
-	constructor(opt: {
-		img: HTMLImageElement;
+	constructor(opt: { canvas_width: number; canvas_height: number }) {
+		const sprite_length = 8;
+		const sprite_width = 213;
+		const sprite_height = 213;
+		const size_modifier = Math.random() * 0.1 + 0.4;
+		const width = sprite_width * size_modifier;
+		const height = sprite_height * size_modifier;
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+		super({
+			...opt,
 
-		canvas_width: number;
-		canvas_height: number;
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
+			img: imgEnemy4,
 
-		newX: number;
-		newY: number;
-		interval: number;
+			x: Math.random() * (opt.canvas_width - width),
+			y: Math.random() * (opt.canvas_height - height),
+			width,
+			height,
 
-		life_length: number;
-	}) {
-		super(opt);
+			sprite_width,
+			sprite_height,
+			sprite_length,
+		});
 
-		this.newX = opt.newX;
-		this.newY = opt.newY;
+		this.new_x = Math.random() * (opt.canvas_width - width);
+		this.new_y = Math.random() * (opt.canvas_height - height);
 		this.last_move = 0;
-		this.interval = opt.interval;
+		this.interval = Math.floor(Math.random() * 200 + 50);
 
 		this.life_index = 0;
-		this.life_length = opt.life_length;
+		this.life_length = Math.random() * 5000 + 5000;
 	}
 
 	update(timestamp: number) {
 		if (this.last_move % this.interval === 0) {
 			this.last_move = 0;
-			this.newX = Math.random() * (this.canvas_width - this.width);
-			this.newY = Math.random() * (this.canvas_height - this.height);
+			this.new_x = Math.random() * (this.canvas_width - this.width);
+			this.new_y = Math.random() * (this.canvas_height - this.height);
 		}
 
 		this.last_move++;
 
-		let dx = this.x - this.newX;
-		let dy = this.y - this.newY;
+		let dx = this.x - this.new_x;
+		let dy = this.y - this.new_y;
 
 		this.x -= dx / 20;
 		this.y -= dy / 20;
@@ -65,36 +69,3 @@ class enemy4 extends baseEnemy {
 		super.draw(ctx);
 	}
 }
-
-const imgEnemy4 = new Image();
-imgEnemy4.src = "./res/enemy4.png";
-
-export const createEnemy4 = (opt: { canvas_width: number; canvas_height: number }) => {
-	const sprite_length = 8;
-	const sprite_width = 213;
-	const sprite_height = 213;
-	const size_modifier = Math.random() * 0.1 + 0.4;
-	const width = sprite_width * size_modifier;
-	const height = sprite_height * size_modifier;
-
-	return new enemy4({
-		img: imgEnemy4,
-
-		x: Math.random() * (opt.canvas_width - width),
-		y: Math.random() * (opt.canvas_height - height),
-		width,
-		height,
-
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-		sprite_width,
-		sprite_height,
-		sprite_length,
-
-		newX: Math.random() * (opt.canvas_width - width),
-		newY: Math.random() * (opt.canvas_height - height),
-		interval: Math.floor(Math.random() * 200 + 50),
-
-		life_length: Math.random() * 5000 + 5000,
-	});
-};

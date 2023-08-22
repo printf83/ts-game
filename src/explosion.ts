@@ -1,41 +1,43 @@
-import { baseEnemy } from "./enemy/base.js";
+import { baseAnimation } from "./base.js";
 
 const imgExplosion = new Image();
 imgExplosion.src = "./res/boom.png";
 
 const soundExplosion = "./res/boom.wav";
 
-export class explosion extends baseEnemy {
+export class explosion extends baseAnimation {
 	sound_play: boolean;
 	sound: string;
 	angle: number;
 
-	constructor(opt: {
-		img: HTMLImageElement;
-		sound: string;
+	constructor(opt: { x: number; y: number; scale: number }) {
+		const sprite_length = 5;
+		const sprite_width = 200;
+		const sprite_height = 179;
+		const width = sprite_width * opt.scale;
+		const height = sprite_height * opt.scale;
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+		super({
+			...opt,
 
-		canvas_width: number;
-		canvas_height: number;
+			img: imgExplosion,
 
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
+			x: opt.x,
+			y: opt.y,
+			width,
+			height,
 
-		move_speed: number;
-		animation_speed: number;
+			sprite_width,
+			sprite_height,
+			sprite_length,
 
-		angle: number;
-	}) {
-		super(opt);
+			animation_speed: Math.random() * 50 + 25,
+			animation_repeat: false,
+		});
 
 		this.sound_play = false;
-		this.sound = opt.sound;
-		this.angle = opt.angle;
+		this.sound = soundExplosion;
+		this.angle = Math.random() * 180;
 	}
 
 	update(timestamp: number) {
@@ -60,37 +62,23 @@ export class explosion extends baseEnemy {
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
+		ctx.drawImage(
+			this.img,
+			this.sprite_width * this.frame,
+			0,
+			this.sprite_width,
+			this.sprite_width,
+			0 - this.width,
+			0 - this.height,
+			this.width * 0.5,
+			this.height * 0.5
+		);
 
 		ctx.restore();
 	}
 }
 
 let explosion_list: explosion[] = [];
-
-export const createExplosion = (x: number, y: number, scale: number) => {
-	return new explosion({
-		img: imgExplosion,
-		sound: soundExplosion,
-
-		x,
-		y,
-		width: 200 * scale,
-		height: 179 * scale,
-
-		canvas_width: 0,
-		canvas_height: 0,
-
-		sprite_width: 200,
-		sprite_height: 179,
-		sprite_length: 5,
-
-		move_speed: Math.random() * 4 - 2,
-		animation_speed: Math.random() * 50 + 25,
-
-		angle: Math.random() * 180,
-	});
-};
 
 export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 	const ctx = opt.canvas.getContext("2d");
@@ -105,7 +93,13 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 				const position_x = event.x - canvas_position.left + container_position.left;
 				const position_y = event.y - canvas_position.top + container_position.top;
 
-				explosion_list.push(createExplosion(position_x, position_y, 0.5));
+				explosion_list.push(
+					new explosion({
+						x: position_x,
+						y: position_y,
+						scale: 1,
+					})
+				);
 			});
 		}
 	}

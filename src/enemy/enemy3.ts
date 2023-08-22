@@ -1,37 +1,43 @@
 import { baseEnemy } from "./base.js";
 
-class enemy3 extends baseEnemy {
+const imgEnemy3 = new Image();
+imgEnemy3.src = "./res/enemy3.png";
+
+export class enemy3 extends baseEnemy {
 	angle: number;
 	angle_speed: number;
 
 	life_index: 0;
 	life_length: number;
 
-	constructor(opt: {
-		img: HTMLImageElement;
+	constructor(opt: { canvas_width: number; canvas_height: number }) {
+		const sprite_length = 5;
+		const sprite_width = 218;
+		const sprite_height = 177;
+		const size_modifier = Math.random() * 0.1 + 0.4;
+		const width = sprite_width * size_modifier;
+		const height = sprite_height * size_modifier;
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+		super({
+			...opt,
 
-		canvas_width: number;
-		canvas_height: number;
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
+			img: imgEnemy3,
 
-		angle: number;
-		angle_speed: number;
-		life_length: number;
-	}) {
-		super(opt);
+			x: Math.random() * (opt.canvas_width - width),
+			y: Math.random() * (opt.canvas_height - height),
+			width,
+			height,
 
-		this.angle = opt.angle;
-		this.angle_speed = opt.angle_speed;
+			sprite_width,
+			sprite_height,
+			sprite_length,
+		});
+
+		this.angle = Math.random() * 2;
+		this.angle_speed = Math.random() * 0.5 + 0.5;
 
 		this.life_index = 0;
-		this.life_length = opt.life_length;
+		this.life_length = Math.random() * 5000 + 5000;
 	}
 
 	update(timestamp: number) {
@@ -53,35 +59,3 @@ class enemy3 extends baseEnemy {
 		super.draw(ctx);
 	}
 }
-
-const imgEnemy3 = new Image();
-imgEnemy3.src = "./res/enemy3.png";
-
-export const createEnemy3 = (opt: { canvas_width: number; canvas_height: number }) => {
-	const sprite_length = 5;
-	const sprite_width = 218;
-	const sprite_height = 177;
-	const size_modifier = Math.random() * 0.1 + 0.4;
-	const width = sprite_width * size_modifier;
-	const height = sprite_height * size_modifier;
-
-	return new enemy3({
-		img: imgEnemy3,
-
-		x: Math.random() * (opt.canvas_width - width),
-		y: Math.random() * (opt.canvas_height - height),
-		width,
-		height,
-
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-		sprite_width,
-		sprite_height,
-		sprite_length,
-
-		angle: Math.random() * 2,
-		angle_speed: Math.random() * 0.5 + 0.5,
-
-		life_length: Math.random() * 5000 + 5000,
-	});
-};

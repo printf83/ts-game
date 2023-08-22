@@ -1,22 +1,31 @@
 import { baseEnemy } from "./base.js";
 
-class enemy8 extends baseEnemy {
-	constructor(opt: {
-		img: HTMLImageElement;
+const imgEnemy8 = new Image();
+imgEnemy8.src = "./res/enemy8.png";
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+export class enemy8 extends baseEnemy {
+	constructor(opt: { canvas_width: number; canvas_height: number }) {
+		const sprite_length = 5;
+		const sprite_width = 310;
+		const sprite_height = 175;
+		const size_modifier = Math.random() * 0.1 + 0.4;
+		const width = sprite_width * size_modifier;
+		const height = sprite_height * size_modifier;
 
-		canvas_width: number;
-		canvas_height: number;
+		super({
+			...opt,
 
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
-	}) {
-		super(opt);
+			img: imgEnemy8,
+
+			x: Math.random() * (opt.canvas_width - width),
+			y: Math.random() * (opt.canvas_height - height),
+			width,
+			height,
+
+			sprite_width,
+			sprite_height,
+			sprite_length,
+		});
 	}
 
 	update(timestamp: number) {
@@ -30,31 +39,3 @@ class enemy8 extends baseEnemy {
 		super.draw(ctx);
 	}
 }
-
-const imgEnemy8 = new Image();
-imgEnemy8.src = "./res/enemy8.png";
-
-export const createEnemy8 = (opt: { canvas_width: number; canvas_height: number }) => {
-	const sprite_length = 5;
-	const sprite_width = 310;
-	const sprite_height = 175;
-	const size_modifier = Math.random() * 0.1 + 0.4;
-	const width = sprite_width * size_modifier;
-	const height = sprite_height * size_modifier;
-
-	return new enemy8({
-		img: imgEnemy8,
-
-		x: Math.random() * (opt.canvas_width - width),
-		y: Math.random() * (opt.canvas_height - height),
-		width,
-		height,
-
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-
-		sprite_width,
-		sprite_height,
-		sprite_length,
-	});
-};

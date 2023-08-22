@@ -1,24 +1,24 @@
 import { baseEnemy } from "./enemy/base.js";
-import { createEnemy1 } from "./enemy/enemy1.js";
-import { createEnemy2 } from "./enemy/enemy2.js";
-import { createEnemy3 } from "./enemy/enemy3.js";
-import { createEnemy4 } from "./enemy/enemy4.js";
-import { createEnemy5 } from "./enemy/enemy5.js";
-import { createEnemy6 } from "./enemy/enemy6.js";
-import { createEnemy7 } from "./enemy/enemy7.js";
-import { createEnemy8 } from "./enemy/enemy8.js";
-import { createExplosion, explosion } from "./explosion.js";
+import { enemy1 } from "./enemy/enemy1.js";
+import { enemy2 } from "./enemy/enemy2.js";
+import { enemy3 } from "./enemy/enemy3.js";
+import { enemy4 } from "./enemy/enemy4.js";
+import { enemy5 } from "./enemy/enemy5.js";
+import { enemy6 } from "./enemy/enemy6.js";
+import { enemy7 } from "./enemy/enemy7.js";
+import { enemy8 } from "./enemy/enemy8.js";
+import { explosion } from "./explosion.js";
 import { particle } from "./particle.js";
 
 const enemyDB = {
-	enemy1: createEnemy1,
-	enemy2: createEnemy2,
-	enemy3: createEnemy3,
-	enemy4: createEnemy4,
-	enemy5: createEnemy5,
-	enemy6: createEnemy6,
-	enemy7: createEnemy7,
-	enemy8: createEnemy8,
+	enemy1: enemy1,
+	enemy2: enemy2,
+	enemy3: enemy3,
+	enemy4: enemy4,
+	enemy5: enemy5,
+	enemy6: enemy6,
+	enemy7: enemy7,
+	enemy8: enemy8,
 };
 export type enemyDBType = keyof typeof enemyDB;
 
@@ -30,7 +30,12 @@ let explosion_list: explosion[] = [];
 let particle_list: particle[] = [];
 let score = 0;
 
-export const enemyRaven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
+export const enemyRaven = (opt: {
+	collision_canvas: HTMLCanvasElement;
+	canvas: HTMLCanvasElement;
+	canvas_width: number;
+	canvas_height: number;
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 	const ctx_collision = opt.collision_canvas.getContext("2d");
 
@@ -49,7 +54,13 @@ export const enemyRaven = (opt: { collision_canvas: HTMLCanvasElement; canvas: H
 
 				enemy_list.forEach((i) => {
 					if (i.uid[0] === pixel_color[0] && i.uid[1] === pixel_color[1] && i.uid[2] === pixel_color[2]) {
-						explosion_list.push(createExplosion(i.x + i.width / 2, i.y + i.height / 2, i.width / i.sprite_width));
+						explosion_list.push(
+							new explosion({
+								x: i.x, // + i.width / 2,
+								y: i.y, // + i.height / 2,
+								scale: 1, //i.width / i.sprite_width,
+							})
+						);
 						i.mark_delete = true;
 						score++;
 
@@ -93,7 +104,7 @@ const animateEnemyRaven = (opt: optionEnemyRaven) => {
 	lastTime = opt.timestamp;
 	timeToNextEnemy += deltaTime;
 	if (timeToNextEnemy > enemyInterval) {
-		enemy_list.push(createEnemy5({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height }));
+		enemy_list.push(new enemy5({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height }));
 		timeToNextEnemy = 0;
 
 		enemy_list.sort((a, b) => a.width - b.width);

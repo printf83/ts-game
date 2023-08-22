@@ -1,40 +1,47 @@
 import { baseEnemy } from "./base.js";
 
+const imgEnemy5 = new Image();
+imgEnemy5.src = "./res/enemy5.png";
+
 export class enemy5 extends baseEnemy {
-	directionX: number;
-	directionY: number;
+	direction_x: number;
+	direction_y: number;
 
-	constructor(opt: {
-		img: HTMLImageElement;
+	constructor(opt: { canvas_width: number; canvas_height: number }) {
+		const sprite_length = 5;
+		const sprite_width = 271;
+		const sprite_height = 194;
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+		const size_modifier = Math.random() * 0.1 + 0.4;
+		const width = sprite_width * size_modifier;
+		const height = sprite_height * size_modifier;
 
-		canvas_width: number;
-		canvas_height: number;
+		super({
+			...opt,
 
-		sprite_width: number;
-		sprite_height: number;
-		sprite_length: number;
+			img: imgEnemy5,
 
-		directionX: number;
-		directionY: number;
-	}) {
-		super(opt);
+			x: opt.canvas_width,
+			y: Math.random() * (opt.canvas_height - height),
+			width,
+			height,
 
-		this.directionX = opt.directionX;
-		this.directionY = opt.directionY;
+			sprite_width,
+			sprite_height,
+			sprite_length,
+		});
+
+		this.direction_x = Math.random() * 3 + 1.5;
+		this.direction_y = Math.random() * 5 - 2.5;
 	}
 
 	update(timestamp: number, onframechange?: () => void) {
-		this.x -= this.directionX;
-		this.y -= this.directionY;
+		this.x -= this.direction_x;
+		this.y -= this.direction_y;
 
 		if (this.x < 0 - this.width) this.mark_delete = true;
 		if (this.y < 0 || this.y > this.canvas_height - this.height) {
-			this.directionY = this.directionY * -1;
+			this.direction_y = this.direction_y * -1;
 		}
 
 		super.update(timestamp, onframechange);
@@ -44,35 +51,3 @@ export class enemy5 extends baseEnemy {
 		super.draw(ctx, ctx_collision);
 	}
 }
-
-const imgEnemy5 = new Image();
-imgEnemy5.src = "./res/enemy5.png";
-
-export const createEnemy5 = (opt: { canvas_width: number; canvas_height: number }) => {
-	const sprite_length = 5;
-	const sprite_width = 271;
-	const sprite_height = 194;
-
-	const size_modifier = Math.random() * 0.1 + 0.4;
-	const width = sprite_width * size_modifier;
-	const height = sprite_height * size_modifier;
-
-	return new enemy5({
-		img: imgEnemy5,
-
-		x: opt.canvas_width,
-		y: Math.random() * (opt.canvas_height - height),
-		width,
-		height,
-
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-
-		sprite_width,
-		sprite_height,
-		sprite_length,
-
-		directionX: Math.random() * 3 + 1.5,
-		directionY: Math.random() * 5 - 2.5,
-	});
-};

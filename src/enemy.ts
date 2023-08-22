@@ -1,22 +1,22 @@
 import { baseEnemy } from "./enemy/base.js";
-import { createEnemy1 } from "./enemy/enemy1.js";
-import { createEnemy2 } from "./enemy/enemy2.js";
-import { createEnemy3 } from "./enemy/enemy3.js";
-import { createEnemy4 } from "./enemy/enemy4.js";
-import { createEnemy5 } from "./enemy/enemy5.js";
-import { createEnemy6 } from "./enemy/enemy6.js";
-import { createEnemy7 } from "./enemy/enemy7.js";
-import { createEnemy8 } from "./enemy/enemy8.js";
+import { enemy1 } from "./enemy/enemy1.js";
+import { enemy2 } from "./enemy/enemy2.js";
+import { enemy3 } from "./enemy/enemy3.js";
+import { enemy4 } from "./enemy/enemy4.js";
+import { enemy5 } from "./enemy/enemy5.js";
+import { enemy6 } from "./enemy/enemy6.js";
+import { enemy7 } from "./enemy/enemy7.js";
+import { enemy8 } from "./enemy/enemy8.js";
 
 const enemyDB = {
-	enemy1: createEnemy1,
-	enemy2: createEnemy2,
-	enemy3: createEnemy3,
-	enemy4: createEnemy4,
-	enemy5: createEnemy5,
-	enemy6: createEnemy6,
-	enemy7: createEnemy7,
-	enemy8: createEnemy8,
+	enemy1: enemy1,
+	enemy2: enemy2,
+	enemy3: enemy3,
+	enemy4: enemy4,
+	enemy5: enemy5,
+	enemy6: enemy6,
+	enemy7: enemy7,
+	enemy8: enemy8,
 };
 
 export type enemyDBType = keyof typeof enemyDB;
@@ -27,13 +27,18 @@ export const enemyType = (canvas: HTMLCanvasElement, canvas_width: number, canva
 		canvas_width,
 		canvas_height,
 		enemy: (canvas_width: number, canvas_height: number) => {
-			return enemyDB[action]({ canvas_width, canvas_height });
+			return new enemyDB[action]({ canvas_width, canvas_height });
 		},
 	};
 };
 
 let enemAnimationId: string = "";
-export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number; enemy: (canvas_width: number, canvas_height: number) => baseEnemy }) => {
+export const enemy = (opt: {
+	canvas: HTMLCanvasElement;
+	canvas_width: number;
+	canvas_height: number;
+	enemy: (canvas_width: number, canvas_height: number) => baseEnemy;
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	if (ctx) {
