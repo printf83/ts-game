@@ -70,16 +70,6 @@ export class baseAnimation {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(
-			this.img,
-			this.frame * this.sprite_width,
-			0,
-			this.sprite_width,
-			this.sprite_height,
-			this.x,
-			this.y,
-			this.width,
-			this.height
-		);
+		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 	}
 }

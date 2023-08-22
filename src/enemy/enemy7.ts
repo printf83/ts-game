@@ -29,7 +29,7 @@ export class enemy7 extends baseEnemy {
 			sprite_length,
 		});
 
-		this.move_speed = Math.random() * 10;
+		this.move_speed = Math.random() * 10 + 5;
 	}
 
 	update(timestamp: number) {

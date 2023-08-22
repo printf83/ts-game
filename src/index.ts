@@ -5,6 +5,7 @@ import { enemy, enemyDBType, enemyType } from "./enemy.js";
 import { player, playerAct, actionDBType } from "./player.js";
 import { bindExplosion } from "./explosion.js";
 import { raven } from "./raven.js";
+import { animate_game, game } from "./game.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -48,19 +49,39 @@ const enemyTypeChange = () => {
 const explosionCanvas = document.getElementById("explosionCanvas") as HTMLCanvasElement;
 
 //enemyRaven
-const enemyCollisionCanvas = document.getElementById("enemyCollisionCanvas") as HTMLCanvasElement;
-const enemyRavenCanvas = document.getElementById("enemyRavenCanvas") as HTMLCanvasElement;
+const ravenCollisionCanvas = document.getElementById("ravenCollisionCanvas") as HTMLCanvasElement;
+const ravenCanvas = document.getElementById("ravenCanvas") as HTMLCanvasElement;
+
+//game
+const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 
 //start
+// document.addEventListener("DOMContentLoaded", () => {
+
+// });
+
 (function () {
-	//enemyRaven
-	enemyRavenCanvas.width = 800;
-	enemyRavenCanvas.height = 700;
-	enemyCollisionCanvas.width = 800;
-	enemyCollisionCanvas.height = 700;
+	//game
+	gameCanvas.width = 500;
+	gameCanvas.height = 800;
+	const gameCtx = gameCanvas.getContext("2d");
+	if (gameCtx) {
+		animate_game({
+			game: new game({
+				ctx: gameCtx,
+				canvas_width: gameCanvas.width,
+				canvas_height: gameCanvas.height,
+			}),
+			timestamp: 0,
+		});
+	}
+
+	//raven
+	ravenCanvas.width = ravenCollisionCanvas.width = 800;
+	ravenCanvas.height = ravenCollisionCanvas.height = 700;
 	raven({
-		collision_canvas: enemyCollisionCanvas,
-		canvas: enemyRavenCanvas,
+		collision_canvas: ravenCollisionCanvas,
+		canvas: ravenCanvas,
 		canvas_width: 800,
 		canvas_height: 700,
 	});

@@ -1,26 +1,9 @@
 import { baseEnemy } from "./enemy/base.js";
-import { enemy1 } from "./enemy/enemy1.js";
-import { enemy2 } from "./enemy/enemy2.js";
-import { enemy3 } from "./enemy/enemy3.js";
-import { enemy4 } from "./enemy/enemy4.js";
 import { enemy5 } from "./enemy/enemy5.js";
-import { enemy6 } from "./enemy/enemy6.js";
-import { enemy7 } from "./enemy/enemy7.js";
-import { enemy8 } from "./enemy/enemy8.js";
 import { explosion } from "./explosion.js";
 import { particle } from "./particle.js";
 
-const enemyDB = {
-	enemy1: enemy1,
-	enemy2: enemy2,
-	enemy3: enemy3,
-	enemy4: enemy4,
-	enemy5: enemy5,
-	enemy6: enemy6,
-	enemy7: enemy7,
-	enemy8: enemy8,
-};
-export type enemyDBType = keyof typeof enemyDB;
+
 
 let timeToNextEnemy = 0;
 let enemyInterval = 3000;

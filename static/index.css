@@ -57,7 +57,7 @@ label{
 }
 
 .container-rainbow {
-    background: linear-gradient(to bottom,red,green,blue);
+    background: linear-gradient(45deg,red,green,blue);
 }
 
 .container-dark label,
@@ -68,19 +68,32 @@ label{
 }
 
 /*
+GAME */
+#gameCanvas {
+    width: 500px;
+    height: 800px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid black;
+}
+
+/*
 RAVEN */
-#enemyRavenCanvas, #enemyCollisionCanvas {
+#ravenCanvas, #ravenCollisionCanvas {
     width: 800px;
     height: 700px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 3px solid red;
+    border: 3px solid white;
 }
 
-#enemyCollisionCanvas{
+#ravenCollisionCanvas{
     opacity: 0;
+    border: 3px solid red;
 }
 
 /*

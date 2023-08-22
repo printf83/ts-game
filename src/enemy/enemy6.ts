@@ -4,8 +4,9 @@ const imgEnemy6 = new Image();
 imgEnemy6.src = "./res/enemy6.png";
 
 export class enemy6 extends baseEnemy {
-	direction_x: number;
-	direction_y: number;
+	speed: number;
+	angle: number;
+	curve: number;
 
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const sprite_length = 5;
@@ -21,7 +22,7 @@ export class enemy6 extends baseEnemy {
 			img: imgEnemy6,
 
 			x: opt.canvas_width,
-			y: Math.random() * ((opt.canvas_height - height) * 0.2),
+			y: Math.random() * opt.canvas_height * 0.5,
 			width,
 			height,
 
@@ -30,13 +31,15 @@ export class enemy6 extends baseEnemy {
 			sprite_length,
 		});
 
-		this.direction_x = Math.random() * 2 + 2;
-		this.direction_y = Math.random() * 2 - 2;
+		this.speed = Math.random() * 2 + 2;
+		this.angle = 0;
+		this.curve = Math.random() * 3;
 	}
 
 	update(timestamp: number) {
-		this.x -= this.direction_x;
-		this.y -= this.direction_y;
+		this.x -= this.speed;
+		this.y += Math.sin(this.angle) * this.curve;
+		this.angle += 0.04;
 
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
@@ -50,4 +53,3 @@ export class enemy6 extends baseEnemy {
 		ctx.restore();
 	}
 }
-
