@@ -57,8 +57,6 @@ export class game {
 
 			this.addNewEnemy();
 			this.enemy_timer = 0;
-
-			console.log(this.enemy_list);
 		} else {
 			this.enemy_timer += timestamp;
 		}

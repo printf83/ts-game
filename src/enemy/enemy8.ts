@@ -40,7 +40,7 @@ export class enemy8 extends baseEnemy {
 			this.destination_y *= -1;
 		}
 
-		if (this.y + this.height < -5) {
+		if (this.y < 0 - this.height - 5) {
 			this.mark_delete = true;
 		}
 
