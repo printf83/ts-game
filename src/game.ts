@@ -42,7 +42,7 @@ export class game {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
-		this.enemy_interval = 1000;
+		this.enemy_interval = 3000;
 		this.enemy_timer = 0;
 		this.enemy_list = [];
 

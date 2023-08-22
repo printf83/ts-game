@@ -4,8 +4,8 @@ const imgEnemy8 = new Image();
 imgEnemy8.src = "./res/enemy8.png";
 
 export class enemy8 extends baseEnemy {
-	speed: number;
 	destination_y: number;
+	speed: number;
 
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const sprite_length = 5;
@@ -30,14 +30,14 @@ export class enemy8 extends baseEnemy {
 			sprite_length,
 		});
 
-		this.speed = Math.random() * (opt.canvas_height - height);
-		this.destination_y = Math.random() * 2 + 2;
+		this.destination_y = Math.random() * (opt.canvas_height * 0.8);
+		this.speed = Math.random() * 2 + 2;
 	}
 
 	update(timestamp: number) {
-		this.y += this.destination_y;
-		if (this.y > this.speed) {
-			this.destination_y *= -1;
+		this.y += this.speed;
+		if (this.y > this.destination_y) {
+			this.speed *= -1;
 		}
 
 		if (this.y < 0 - this.height - 5) {
