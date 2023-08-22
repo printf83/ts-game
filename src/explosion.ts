@@ -60,17 +60,7 @@ export class explosion extends baseAnimation {
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(
-			this.img,
-			this.sprite_width * this.frame,
-			0,
-			this.sprite_width,
-			this.sprite_width,
-			0 - this.width * 0.5,
-			0 - this.height * 0.5,
-			this.width,
-			this.height
-		);
+		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
 
 		ctx.restore();
 	}
@@ -88,8 +78,8 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 
 		if (ctx) {
 			opt.canvas.addEventListener("click", (event: MouseEvent) => {
-				const position_x = event.x - canvas_position.left + container_position.left + container.scrollTop;
-				const position_y = event.y - canvas_position.top + container_position.top + container.scrollLeft;
+				const position_x = event.x - canvas_position.left - container_position.left - window.screenX;
+				const position_y = event.y - canvas_position.top - container_position.top - window.screenY;
 
 				explosion_list.push(
 					new explosion({

@@ -30,12 +30,7 @@ let explosion_list: explosion[] = [];
 let particle_list: particle[] = [];
 let score = 0;
 
-export const enemyRaven = (opt: {
-	collision_canvas: HTMLCanvasElement;
-	canvas: HTMLCanvasElement;
-	canvas_width: number;
-	canvas_height: number;
-}) => {
+export const raven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
 	const ctx = opt.canvas.getContext("2d");
 	const ctx_collision = opt.collision_canvas.getContext("2d");
 
@@ -46,8 +41,8 @@ export const enemyRaven = (opt: {
 			const container_position = container.getBoundingClientRect();
 
 			opt.canvas.addEventListener("click", (event) => {
-				const position_x = event.x - canvas_position.left + container_position.left + container.scrollTop;
-				const position_y = event.y - canvas_position.top + container_position.top + container.scrollLeft;
+				const position_x = event.x - canvas_position.left + container_position.left + window.scrollX;
+				const position_y = event.y - canvas_position.top + container_position.top + window.scrollY;
 
 				const detectPixelColor = ctx_collision.getImageData(position_x, position_y, 1, 1);
 				const pixel_color = detectPixelColor.data;
@@ -72,7 +67,7 @@ export const enemyRaven = (opt: {
 		}
 
 		ctx.font = "1.5rem Tahoma";
-		animateEnemyRaven({
+		animateRaven({
 			ctx,
 			ctx_collision,
 			canvas_width: opt.canvas_width,
@@ -82,7 +77,7 @@ export const enemyRaven = (opt: {
 	}
 };
 
-interface optionEnemyRaven {
+interface optionRaven {
 	ctx: CanvasRenderingContext2D;
 	ctx_collision: CanvasRenderingContext2D;
 	canvas_width: number;
@@ -92,12 +87,12 @@ interface optionEnemyRaven {
 
 const draw_score = (ctx: CanvasRenderingContext2D, score: number) => {
 	ctx.fillStyle = "black";
-	ctx.fillText(`Score: ${score}`, 50, 75);
+	ctx.fillText(`Score: ${score} | Scroll: ${window.scrollY}`, 50, 75);
 	ctx.fillStyle = "white";
-	ctx.fillText(`Score: ${score}`, 51, 76);
+	ctx.fillText(`Score: ${score} | Scroll: ${window.scrollY}`, 51, 76);
 };
 
-const animateEnemyRaven = (opt: optionEnemyRaven) => {
+const animateRaven = (opt: optionRaven) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 	opt.ctx_collision.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
@@ -139,6 +134,6 @@ const animateEnemyRaven = (opt: optionEnemyRaven) => {
 
 	requestAnimationFrame((timestamp) => {
 		opt.timestamp = timestamp;
-		animateEnemyRaven(opt);
+		animateRaven(opt);
 	});
 };

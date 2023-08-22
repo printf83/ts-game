@@ -4,7 +4,7 @@ import { bg, bgDB, update_game_speed } from "./bg.js";
 import { enemy, enemyDBType, enemyType } from "./enemy.js";
 import { player, playerAct, actionDBType } from "./player.js";
 import { bindExplosion } from "./explosion.js";
-import { enemyRaven } from "./enemyRaven.js";
+import { raven } from "./raven.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -58,7 +58,7 @@ const enemyRavenCanvas = document.getElementById("enemyRavenCanvas") as HTMLCanv
 	enemyRavenCanvas.height = 700;
 	enemyCollisionCanvas.width = 800;
 	enemyCollisionCanvas.height = 700;
-	enemyRaven({
+	raven({
 		collision_canvas: enemyCollisionCanvas,
 		canvas: enemyRavenCanvas,
 		canvas_width: 800,
