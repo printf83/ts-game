@@ -6,7 +6,7 @@ import { player, playerAct, actionDBType } from "./player.js";
 import { bindExplosion } from "./explosion.js";
 import { raven } from "./raven.js";
 import { animate_game, game } from "./game.js";
-import { animate_move, move } from "./move.js";
+import { game1 } from "./move.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -66,18 +66,23 @@ const moveCanvas = document.getElementById("moveCanvas") as HTMLCanvasElement;
 
 (function () {
 	//move
-	moveCanvas.width = 500;
-	moveCanvas.height = 800;
+	moveCanvas.width = 800;
+	moveCanvas.height = 720;
 	const moveCtx = moveCanvas.getContext("2d");
 	if (moveCtx) {
-		animate_move({
-			move: new move({
-				ctx: moveCtx,
-				canvas_width: moveCanvas.width,
-				canvas_height: moveCanvas.height,
-			}),
-			timestamp: 0,
+		game1({
+			ctx: moveCtx,
+			canvas_width: moveCanvas.width,
+			canvas_height: moveCanvas.height,
 		});
+		// animate_move({
+		// 	move: new move({
+		// 		ctx: moveCtx,
+		// 		canvas_width: moveCanvas.width,
+		// 		canvas_height: moveCanvas.height,
+		// 	}),
+		// 	timestamp: 0,
+		// });
 	}
 
 	//game
