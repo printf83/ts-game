@@ -73,26 +73,20 @@ export const playerAct = (canvas: HTMLCanvasElement, action: actionDBType) => {
 	};
 };
 
-let playerAnimatedId: string = "";
-export const player = (opt: {
-	canvas: HTMLCanvasElement;
-	img: HTMLImageElement;
-	sprite_width: number;
-	sprite_height: number;
-	location: location[];
-}) => {
+let player_animation_id: string = "";
+export const player = (opt: { canvas: HTMLCanvasElement; img: HTMLImageElement; sprite_width: number; sprite_height: number; location: location[] }) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	const CANVAS_WIDTH = (opt.canvas.width = 500);
 	const CANVAS_HEIGHT = (opt.canvas.height = 500);
 
 	if (ctx) {
-		playerAnimatedId = Math.random()
+		player_animation_id = Math.random()
 			.toString(36)
 			.replace(/[^a-z]+/g, "");
 
-		animatePlayer({
-			animateId: playerAnimatedId,
+		animate_player({
+			animateId: player_animation_id,
 			ctx,
 			img: opt.img,
 			location: opt.location,
@@ -121,7 +115,7 @@ interface option {
 	canvas_height: number;
 }
 
-const animatePlayer = (opt: option) => {
+const animate_player = (opt: option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	let position = Math.floor(opt.game_frame * opt.frame_stagger) % opt.location.length;
@@ -133,8 +127,8 @@ const animatePlayer = (opt: option) => {
 		opt.game_frame++;
 
 		requestAnimationFrame(() => {
-			if (playerAnimatedId === opt.animateId) {
-				animatePlayer(opt);
+			if (player_animation_id === opt.animateId) {
+				animate_player(opt);
 			}
 		});
 	}

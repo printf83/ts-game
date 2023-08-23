@@ -3,15 +3,13 @@ import { enemy5 } from "./enemy/enemy5.js";
 import { explosion } from "./explosion.js";
 import { particle } from "./particle.js";
 
-
-
-let timeToNextEnemy = 0;
-let enemyInterval = 3000;
-let lastTime = 0;
-let enemy_list: baseEnemy[] = [];
-let explosion_list: explosion[] = [];
-let particle_list: particle[] = [];
-let score = 0;
+let raven_next_index = 0;
+let raven_interval = 3000;
+let raven_last_timestamp = 0;
+let raven_list: baseEnemy[] = [];
+let raven_explosion_list: explosion[] = [];
+let raven_particle_list: particle[] = [];
+let raven_score = 0;
 
 export const raven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
 	const ctx = opt.canvas.getContext("2d");
@@ -31,9 +29,9 @@ export const raven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCa
 				const pixel_color = detectPixelColor.data;
 				console.log(pixel_color);
 
-				enemy_list.forEach((i) => {
+				raven_list.forEach((i) => {
 					if (i.uid[0] === pixel_color[0] && i.uid[1] === pixel_color[1] && i.uid[2] === pixel_color[2]) {
-						explosion_list.push(
+						raven_explosion_list.push(
 							new explosion({
 								x: i.x + i.width / 2,
 								y: i.y + i.height / 2,
@@ -41,16 +39,16 @@ export const raven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCa
 							})
 						);
 						i.mark_delete = true;
-						score++;
+						raven_score++;
 
-						enemyInterval = 3000 - score * 50;
+						raven_interval = 3000 - raven_score * 50;
 					}
 				});
 			});
 		}
 
 		ctx.font = "1.5rem Tahoma";
-		animateRaven({
+		animate_raven({
 			ctx,
 			ctx_collision,
 			canvas_width: opt.canvas_width,
@@ -68,32 +66,32 @@ interface optionRaven {
 	timestamp: number;
 }
 
-const draw_score = (ctx: CanvasRenderingContext2D, score: number) => {
+const raven_draw_score = (ctx: CanvasRenderingContext2D, score: number) => {
 	ctx.fillStyle = "black";
 	ctx.fillText(`Score: ${score} | Scroll: ${window.scrollY}`, 50, 75);
 	ctx.fillStyle = "white";
 	ctx.fillText(`Score: ${score} | Scroll: ${window.scrollY}`, 51, 76);
 };
 
-const animateRaven = (opt: optionRaven) => {
+const animate_raven = (opt: optionRaven) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 	opt.ctx_collision.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	let deltaTime = opt.timestamp - lastTime;
-	lastTime = opt.timestamp;
-	timeToNextEnemy += deltaTime;
-	if (timeToNextEnemy > enemyInterval) {
-		enemy_list.push(new enemy5({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height }));
-		timeToNextEnemy = 0;
+	let deltaTime = opt.timestamp - raven_last_timestamp;
+	raven_last_timestamp = opt.timestamp;
+	raven_next_index += deltaTime;
+	if (raven_next_index > raven_interval) {
+		raven_list.push(new enemy5({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height }));
+		raven_next_index = 0;
 
-		enemy_list.sort((a, b) => a.width - b.width);
+		raven_list.sort((a, b) => a.width - b.width);
 	}
 
-	draw_score(opt.ctx, score);
+	raven_draw_score(opt.ctx, raven_score);
 
-	[...enemy_list].forEach((i) => {
+	[...raven_list].forEach((i) => {
 		i.update(deltaTime, () => {
-			particle_list.push(
+			raven_particle_list.push(
 				new particle({
 					x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
 					y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
@@ -104,19 +102,19 @@ const animateRaven = (opt: optionRaven) => {
 		});
 	});
 
-	[...particle_list, ...explosion_list].forEach((i) => {
+	[...raven_particle_list, ...raven_explosion_list].forEach((i) => {
 		i.update(deltaTime);
 	});
 
-	[...particle_list, ...enemy_list, ...explosion_list].forEach((i) => {
+	[...raven_particle_list, ...raven_list, ...raven_explosion_list].forEach((i) => {
 		i.draw(opt.ctx, opt.ctx_collision);
 	});
-	enemy_list = enemy_list.filter((i) => !i.mark_delete);
-	explosion_list = explosion_list.filter((i) => !i.mark_delete);
-	particle_list = particle_list.filter((i) => !i.mark_delete);
+	raven_list = raven_list.filter((i) => !i.mark_delete);
+	raven_explosion_list = raven_explosion_list.filter((i) => !i.mark_delete);
+	raven_particle_list = raven_particle_list.filter((i) => !i.mark_delete);
 
 	requestAnimationFrame((timestamp) => {
 		opt.timestamp = timestamp;
-		animateRaven(opt);
+		animate_raven(opt);
 	});
 };

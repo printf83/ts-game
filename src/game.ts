@@ -68,6 +68,7 @@ export class game {
 							x: i.x + i.width / 2,
 							y: i.y + i.height / 2,
 							scale: (i.width / i.sprite_width) * 1.5,
+							play_sound: false,
 						})
 					);
 				}
@@ -123,6 +124,7 @@ export class game {
 					x: new_enemy.x + new_enemy.width / 2,
 					y: new_enemy.y + new_enemy.height / 2,
 					scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+					play_sound: false,
 				})
 			);
 		}
@@ -132,17 +134,17 @@ export class game {
 	}
 }
 
-interface animate_option {
+interface move_animate_option {
 	game: game;
 	timestamp: number;
 }
 
-let last_timestamp = 0;
-export const animate_game = (opt: animate_option) => {
+let game_last_timestamp = 0;
+export const animate_game = (opt: move_animate_option) => {
 	opt.game.ctx.clearRect(0, 0, opt.game.canvas_width, opt.game.canvas_height);
 
-	let delta_time = opt.timestamp - last_timestamp;
-	last_timestamp = opt.timestamp;
+	let delta_time = opt.timestamp - game_last_timestamp;
+	game_last_timestamp = opt.timestamp;
 
 	opt.game.update(delta_time);
 	opt.game.draw();

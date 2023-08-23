@@ -6,11 +6,11 @@ imgExplosion.src = "./res/boom.png";
 const soundExplosion = "./res/boom.wav";
 
 export class explosion extends baseAnimation {
-	sound_play: boolean;
-	sound: string;
+	sound_played?: boolean;
+	sound?: string;
 	angle: number;
 
-	constructor(opt: { x: number; y: number; scale: number }) {
+	constructor(opt: { x: number; y: number; scale: number; play_sound?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 200;
 		const sprite_height = 179;
@@ -33,14 +33,19 @@ export class explosion extends baseAnimation {
 			animation_repeat: false,
 		});
 
-		this.sound_play = false;
-		this.sound = soundExplosion;
+		opt.play_sound ??= true;
+
+		if (opt.play_sound) {
+			this.sound_played = false;
+			this.sound = soundExplosion;
+		}
+
 		this.angle = Math.random() * 180;
 	}
 
 	update(timestamp: number) {
-		if (!this.sound_play) {
-			this.sound_play = true;
+		if (this.sound && !this.sound_played) {
+			this.sound_played = true;
 			new Audio(this.sound).play();
 		}
 
@@ -96,17 +101,17 @@ export const bindExplosion = (opt: { canvas: HTMLCanvasElement }) => {
 	const canvas_height = opt.canvas.height;
 
 	if (ctx) {
-		animateExplosion({ ctx, canvas_width, canvas_height, timestamp: 0 });
+		animate_explosion({ ctx, canvas_width, canvas_height, timestamp: 0 });
 	}
 };
 
-let lastTime = 0;
+let explosion_last_timestamp = 0;
 
-const animateExplosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; timestamp: number }) => {
+const animate_explosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; timestamp: number }) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	let deltaTime = opt.timestamp - lastTime;
-	lastTime = opt.timestamp;
+	let deltaTime = opt.timestamp - explosion_last_timestamp;
+	explosion_last_timestamp = opt.timestamp;
 
 	[...explosion_list].forEach((i) => {
 		i.update(deltaTime);
@@ -120,6 +125,6 @@ const animateExplosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: nu
 
 	requestAnimationFrame((timestamp) => {
 		opt.timestamp = timestamp;
-		animateExplosion(opt);
+		animate_explosion(opt);
 	});
 };

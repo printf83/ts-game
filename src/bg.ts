@@ -36,23 +36,17 @@ class layer {
 	}
 }
 
-const img_width = 2400;
-const img_height = 700;
-const img = (src: string) => {
+const bg_img_width = 2400;
+const bg_img_height = 700;
+const bg_img_setup = (src: string) => {
 	const result = new Image();
 	result.src = src;
 	return result;
 };
 
-export const bgDB = [
-	new layer({ img: img("./res/layer-1.png"), width: img_width, height: img_height, speed_modifier: 0.2 }),
-	new layer({ img: img("./res/layer-2.png"), width: img_width, height: img_height, speed_modifier: 0.4 }),
-	new layer({ img: img("./res/layer-3.png"), width: img_width, height: img_height, speed_modifier: 0.6 }),
-	new layer({ img: img("./res/layer-4.png"), width: img_width, height: img_height, speed_modifier: 0.8 }),
-	new layer({ img: img("./res/layer-5.png"), width: img_width, height: img_height, speed_modifier: 1 }),
-];
+export const bgDB = [new layer({ img: bg_img_setup("./res/layer-1.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.2 }), new layer({ img: bg_img_setup("./res/layer-2.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.4 }), new layer({ img: bg_img_setup("./res/layer-3.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.6 }), new layer({ img: bg_img_setup("./res/layer-4.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.8 }), new layer({ img: bg_img_setup("./res/layer-5.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 1 })];
 
-let bgAnimatedId = "";
+let bg_animated_id = "";
 export const bg = (opt: { canvas: HTMLCanvasElement; game_speed: number; bg: layer[] }) => {
 	BG_GAME_SPEED = BG_GAME_SPEED;
 
@@ -62,12 +56,12 @@ export const bg = (opt: { canvas: HTMLCanvasElement; game_speed: number; bg: lay
 	const CANVAS_HEIGHT = (opt.canvas.height = 700);
 
 	if (ctx) {
-		bgAnimatedId = Math.random()
+		bg_animated_id = Math.random()
 			.toString(36)
 			.replace(/[^a-z]+/g, "");
 
-		animateBg({
-			animateId: bgAnimatedId,
+		animate_bg({
+			animateId: bg_animated_id,
 			ctx,
 			bg: opt.bg,
 			game_frame: 0,
@@ -86,7 +80,7 @@ interface option {
 	canvas_height: number;
 }
 
-const animateBg = (opt: option) => {
+const animate_bg = (opt: option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	opt.bg.forEach((i) => {
@@ -97,8 +91,8 @@ const animateBg = (opt: option) => {
 	opt.game_frame--;
 
 	requestAnimationFrame(() => {
-		if (bgAnimatedId === opt.animateId) {
-			animateBg(opt);
+		if (bg_animated_id === opt.animateId) {
+			animate_bg(opt);
 		}
 	});
 };

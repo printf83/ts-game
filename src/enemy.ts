@@ -32,22 +32,17 @@ export const enemyType = (canvas: HTMLCanvasElement, canvas_width: number, canva
 	};
 };
 
-let enemAnimationId: string = "";
-export const enemy = (opt: {
-	canvas: HTMLCanvasElement;
-	canvas_width: number;
-	canvas_height: number;
-	enemy: (canvas_width: number, canvas_height: number) => baseEnemy;
-}) => {
+let enemy_animation_id: string = "";
+export const enemy = (opt: { canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number; enemy: (canvas_width: number, canvas_height: number) => baseEnemy }) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	if (ctx) {
-		enemAnimationId = Math.random()
+		enemy_animation_id = Math.random()
 			.toString(36)
 			.replace(/[^a-z]+/g, "");
 
-		animateEnemy({
-			animateId: enemAnimationId,
+		animate_enemy({
+			animateId: enemy_animation_id,
 			ctx,
 			enemy: opt.enemy,
 			timestamp: 0,
@@ -57,7 +52,7 @@ export const enemy = (opt: {
 	}
 };
 
-interface option {
+interface enemy_option {
 	animateId: string;
 	ctx: CanvasRenderingContext2D;
 	enemy: (canvas_width: number, canvas_height: number) => baseEnemy;
@@ -66,21 +61,21 @@ interface option {
 	canvas_height: number;
 }
 
-let enemyInterval = 1000;
-let timeToNextEnemy = 0;
+let enemy_interval = 1000;
+let enemy_next_index = 0;
 let enemy_list: baseEnemy[] = [];
 
-let lastTime: number = 0;
-const animateEnemy = (opt: option) => {
+let enemy_last_timestamp: number = 0;
+const animate_enemy = (opt: enemy_option) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	let deltaTime = opt.timestamp - lastTime;
-	lastTime = opt.timestamp;
+	let deltaTime = opt.timestamp - enemy_last_timestamp;
+	enemy_last_timestamp = opt.timestamp;
 
-	timeToNextEnemy += deltaTime;
-	if (timeToNextEnemy > enemyInterval) {
+	enemy_next_index += deltaTime;
+	if (enemy_next_index > enemy_interval) {
 		enemy_list.push(opt.enemy(opt.canvas_width, opt.canvas_height));
-		timeToNextEnemy = 0;
+		enemy_next_index = 0;
 	}
 
 	[...enemy_list].forEach((i) => {
@@ -92,9 +87,9 @@ const animateEnemy = (opt: option) => {
 	enemy_list = enemy_list.filter((i) => !i.mark_delete);
 
 	requestAnimationFrame((timestamp) => {
-		if (enemAnimationId === opt.animateId) {
+		if (enemy_animation_id === opt.animateId) {
 			opt.timestamp = timestamp;
-			animateEnemy(opt);
+			animate_enemy(opt);
 		}
 	});
 };
