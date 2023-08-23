@@ -12,7 +12,7 @@ export class enemy5 extends baseEnemy {
 		const sprite_width = 271;
 		const sprite_height = 194;
 
-		const size_modifier = Math.random() * 0.1 + 0.4;
+		const size_modifier = Math.random() * 0.1 + 0.3;
 		const width = sprite_width * size_modifier;
 		const height = sprite_height * size_modifier;
 

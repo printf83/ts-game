@@ -4,6 +4,9 @@ export class particle {
 	size: number;
 	color: string;
 
+	timestamp: number;
+	animation_speed: number;
+
 	mark_delete: boolean;
 	radius: number;
 	max_radius: number;
@@ -14,14 +17,22 @@ export class particle {
 		this.size = opt.size;
 		this.color = opt.color;
 
+		this.timestamp = 0;
+		this.animation_speed = 5;
+
 		this.mark_delete = false;
 		this.radius = (Math.random() * this.size) / 10;
 		this.max_radius = Math.random() * 15 + 30;
 	}
 
-	update() {
-		this.radius += 0.5;
-		if (this.radius > this.max_radius - 5) this.mark_delete = true;
+	update(timestamp: number) {
+		this.timestamp += timestamp;
+		if (this.timestamp >= this.animation_speed) {
+			this.timestamp = 0;
+
+			if (this.radius > this.max_radius - 5) this.mark_delete = true;
+			else this.radius += 0.5;
+		}
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();

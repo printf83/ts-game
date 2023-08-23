@@ -98,7 +98,7 @@ export class game {
 			}
 		});
 
-		[...this.explosion_list, ...this.particle_list].forEach((i) => {
+		[...this.particle_list, ...this.explosion_list].forEach((i) => {
 			i.update(timestamp);
 		});
 
@@ -107,7 +107,7 @@ export class game {
 	}
 
 	draw() {
-		[...this.explosion_list, ...this.particle_list, ...this.enemy_list].forEach((i) => i.draw(this.ctx));
+		[...this.particle_list, ...this.enemy_list, ...this.explosion_list].forEach((i) => i.draw(this.ctx));
 	}
 
 	private addNewEnemy() {
