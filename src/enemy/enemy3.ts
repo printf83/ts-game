@@ -23,7 +23,7 @@ export class enemy3 extends baseEnemy {
 
 			img: imgEnemy3,
 
-			x: Math.random() * (opt.canvas_width - width),
+			x: opt.canvas_width,
 			y: Math.random() * (opt.canvas_height - height),
 			width,
 			height,
@@ -31,6 +31,9 @@ export class enemy3 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			explode_out: true,
+			have_particle: true,
 		});
 
 		this.angle = Math.random() * 2;

@@ -33,6 +33,11 @@ export class enemy4 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			explode_in: true,
+			explode_out: true,
+
+			have_particle: true,
 		});
 
 		this.new_x = Math.random() * (opt.canvas_width - width);

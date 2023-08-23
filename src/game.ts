@@ -7,6 +7,8 @@ import { enemy5 } from "./enemy/enemy5.js";
 import { enemy6 } from "./enemy/enemy6.js";
 import { enemy7 } from "./enemy/enemy7.js";
 import { enemy8 } from "./enemy/enemy8.js";
+import { explosion } from "./explosion.js";
+import { particle } from "./particle.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -31,6 +33,9 @@ export class game {
 	canvas_width: number;
 	canvas_height: number;
 
+	explosion_list: explosion[] = [];
+	particle_list: particle[] = [];
+
 	enemy_list: baseEnemy[] = [];
 	enemy_interval: number;
 	enemy_timer: number;
@@ -42,7 +47,10 @@ export class game {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
-		this.enemy_interval = 3000;
+		this.explosion_list = [];
+		this.particle_list = [];
+
+		this.enemy_interval = 1000;
 		this.enemy_timer = 0;
 		this.enemy_list = [];
 
@@ -53,6 +61,18 @@ export class game {
 
 	update(timestamp: number) {
 		if (this.enemy_timer > this.enemy_interval) {
+			this.enemy_list.forEach((i) => {
+				if (i.mark_delete && i.explode_out) {
+					this.explosion_list.push(
+						new explosion({
+							x: i.x + i.width / 2,
+							y: i.y + i.height / 2,
+							scale: (i.width / i.sprite_width) * 1.5,
+						})
+					);
+				}
+			});
+
 			this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
 
 			this.addNewEnemy();
@@ -61,11 +81,33 @@ export class game {
 			this.enemy_timer += timestamp;
 		}
 
-		this.enemy_list.forEach((i) => i.update(timestamp));
+		this.enemy_list.forEach((i) => {
+			i.update(timestamp);
+
+			if (i.have_particle) {
+				this.particle_list.push(
+					new particle(
+						new particle({
+							x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
+							y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
+							size: i.width * 0.5,
+							color: i.uid_text,
+						})
+					)
+				);
+			}
+		});
+
+		[...this.explosion_list, ...this.particle_list].forEach((i) => {
+			i.update(timestamp);
+		});
+
+		this.particle_list = this.particle_list.filter((i) => !i.mark_delete);
+		this.explosion_list = this.explosion_list.filter((i) => !i.mark_delete);
 	}
 
 	draw() {
-		this.enemy_list.forEach((i) => i.draw(this.ctx));
+		[...this.explosion_list, ...this.particle_list, ...this.enemy_list].forEach((i) => i.draw(this.ctx));
 	}
 
 	private addNewEnemy() {
@@ -73,8 +115,19 @@ export class game {
 
 		let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
 
-		this.enemy_list.push(new enemyObject({ canvas_width: this.canvas_width, canvas_height: this.canvas_height }));
+		const new_enemy = new enemyObject({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 
+		if (new_enemy.explode_in) {
+			this.explosion_list.push(
+				new explosion({
+					x: new_enemy.x + new_enemy.width / 2,
+					y: new_enemy.y + new_enemy.height / 2,
+					scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+				})
+			);
+		}
+
+		this.enemy_list.push(new_enemy);
 		this.enemy_list.sort((a, b) => a.width - b.width);
 	}
 }

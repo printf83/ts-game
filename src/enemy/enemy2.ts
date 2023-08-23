@@ -29,6 +29,8 @@ export class enemy2 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			have_particle: true,
 		});
 
 		this.move_speed = Math.random() * 4 + 1;

@@ -27,6 +27,9 @@ export class enemy1 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			explode_in: true,
+			explode_out: true,
 		});
 
 		this.life_index = 0;

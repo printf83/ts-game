@@ -11,6 +11,10 @@ export class baseEnemy extends baseAnimation {
 	canvas_width: number;
 	canvas_height: number;
 
+	explode_in: boolean;
+	explode_out: boolean;
+	have_particle: boolean;
+
 	constructor(opt: {
 		img: HTMLImageElement;
 
@@ -25,6 +29,11 @@ export class baseEnemy extends baseAnimation {
 		sprite_width: number;
 		sprite_height: number;
 		sprite_length: number;
+
+		explode_in?: boolean;
+		explode_out?: boolean;
+
+		have_particle?: boolean;
 	}) {
 		super(opt);
 
@@ -33,6 +42,11 @@ export class baseEnemy extends baseAnimation {
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
+
+		this.explode_in = opt.explode_in ?? false;
+		this.explode_out = opt.explode_out ?? false;
+
+		this.have_particle = opt.have_particle ?? false;
 	}
 
 	update(timestamp: number, onframechange?: () => void) {
