@@ -1,16 +1,19 @@
-interface game1_option {
+interface control_option {
 	ctx: CanvasRenderingContext2D;
 	canvas_width: number;
 	canvas_height: number;
 }
 
-export const game1 = (opt: game1_option) => {
+export const control = (opt: control_option) => {
 	class input_handler {
 		keys: string[];
 		constructor() {
 			this.keys = [];
 			window.addEventListener("keydown", (e) => {
-				if ((e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") && this.keys.indexOf(e.key) === -1) {
+				if (
+					(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") &&
+					this.keys.indexOf(e.key) === -1
+				) {
 					this.keys.push(e.key);
 				}
 			});
@@ -80,7 +83,17 @@ export const game1 = (opt: game1_option) => {
 			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
 			// ctx.stroke();
 
-			ctx.drawImage(this.img, this.frame_x * this.sprite_width, this.frame_y * this.sprite_height, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+			ctx.drawImage(
+				this.img,
+				this.frame_x * this.sprite_width,
+				this.frame_y * this.sprite_height,
+				this.sprite_width,
+				this.sprite_height,
+				this.x,
+				this.y,
+				this.width,
+				this.height
+			);
 		}
 		update(input: input_handler, enemy_list: enemy[], delta_time: number) {
 			//collision detection
@@ -237,7 +250,17 @@ export const game1 = (opt: game1_option) => {
 			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
 			// ctx.stroke();
 
-			ctx.drawImage(this.img, this.frame_x * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+			ctx.drawImage(
+				this.img,
+				this.frame_x * this.sprite_width,
+				0,
+				this.sprite_width,
+				this.sprite_height,
+				this.x,
+				this.y,
+				this.width,
+				this.height
+			);
 		}
 		update(delta_time: number) {
 			if (this.frame_timer > this.frame_interval) {

@@ -68,8 +68,8 @@ label{
 }
 
 /*
-MOVE */
-#moveCanvas {
+CONTROL */
+#controlCanvas {
     width: 800px;
     height: 720px;
     position: absolute;

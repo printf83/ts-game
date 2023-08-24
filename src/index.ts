@@ -6,7 +6,7 @@ import { player, playerAct, actionDBType } from "./player.js";
 import { bindExplosion } from "./explosion.js";
 import { raven } from "./raven.js";
 import { animate_game, game } from "./game.js";
-import { game1 } from "./move.js";
+import { control } from "./control.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
@@ -57,7 +57,7 @@ const ravenCanvas = document.getElementById("ravenCanvas") as HTMLCanvasElement;
 const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 
 //move
-const moveCanvas = document.getElementById("moveCanvas") as HTMLCanvasElement;
+const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElement;
 
 //start
 // document.addEventListener("DOMContentLoaded", () => {
@@ -66,23 +66,15 @@ const moveCanvas = document.getElementById("moveCanvas") as HTMLCanvasElement;
 
 (function () {
 	//move
-	moveCanvas.width = 800;
-	moveCanvas.height = 720;
-	const moveCtx = moveCanvas.getContext("2d");
+	controlCanvas.width = 800;
+	controlCanvas.height = 720;
+	const moveCtx = controlCanvas.getContext("2d");
 	if (moveCtx) {
-		game1({
+		control({
 			ctx: moveCtx,
-			canvas_width: moveCanvas.width,
-			canvas_height: moveCanvas.height,
+			canvas_width: controlCanvas.width,
+			canvas_height: controlCanvas.height,
 		});
-		// animate_move({
-		// 	move: new move({
-		// 		ctx: moveCtx,
-		// 		canvas_width: moveCanvas.width,
-		// 		canvas_height: moveCanvas.height,
-		// 	}),
-		// 	timestamp: 0,
-		// });
 	}
 
 	//game
