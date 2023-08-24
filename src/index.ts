@@ -2,7 +2,7 @@
 
 import { bg, bgDB, update_game_speed } from "./bg.js";
 import { enemy, enemyDBType, enemyType } from "./enemy.js";
-import { player, playerAct, actionDBType } from "./player.js";
+import { animate_player } from "./player.js";
 import { bindExplosion } from "./explosion.js";
 import { raven } from "./raven.js";
 import { animate_game, game } from "./game.js";
@@ -11,14 +11,6 @@ import { control } from "./control.js";
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
 const cboPlayerAnimation = document.getElementById("playerAnimation") as HTMLSelectElement;
-
-const playerAnimationChange = (event: Event) => {
-	const target = event.currentTarget as HTMLSelectElement;
-	const value = target.value;
-	if (value) {
-		player(playerAct(playerCanvas, value as actionDBType));
-	}
-};
 
 //bg
 const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
@@ -119,6 +111,15 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 	inputBgSpeed.dispatchEvent(new Event("change"));
 
 	//player
-	cboPlayerAnimation.addEventListener("change", playerAnimationChange);
-	cboPlayerAnimation.dispatchEvent(new Event("change"));
+	playerCanvas.width = 575;
+	playerCanvas.height = 523;
+	const playerCtx = playerCanvas.getContext("2d");
+	if (playerCtx) {
+		animate_player({
+			ctx: playerCtx,
+			cbo: cboPlayerAnimation,
+			canvas_width: playerCanvas.width,
+			canvas_height: playerCanvas.height,
+		});
+	}
 })();
