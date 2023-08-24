@@ -1,3 +1,5 @@
+import { baseAnimation } from "./base.js";
+
 const actionDB = {
 	idle: {
 		frame_y: 0,
@@ -74,7 +76,13 @@ export const playerAct = (canvas: HTMLCanvasElement, action: actionDBType) => {
 };
 
 let player_animation_id: string = "";
-export const player = (opt: { canvas: HTMLCanvasElement; img: HTMLImageElement; sprite_width: number; sprite_height: number; location: location[] }) => {
+export const player = (opt: {
+	canvas: HTMLCanvasElement;
+	img: HTMLImageElement;
+	sprite_width: number;
+	sprite_height: number;
+	location: location[];
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 
 	const CANVAS_WIDTH = (opt.canvas.width = 500);
@@ -133,3 +141,77 @@ const animate_player = (opt: option) => {
 		});
 	}
 };
+
+export class player1 extends baseAnimation {
+	private actionDB = {
+		idle: {
+			frame_y: 0,
+			sprite_length: 7,
+		},
+		jump: {
+			frame_y: 1,
+			sprite_length: 7,
+		},
+		fall: {
+			frame_y: 2,
+			sprite_length: 7,
+		},
+		run: {
+			frame_y: 3,
+			sprite_length: 8,
+		},
+		dizzy: {
+			frame_y: 4,
+			sprite_length: 11,
+		},
+		sit: {
+			frame_y: 5,
+			sprite_length: 5,
+		},
+		roll: {
+			frame_y: 6,
+			sprite_length: 7,
+		},
+		bite: {
+			frame_y: 7,
+			sprite_length: 7,
+		},
+		ko: {
+			frame_y: 8,
+			sprite_length: 12,
+		},
+		gethit: {
+			frame_y: 9,
+			sprite_length: 4,
+		},
+	};
+
+	constructor(opt: { canvas_width: number; canvas_height: number }) {
+		const img = new Image();
+		img.src = "./res/player.png";
+
+		const sprite_width = 575;
+		const sprite_height = 523;
+		const width = sprite_width * 0.5;
+		const height = sprite_height * 0.5;
+
+		super({
+			img,
+
+			x: (opt.canvas_width - width) * 0.5,
+			y: opt.canvas_height - height,
+			width,
+			height,
+
+			sprite_width,
+			sprite_height,
+			sprite_length: 0,
+		});
+	}
+
+	set_action = (action: keyof typeof actionDB) => {
+		const act = actionDB[action];
+		this.frame_y = act.frame_y;
+		this.sprite_length = act.sprite_length;
+	};
+}

@@ -4,6 +4,8 @@ export class baseAnimation {
 	frame_timer: number;
 	frame_interval: number;
 
+	frame_y: number;
+
 	mark_delete: boolean;
 
 	img: HTMLImageElement;
@@ -38,6 +40,8 @@ export class baseAnimation {
 		this.frame = 0;
 		this.frame_timer = 0;
 		this.frame_interval = 1000 / this.fps;
+
+		this.frame_y = 0;
 
 		this.mark_delete = false;
 
@@ -78,7 +82,7 @@ export class baseAnimation {
 		ctx.drawImage(
 			this.img,
 			this.frame * this.sprite_width,
-			0,
+			this.frame_y,
 			this.sprite_width,
 			this.sprite_height,
 			this.x,
