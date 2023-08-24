@@ -29,7 +29,7 @@ export class explosion extends baseAnimation {
 			sprite_height,
 			sprite_length,
 
-			animation_speed: 75,
+			fps: 75,
 			animation_repeat: false,
 		});
 
@@ -49,9 +49,9 @@ export class explosion extends baseAnimation {
 			new Audio(this.sound).play();
 		}
 
-		this.timestamp += timestamp;
-		if (this.timestamp >= this.animation_speed) {
-			this.timestamp = 0;
+		this.frame_timer += timestamp;
+		if (this.frame_timer >= this.frame_interval) {
+			this.frame_timer = 0;
 
 			if (this.frame >= this.sprite_length) {
 				this.mark_delete = true;
@@ -65,7 +65,17 @@ export class explosion extends baseAnimation {
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
+		ctx.drawImage(
+			this.img,
+			this.sprite_width * this.frame,
+			0,
+			this.sprite_width,
+			this.sprite_width,
+			0 - this.width * 0.5,
+			0 - this.height * 0.5,
+			this.width,
+			this.height
+		);
 
 		ctx.restore();
 	}
@@ -110,11 +120,11 @@ let explosion_last_timestamp = 0;
 const animate_explosion = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; timestamp: number }) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	let deltaTime = opt.timestamp - explosion_last_timestamp;
+	let delta_time = opt.timestamp - explosion_last_timestamp;
 	explosion_last_timestamp = opt.timestamp;
 
 	[...explosion_list].forEach((i) => {
-		i.update(deltaTime);
+		i.update(delta_time);
 	});
 
 	[...explosion_list].forEach((i) => {

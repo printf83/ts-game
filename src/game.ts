@@ -59,7 +59,7 @@ export class game {
 		this.addNewEnemy();
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number) {
 		if (this.enemy_timer > this.enemy_interval) {
 			this.enemy_list.forEach((i) => {
 				if (i.mark_delete && i.explode_out) {
@@ -79,11 +79,11 @@ export class game {
 			this.addNewEnemy();
 			this.enemy_timer = 0;
 		} else {
-			this.enemy_timer += timestamp;
+			this.enemy_timer += delta_time;
 		}
 
 		this.enemy_list.forEach((i) => {
-			i.update(timestamp);
+			i.update(delta_time);
 
 			if (i.have_particle) {
 				this.particle_list.push(
@@ -100,7 +100,7 @@ export class game {
 		});
 
 		[...this.particle_list, ...this.explosion_list].forEach((i) => {
-			i.update(timestamp);
+			i.update(delta_time);
 		});
 
 		this.particle_list = this.particle_list.filter((i) => !i.mark_delete);

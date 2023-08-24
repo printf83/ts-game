@@ -34,7 +34,7 @@ export class enemy8 extends baseEnemy {
 		this.speed = Math.random() * 2 + 2;
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.y += this.speed;
 		if (this.y > this.destination_y) {
 			this.speed *= -1;
@@ -44,7 +44,7 @@ export class enemy8 extends baseEnemy {
 			this.mark_delete = true;
 		}
 
-		super.update(timestamp);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

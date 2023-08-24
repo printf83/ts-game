@@ -49,8 +49,8 @@ export class baseEnemy extends baseAnimation {
 		this.have_particle = opt.have_particle ?? false;
 	}
 
-	update(timestamp: number, onframechange?: () => void) {
-		super.update(timestamp, onframechange);
+	update(delta_time: number, onframechange?: () => void) {
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D, ctx_collision?: CanvasRenderingContext2D) {

@@ -68,10 +68,10 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 	//move
 	controlCanvas.width = 800;
 	controlCanvas.height = 720;
-	const moveCtx = controlCanvas.getContext("2d");
-	if (moveCtx) {
+	const controlCtx = controlCanvas.getContext("2d");
+	if (controlCtx) {
 		control({
-			ctx: moveCtx,
+			ctx: controlCtx,
 			canvas_width: controlCanvas.width,
 			canvas_height: controlCanvas.height,
 		});

@@ -25,8 +25,8 @@ export class particle {
 		this.max_radius = Math.random() * 15 + 30;
 	}
 
-	update(timestamp: number) {
-		this.timestamp += timestamp;
+	update(delta_time: number) {
+		this.timestamp += delta_time;
 		if (this.timestamp >= this.animation_speed) {
 			this.timestamp = 0;
 

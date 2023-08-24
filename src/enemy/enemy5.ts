@@ -37,7 +37,7 @@ export class enemy5 extends baseEnemy {
 		this.direction_y = Math.random() * 5 - 2.5;
 	}
 
-	update(timestamp: number, onframechange?: () => void) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.x -= this.direction_x;
 		this.y -= this.direction_y;
 
@@ -46,7 +46,7 @@ export class enemy5 extends baseEnemy {
 			this.direction_y = this.direction_y * -1;
 		}
 
-		super.update(timestamp, onframechange);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D, ctx_collision: CanvasRenderingContext2D) {

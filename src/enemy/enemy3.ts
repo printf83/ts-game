@@ -43,7 +43,7 @@ export class enemy3 extends baseEnemy {
 		this.life_length = Math.random() * 5000 + 5000;
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
@@ -52,10 +52,10 @@ export class enemy3 extends baseEnemy {
 
 		this.angle += this.angle_speed;
 
-		this.life_index += timestamp;
+		this.life_index += delta_time;
 		if (this.life_index > this.life_length) this.mark_delete = true;
 
-		super.update(timestamp);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

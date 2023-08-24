@@ -32,11 +32,11 @@ export class enemy7 extends baseEnemy {
 		this.move_speed = Math.random() * 10 + 5;
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.x -= Math.random() * this.move_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
-		super.update(timestamp);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

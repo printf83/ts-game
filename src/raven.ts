@@ -11,7 +11,12 @@ let raven_explosion_list: explosion[] = [];
 let raven_particle_list: particle[] = [];
 let raven_score = 0;
 
-export const raven = (opt: { collision_canvas: HTMLCanvasElement; canvas: HTMLCanvasElement; canvas_width: number; canvas_height: number }) => {
+export const raven = (opt: {
+	collision_canvas: HTMLCanvasElement;
+	canvas: HTMLCanvasElement;
+	canvas_width: number;
+	canvas_height: number;
+}) => {
 	const ctx = opt.canvas.getContext("2d");
 	const ctx_collision = opt.collision_canvas.getContext("2d");
 
@@ -77,9 +82,9 @@ const animate_raven = (opt: optionRaven) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 	opt.ctx_collision.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-	let deltaTime = opt.timestamp - raven_last_timestamp;
+	let delta_time = opt.timestamp - raven_last_timestamp;
 	raven_last_timestamp = opt.timestamp;
-	raven_next_index += deltaTime;
+	raven_next_index += delta_time;
 	if (raven_next_index > raven_interval) {
 		raven_list.push(new enemy5({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height }));
 		raven_next_index = 0;
@@ -90,7 +95,7 @@ const animate_raven = (opt: optionRaven) => {
 	raven_draw_score(opt.ctx, raven_score);
 
 	[...raven_list].forEach((i) => {
-		i.update(deltaTime, () => {
+		i.update(delta_time, () => {
 			raven_particle_list.push(
 				new particle({
 					x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
@@ -103,7 +108,7 @@ const animate_raven = (opt: optionRaven) => {
 	});
 
 	[...raven_particle_list, ...raven_explosion_list].forEach((i) => {
-		i.update(deltaTime);
+		i.update(delta_time);
 	});
 
 	[...raven_particle_list, ...raven_list, ...raven_explosion_list].forEach((i) => {

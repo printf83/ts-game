@@ -1,6 +1,9 @@
 export class baseAnimation {
+	fps: number;
 	frame: number;
-	timestamp: number;
+	frame_timer: number;
+	frame_interval: number;
+
 	mark_delete: boolean;
 
 	img: HTMLImageElement;
@@ -14,7 +17,6 @@ export class baseAnimation {
 	sprite_height: number;
 	sprite_length: number;
 
-	animation_speed: number;
 	animation_repeat: boolean;
 
 	constructor(opt: {
@@ -29,11 +31,14 @@ export class baseAnimation {
 		sprite_height: number;
 		sprite_length: number;
 
-		animation_speed?: number;
+		fps?: number;
 		animation_repeat?: boolean;
 	}) {
+		this.fps = opt.fps ? opt.fps : 60;
 		this.frame = 0;
-		this.timestamp = 0;
+		this.frame_timer = 0;
+		this.frame_interval = 1000 / this.fps;
+
 		this.mark_delete = false;
 
 		this.img = opt.img;
@@ -47,14 +52,12 @@ export class baseAnimation {
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
 
-		this.animation_speed = opt.animation_speed ? opt.animation_speed : Math.random() * 30 + 15;
 		this.animation_repeat = opt.animation_repeat ? opt.animation_repeat : true;
 	}
 
-	update(timestamp: number, onframechange?: () => void) {
-		this.timestamp += timestamp;
-		if (this.timestamp >= this.animation_speed) {
-			this.timestamp = 0;
+	update(delta_time: number, onframechange?: () => void) {
+		if (this.frame_timer >= this.frame_interval) {
+			this.frame_timer = 0;
 
 			if (this.frame >= this.sprite_length) {
 				if (this.animation_repeat) this.frame = 0;
@@ -66,10 +69,22 @@ export class baseAnimation {
 			if (onframechange) {
 				onframechange();
 			}
+		} else {
+			this.frame_timer += delta_time;
 		}
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		ctx.drawImage(
+			this.img,
+			this.frame * this.sprite_width,
+			0,
+			this.sprite_width,
+			this.sprite_height,
+			this.x,
+			this.y,
+			this.width,
+			this.height
+		);
 	}
 }

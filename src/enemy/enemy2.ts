@@ -39,7 +39,7 @@ export class enemy2 extends baseEnemy {
 		this.curve = Math.random() * 5;
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.x -= this.move_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
@@ -47,7 +47,7 @@ export class enemy2 extends baseEnemy {
 
 		this.angle += this.angle_speed;
 
-		super.update(timestamp);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {

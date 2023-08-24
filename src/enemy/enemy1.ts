@@ -36,14 +36,14 @@ export class enemy1 extends baseEnemy {
 		this.life_length = Math.random() * 5000 + 5000;
 	}
 
-	update(timestamp: number) {
+	update(delta_time: number, onframechange?: () => void) {
 		this.x += Math.random() * 7 - 3.5;
 		this.y += Math.random() * 7 - 3.5;
 
-		this.life_index += timestamp;
+		this.life_index += delta_time;
 		if (this.life_index > this.life_length) this.mark_delete = true;
 
-		super.update(timestamp);
+		super.update(delta_time, onframechange);
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
