@@ -34,7 +34,12 @@ export const game1 = (opt: game1_option) => {
 
 		img: HTMLImageElement;
 		frame_x: number;
+		frame_x_length: number;
 		frame_y: number;
+
+		fps: number;
+		frame_timer: number;
+		frame_interval: number;
 
 		speed: number;
 		velocity_y: number;
@@ -55,18 +60,52 @@ export const game1 = (opt: game1_option) => {
 			this.img = new Image();
 			this.img.src = "./res/player.png";
 
-			this.frame_x = 0;
-			this.frame_y = 0;
-
 			this.speed = 0;
 			this.velocity_y = 0;
 			this.weight = 1;
+
+			this.fps = 20;
+			this.frame_x = 0;
+			this.frame_x_length = 6;
+			this.frame_y = 0;
+			this.frame_timer = 0;
+			this.frame_interval = 1000 / this.fps;
 		}
 
 		draw(ctx: CanvasRenderingContext2D) {
+			// ctx.strokeStyle = "white";
+			// ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+			// ctx.beginPath();
+			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
+			// ctx.stroke();
+
 			ctx.drawImage(this.img, this.frame_x * this.sprite_width, this.frame_y * this.sprite_height, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 		}
-		update(input: input_handler) {
+		update(input: input_handler, enemy_list: enemy[], delta_time: number) {
+			//collision detection
+			enemy_list.forEach((i) => {
+				const dx = i.x + i.width * 0.5 - (this.x + this.width * 0.5);
+				const dy = i.y + i.height * 0.5 - (this.y + this.height * 0.5);
+
+				const distance = Math.sqrt(dx * dx + dy * dy);
+
+				if (distance < i.width * 0.5 + this.width * 0.5) {
+					game_over = true;
+				}
+			});
+
+			//sprite animation
+			if (this.frame_timer > this.frame_interval) {
+				if (this.frame_x >= this.frame_x_length) this.frame_x = 0;
+				else this.frame_x++;
+
+				this.frame_timer = 0;
+			} else {
+				this.frame_timer += delta_time;
+			}
+
+			//control
 			if (input.keys.indexOf("ArrowRight") > -1) {
 				this.speed = 5;
 			} else if (input.keys.indexOf("ArrowLeft") > -1) {
@@ -87,9 +126,11 @@ export const game1 = (opt: game1_option) => {
 			if (!this.on_ground()) {
 				this.velocity_y += this.weight;
 				this.frame_y = 1;
+				this.frame_x_length = 6;
 			} else {
 				this.velocity_y = 0;
-				this.frame_y = 0;
+				this.frame_y = 3;
+				this.frame_x_length = 7;
 			}
 
 			if (this.y > this.canvas_height - this.height) this.y = this.canvas_height - this.height;
@@ -156,10 +197,16 @@ export const game1 = (opt: game1_option) => {
 
 		sprite_width = 229;
 		sprite_height = 171;
+		sprite_length = 5;
 
+		fps: number;
 		frame_x: number;
+		frame_timer: number;
+		frame_interval: number;
 
 		speed: number;
+
+		mark_delete: boolean;
 
 		constructor(canvas_width: number, canvas_height: number) {
 			this.canvas_width = canvas_width;
@@ -173,14 +220,40 @@ export const game1 = (opt: game1_option) => {
 			this.x = this.canvas_width;
 			this.y = this.canvas_height - this.height;
 
+			this.fps = 20;
 			this.frame_x = 0;
-			this.speed = 7;
+			this.frame_timer = 0;
+			this.frame_interval = 1000 / this.fps;
+
+			this.speed = 8;
+
+			this.mark_delete = false;
 		}
 		draw(ctx: CanvasRenderingContext2D) {
+			// ctx.strokeStyle = "white";
+			// ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+			// ctx.beginPath();
+			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
+			// ctx.stroke();
+
 			ctx.drawImage(this.img, this.frame_x * this.sprite_width, 0, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 		}
-		update() {
+		update(delta_time: number) {
+			if (this.frame_timer > this.frame_interval) {
+				if (this.frame_x >= this.sprite_length) this.frame_x = 0;
+				else this.frame_x++;
+
+				this.frame_timer = 0;
+			} else {
+				this.frame_timer += delta_time;
+			}
+
 			this.x -= this.speed;
+			if (this.x < 0 - this.width) {
+				this.mark_delete = true;
+				score++;
+			}
 		}
 	}
 
@@ -189,19 +262,40 @@ export const game1 = (opt: game1_option) => {
 	const handle_enemy = (delta_time: number) => {
 		if (enemy_timer > enemy_interval + enemy_random_interval) {
 			enemy_list.push(new enemy(opt.canvas_width, opt.canvas_height));
-
+			enemy_random_interval = Math.random() * 1000 + 500;
 			enemy_timer = 0;
 		} else {
 			enemy_timer += delta_time;
 		}
 
 		enemy_list.forEach((i) => {
-			i.update();
+			i.update(delta_time);
 			i.draw(opt.ctx);
 		});
+
+		enemy_list = enemy_list.filter((i) => !i.mark_delete);
 	};
 
-	const display_status = () => {};
+	let game_over = false;
+
+	let score = 0;
+
+	const display_status = (ctx: CanvasRenderingContext2D) => {
+		ctx.font = "40px Helvetica";
+
+		ctx.fillStyle = "black";
+		ctx.fillText(`Score: ${score}`, 20, 50);
+		ctx.fillStyle = "white";
+		ctx.fillText(`Score: ${score}`, 22, 52);
+
+		if (game_over) {
+			ctx.textAlign = "center";
+			ctx.fillStyle = "black";
+			ctx.fillText(`Game Over`, opt.canvas_width * 0.5, opt.canvas_height * 0.5);
+			ctx.fillStyle = "white";
+			ctx.fillText(`Game Over`, opt.canvas_width * 0.5 + 2, opt.canvas_height * 0.5 + 2);
+		}
+	};
 
 	const obj_input = new input_handler();
 	const obj_player = new player(opt.canvas_width, opt.canvas_height);
@@ -217,14 +311,17 @@ export const game1 = (opt: game1_option) => {
 		lastTime = timestamp;
 
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-		obj_bg.update();
+		// obj_bg.update();
 		obj_bg.draw(opt.ctx);
-		obj_player.update(obj_input);
+		obj_player.update(obj_input, enemy_list, delta_time);
 		obj_player.draw(opt.ctx);
 
 		handle_enemy(delta_time);
+		display_status(opt.ctx);
 
-		requestAnimationFrame(animate);
+		if (!game_over) {
+			requestAnimationFrame(animate);
+		}
 	};
 
 	animate(0);
