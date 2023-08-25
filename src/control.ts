@@ -64,7 +64,23 @@ export const control = (opt: control_option) => {
 			const distance = Math.sqrt(dx * dx + dy * dy);
 
 			if (distance < i.width * 0.25 + player.width * 0.25) {
-				game_over = true;
+				if (player_power > 0) {
+					i.explode_out = false;
+
+					explosion_list.push(
+						new explosion({
+							x: i.x + i.width / 2,
+							y: i.y + i.height / 2,
+							scale: (i.width / i.sprite_width) * 1.5,
+							play_sound: true,
+						})
+					);
+
+					i.mark_delete = true;
+					score += 3;
+				} else {
+					game_over = true;
+				}
 			}
 		});
 	};
@@ -72,6 +88,7 @@ export const control = (opt: control_option) => {
 	let player_speed = 0;
 	let player_velocity_y = 0;
 	let player_weight = 1.5;
+	let player_power = 0;
 
 	const player_on_ground = (player: player) => player.y >= opt.canvas_height - player.height;
 
@@ -79,7 +96,8 @@ export const control = (opt: control_option) => {
 		//control
 		if (input.keys.indexOf("ArrowRight") > -1) {
 			player_speed = 5;
-			game_speed = 14;
+			game_speed = 25;
+			player_power = 1;
 			player.set_action("roll");
 		} else if (input.keys.indexOf("ArrowLeft") > -1) {
 			player_speed = -5;
@@ -91,6 +109,7 @@ export const control = (opt: control_option) => {
 			player.set_action("run");
 			game_speed = 5;
 			player_speed = 0;
+			player_power = 0;
 		}
 
 		//horizontal movement
@@ -102,10 +121,8 @@ export const control = (opt: control_option) => {
 		player.y += player_velocity_y;
 		if (!player_on_ground(player)) {
 			player_velocity_y += player_weight;
-			// player.set_action("jump");
 		} else {
 			player_velocity_y = 0;
-			// player.set_action("run");
 		}
 
 		if (player.y > opt.canvas_height - player.height) player.y = opt.canvas_height - player.height;
