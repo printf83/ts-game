@@ -1,3 +1,28 @@
+import { baseEnemy } from "./enemy/base.js";
+import { enemy1 } from "./enemy/enemy1.js";
+import { enemy2 } from "./enemy/enemy2.js";
+import { enemy3 } from "./enemy/enemy3.js";
+import { enemy4 } from "./enemy/enemy4.js";
+import { enemy5 } from "./enemy/enemy5.js";
+import { enemy6 } from "./enemy/enemy6.js";
+import { enemy7 } from "./enemy/enemy7.js";
+import { enemy8 } from "./enemy/enemy8.js";
+import { explosion } from "./explosion.js";
+import { particle } from "./particle.js";
+import { player } from "./player.js";
+
+const enemyDB = {
+	enemy1: enemy1,
+	enemy2: enemy2,
+	enemy3: enemy3,
+	enemy4: enemy4,
+	enemy5: enemy5,
+	enemy6: enemy6,
+	enemy7: enemy7,
+	enemy8: enemy8,
+};
+export type enemyDBType = keyof typeof enemyDB;
+
 interface control_option {
 	ctx: CanvasRenderingContext2D;
 	canvas_width: number;
@@ -25,132 +50,59 @@ export const control = (opt: control_option) => {
 		}
 	}
 
-	class player {
-		canvas_width: number;
-		canvas_height: number;
+	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
+		enemy_list.forEach((i) => {
+			const dx = i.x + i.width * 0.5 - (player.x + player.width * 0.5);
+			const dy = i.y + i.height * 0.5 - (player.y + player.height * 0.5);
 
-		width: number;
-		height: number;
-		x: number;
-		y: number;
+			const distance = Math.sqrt(dx * dx + dy * dy);
 
-		img: HTMLImageElement;
-		frame_x: number;
-		frame_x_length: number;
-		frame_y: number;
-
-		fps: number;
-		frame_timer: number;
-		frame_interval: number;
-
-		speed: number;
-		velocity_y: number;
-		weight: number;
-
-		sprite_width = 575;
-		sprite_height = 523;
-
-		constructor(canvas_width: number, canvas_height: number) {
-			this.canvas_width = canvas_width;
-			this.canvas_height = canvas_height;
-
-			this.width = this.sprite_width * 0.25;
-			this.height = this.sprite_height * 0.25;
-			this.x = 10;
-			this.y = this.canvas_height - this.height;
-
-			this.img = new Image();
-			this.img.src = "./res/player.png";
-
-			this.speed = 0;
-			this.velocity_y = 0;
-			this.weight = 1;
-
-			this.fps = 20;
-			this.frame_x = 0;
-			this.frame_x_length = 6;
-			this.frame_y = 0;
-			this.frame_timer = 0;
-			this.frame_interval = 1000 / this.fps;
-		}
-
-		draw(ctx: CanvasRenderingContext2D) {
-			ctx.strokeStyle = "white";
-			// ctx.strokeRect(this.x, this.y, this.width, this.height);
-
-			ctx.beginPath();
-			ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.25, 0, Math.PI * 2);
-			ctx.stroke();
-
-			ctx.drawImage(
-				this.img,
-				this.frame_x * this.sprite_width,
-				this.frame_y * this.sprite_height,
-				this.sprite_width,
-				this.sprite_height,
-				this.x,
-				this.y,
-				this.width,
-				this.height
-			);
-		}
-		update(input: input_handler, enemy_list: enemy[], delta_time: number) {
-			//collision detection
-			enemy_list.forEach((i) => {
-				const dx = i.x + i.width * 0.5 - (this.x + this.width * 0.5);
-				const dy = i.y + i.height * 0.5 - (this.y + this.height * 0.5);
-
-				const distance = Math.sqrt(dx * dx + dy * dy);
-
-				if (distance < i.width * 0.25 + this.width * 0.25) {
-					game_over = true;
-				}
-			});
-
-			//sprite animation
-			if (this.frame_timer > this.frame_interval) {
-				if (this.frame_x >= this.frame_x_length) this.frame_x = 0;
-				else this.frame_x++;
-
-				this.frame_timer = 0;
-			} else {
-				this.frame_timer += delta_time;
+			if (distance < i.width * 0.25 + player.width * 0.25) {
+				game_over = true;
 			}
+		});
+	};
 
-			//control
-			if (input.keys.indexOf("ArrowRight") > -1) {
-				this.speed = 5;
-			} else if (input.keys.indexOf("ArrowLeft") > -1) {
-				this.speed = -5;
-			} else if (input.keys.indexOf("ArrowUp") > -1 && this.on_ground()) {
-				this.velocity_y -= 32;
-			} else {
-				this.speed = 0;
-			}
+	let player_speed = 0;
+	let player_velocity_y = 0;
+	let player_weight = 1.5;
 
-			//horizontal movement
-			this.x += this.speed;
-			if (this.x < 0) this.x = 0;
-			else if (this.x > this.canvas_width - this.width) this.x = this.canvas_width - this.width;
+	const player_on_ground = (player: player) => player.y >= opt.canvas_height - player.height;
 
-			//vertical movement
-			this.y += this.velocity_y;
-			if (!this.on_ground()) {
-				this.velocity_y += this.weight;
-				this.frame_y = 1;
-				this.frame_x_length = 6;
-			} else {
-				this.velocity_y = 0;
-				this.frame_y = 3;
-				this.frame_x_length = 7;
-			}
-
-			if (this.y > this.canvas_height - this.height) this.y = this.canvas_height - this.height;
+	const player_control = (input: input_handler, player: player) => {
+		//control
+		if (input.keys.indexOf("ArrowRight") > -1) {
+			player_speed = 5;
+		} else if (input.keys.indexOf("ArrowLeft") > -1) {
+			player_speed = -5;
+		} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
+			player_velocity_y -= 32;
+		} else {
+			player_speed = 0;
 		}
-		on_ground() {
-			return this.y >= this.canvas_height - this.height;
+
+		//horizontal movement
+		player.x += player_speed;
+		if (player.x < 0) player.x = 0;
+		else if (player.x > opt.canvas_width - player.width) player.x = opt.canvas_width - player.width;
+
+		//vertical movement
+		player.y += player_velocity_y;
+		if (!player_on_ground(player)) {
+			player_velocity_y += player_weight;
+			player.set_action("jump");
+		} else {
+			player_velocity_y = 0;
+			player.set_action("run");
 		}
-	}
+
+		if (player.y > opt.canvas_height - player.height) player.y = opt.canvas_height - player.height;
+	};
+
+	const handle_control = (input: input_handler, player: player, enemy_list: baseEnemy[]) => {
+		collision_detection(player, enemy_list);
+		player_control(input, player);
+	};
 
 	class bg {
 		canvas_width: number;
@@ -194,108 +146,66 @@ export const control = (opt: control_option) => {
 		}
 	}
 
-	const imgEnemy = new Image();
-	imgEnemy.src = "./res/enemy7.png";
-	class enemy {
-		canvas_width: number;
-		canvas_height: number;
-
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-
-		img: HTMLImageElement;
-
-		sprite_width = 229;
-		sprite_height = 171;
-		sprite_length = 5;
-
-		fps: number;
-		frame_x: number;
-		frame_timer: number;
-		frame_interval: number;
-
-		speed: number;
-
-		mark_delete: boolean;
-
-		constructor(canvas_width: number, canvas_height: number) {
-			this.canvas_width = canvas_width;
-			this.canvas_height = canvas_height;
-
-			this.img = imgEnemy;
-
-			this.width = this.sprite_width * 0.5;
-			this.height = this.sprite_height * 0.5;
-
-			this.x = this.canvas_width;
-			this.y = this.canvas_height - this.height;
-
-			this.fps = 20;
-			this.frame_x = 0;
-			this.frame_timer = 0;
-			this.frame_interval = 1000 / this.fps;
-
-			this.speed = 8;
-
-			this.mark_delete = false;
-		}
-		draw(ctx: CanvasRenderingContext2D) {
-			ctx.strokeStyle = "white";
-			// ctx.strokeRect(this.x, this.y, this.width, this.height);
-
-			ctx.beginPath();
-			ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.25, 0, Math.PI * 2);
-			ctx.stroke();
-
-			ctx.drawImage(
-				this.img,
-				this.frame_x * this.sprite_width,
-				0,
-				this.sprite_width,
-				this.sprite_height,
-				this.x,
-				this.y,
-				this.width,
-				this.height
-			);
-		}
-		update(delta_time: number) {
-			if (this.frame_timer > this.frame_interval) {
-				if (this.frame_x >= this.sprite_length) this.frame_x = 0;
-				else this.frame_x++;
-
-				this.frame_timer = 0;
-			} else {
-				this.frame_timer += delta_time;
-			}
-
-			this.x -= this.speed;
-			if (this.x < 0 - this.width) {
-				this.mark_delete = true;
-				score++;
-			}
-		}
-	}
-
-	let enemy_list: enemy[] = [];
+	const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8"];
+	let enemy_list: baseEnemy[] = [];
+	let explosion_list: explosion[] = [];
+	let particle_list: particle[] = [];
 
 	const handle_enemy = (delta_time: number) => {
 		if (enemy_timer > enemy_interval + enemy_random_interval) {
-			enemy_list.push(new enemy(opt.canvas_width, opt.canvas_height));
+			const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
+
+			let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
+			const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height });
+
+			if (new_enemy.explode_in) {
+				explosion_list.push(
+					new explosion({
+						x: new_enemy.x + new_enemy.width / 2,
+						y: new_enemy.y + new_enemy.height / 2,
+						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+						play_sound: false,
+					})
+				);
+			}
+
+			enemy_list.push(new_enemy);
+			enemy_list.sort((a, b) => a.width - b.width);
+
 			enemy_random_interval = Math.random() * 1000 + 500;
 			enemy_timer = 0;
 		} else {
 			enemy_timer += delta_time;
 		}
 
-		enemy_list.forEach((i) => {
+		[...particle_list, ...explosion_list].forEach((i) => {
 			i.update(delta_time);
 			i.draw(opt.ctx);
 		});
 
+		enemy_list.forEach((i) => {
+			i.update(delta_time);
+
+			if (i.have_particle) {
+				particle_list.push(
+					new particle(
+						new particle({
+							x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
+							y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
+							size: i.width * 0.5,
+							color: i.uid_text,
+						})
+					)
+				);
+			}
+
+			i.draw(opt.ctx);
+			if (i.mark_delete) score++;
+		});
+
 		enemy_list = enemy_list.filter((i) => !i.mark_delete);
+		particle_list = particle_list.filter((i) => !i.mark_delete);
+		explosion_list = explosion_list.filter((i) => !i.mark_delete);
 	};
 
 	let game_over = false;
@@ -320,7 +230,7 @@ export const control = (opt: control_option) => {
 	};
 
 	const obj_input = new input_handler();
-	const obj_player = new player(opt.canvas_width, opt.canvas_height);
+	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height });
 	const obj_bg = new bg(opt.canvas_width, opt.canvas_height);
 
 	let lastTime = 0;
@@ -333,12 +243,15 @@ export const control = (opt: control_option) => {
 		lastTime = timestamp;
 
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-		// obj_bg.update();
+
+		obj_bg.update();
 		obj_bg.draw(opt.ctx);
-		obj_player.update(obj_input, enemy_list, delta_time);
+		obj_player.update(delta_time);
 		obj_player.draw(opt.ctx);
 
 		handle_enemy(delta_time);
+		handle_control(obj_input, obj_player, enemy_list);
+
 		display_status(opt.ctx);
 
 		if (!game_over) {
@@ -348,48 +261,3 @@ export const control = (opt: control_option) => {
 
 	animate(0);
 };
-
-// interface move_option {
-// 	ctx: CanvasRenderingContext2D;
-// 	canvas_width: number;
-// 	canvas_height: number;
-// }
-
-// export class move {
-// 	ctx: CanvasRenderingContext2D;
-// 	canvas_width: number;
-// 	canvas_height: number;
-
-// 	constructor(opt: move_option) {
-// 		this.ctx = opt.ctx;
-// 		this.canvas_width = opt.canvas_width;
-// 		this.canvas_height = opt.canvas_height;
-// 	}
-
-// 	update(_timestamp: number) {}
-
-// 	draw() {}
-
-// 	//private addNewEnemy() {}
-// }
-
-// interface move_animate_option {
-// 	move: move;
-// 	timestamp: number;
-// }
-
-// let move_last_timestamp = 0;
-// export const animate_move = (opt: move_animate_option) => {
-// 	opt.move.ctx.clearRect(0, 0, opt.move.canvas_width, opt.move.canvas_height);
-
-// 	let delta_time = opt.timestamp - move_last_timestamp;
-// 	move_last_timestamp = opt.timestamp;
-
-// 	opt.move.update(delta_time);
-// 	opt.move.draw();
-
-// 	requestAnimationFrame((timestamp) => {
-// 		opt.timestamp = timestamp;
-// 		animate_move(opt);
-// 	});
-// };

@@ -52,8 +52,8 @@ export class player extends baseAnimation {
 
 		const sprite_width = 575;
 		const sprite_height = 523;
-		const width = sprite_width * 0.5;
-		const height = sprite_height * 0.5;
+		const width = sprite_width * 0.25;
+		const height = sprite_height * 0.25;
 
 		super({
 			img,
