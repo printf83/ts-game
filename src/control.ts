@@ -29,7 +29,7 @@ interface control_option {
 	canvas_height: number;
 }
 
-const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
+const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " "];
 
 export const control = (opt: control_option) => {
 	class input_handler {
@@ -37,14 +37,20 @@ export const control = (opt: control_option) => {
 		constructor() {
 			this.keys = [];
 			window.addEventListener("keydown", (e) => {
-				if (keys.indexOf(e.key) > -1 && this.keys.indexOf(e.key) === -1) {
-					this.keys.push(e.key);
+				if (keys.indexOf(e.key) > -1) {
+					if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
+
+					e.stopPropagation();
+					e.preventDefault();
 				}
 			});
 
 			window.addEventListener("keyup", (e) => {
 				if (keys.indexOf(e.key) > -1) {
 					this.keys.splice(this.keys.indexOf(e.key), 1);
+
+					e.stopPropagation();
+					e.preventDefault();
 				}
 			});
 		}
@@ -73,11 +79,17 @@ export const control = (opt: control_option) => {
 		//control
 		if (input.keys.indexOf("ArrowRight") > -1) {
 			player_speed = 5;
+			game_speed = 14;
+			player.set_action("roll");
 		} else if (input.keys.indexOf("ArrowLeft") > -1) {
 			player_speed = -5;
+			player.set_action("idle");
 		} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
 			player_velocity_y -= 32;
+			player.set_action("jump");
 		} else {
+			player.set_action("run");
+			game_speed = 5;
 			player_speed = 0;
 		}
 
@@ -90,10 +102,10 @@ export const control = (opt: control_option) => {
 		player.y += player_velocity_y;
 		if (!player_on_ground(player)) {
 			player_velocity_y += player_weight;
-			player.set_action("jump");
+			// player.set_action("jump");
 		} else {
 			player_velocity_y = 0;
-			player.set_action("run");
+			// player.set_action("run");
 		}
 
 		if (player.y > opt.canvas_height - player.height) player.y = opt.canvas_height - player.height;
@@ -118,8 +130,6 @@ export const control = (opt: control_option) => {
 		sprite_width = 2400;
 		sprite_height = 720;
 
-		speed: number;
-
 		constructor(canvas_width: number, canvas_height: number) {
 			this.canvas_width = canvas_width;
 			this.canvas_height = canvas_height;
@@ -132,16 +142,14 @@ export const control = (opt: control_option) => {
 
 			this.width = this.sprite_width;
 			this.height = this.sprite_height;
-
-			this.speed = 7;
 		}
 
 		draw(ctx: CanvasRenderingContext2D) {
 			ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-			ctx.drawImage(this.img, this.x + this.width - this.speed, this.y, this.width, this.height);
+			ctx.drawImage(this.img, this.x + this.width - game_speed, this.y, this.width, this.height);
 		}
 		update() {
-			this.x -= this.speed;
+			this.x -= game_speed;
 			if (this.x < 0 - this.width) this.x = 0;
 		}
 	}
@@ -184,6 +192,9 @@ export const control = (opt: control_option) => {
 		});
 
 		enemy_list.forEach((i) => {
+			i.x -= game_speed;
+			if (i.x < 0 - i.width) i.mark_delete = true;
+
 			i.update(delta_time);
 
 			if (i.have_particle) {
@@ -209,7 +220,7 @@ export const control = (opt: control_option) => {
 	};
 
 	let game_over = false;
-
+	let game_speed = 7;
 	let score = 0;
 
 	const display_status = (ctx: CanvasRenderingContext2D) => {
