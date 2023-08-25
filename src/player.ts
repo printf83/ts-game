@@ -78,15 +78,13 @@ export class player extends baseAnimation {
 	};
 }
 
-let player_obj: player | null;
-
 export const animate_player = (opt: {
 	ctx: CanvasRenderingContext2D;
 	cbo: HTMLSelectElement;
 	canvas_width: number;
 	canvas_height: number;
 }) => {
-	player_obj = new player({
+	const obj_player = new player({
 		canvas_width: opt.canvas_height,
 		canvas_height: opt.canvas_height,
 	});
@@ -94,27 +92,39 @@ export const animate_player = (opt: {
 	opt.cbo.addEventListener("change", (event) => {
 		const target = event.currentTarget as HTMLSelectElement;
 		const value = target.value;
-		if (value && player_obj) {
-			player_obj.set_action(value as actionDBType);
+		if (value && obj_player) {
+			obj_player.set_action(value as actionDBType);
 		}
 	});
 
-	player_animate({ ctx: opt.ctx, canvas_width: opt.canvas_width, canvas_height: opt.canvas_height, timestamp: 0 });
+	player_animate({
+		ctx: opt.ctx,
+		player: obj_player,
+		canvas_width: opt.canvas_width,
+		canvas_height: opt.canvas_height,
+		timestamp: 0,
+	});
 
 	opt.cbo.dispatchEvent(new Event("change"));
 };
 
 let player_last_timestamp = 0;
 
-const player_animate = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; timestamp: number }) => {
+const player_animate = (opt: {
+	ctx: CanvasRenderingContext2D;
+	player: player;
+	canvas_width: number;
+	canvas_height: number;
+	timestamp: number;
+}) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	const delta_time = opt.timestamp - player_last_timestamp;
 	player_last_timestamp = opt.timestamp;
 
-	if (player_obj) {
-		player_obj.update(delta_time);
-		player_obj.draw(opt.ctx);
+	if (opt.player) {
+		opt.player.update(delta_time);
+		opt.player.draw(opt.ctx);
 	}
 
 	requestAnimationFrame((timestamp) => {

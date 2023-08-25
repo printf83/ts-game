@@ -4,22 +4,21 @@ interface control_option {
 	canvas_height: number;
 }
 
+const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"];
+
 export const control = (opt: control_option) => {
 	class input_handler {
 		keys: string[];
 		constructor() {
 			this.keys = [];
 			window.addEventListener("keydown", (e) => {
-				if (
-					(e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") &&
-					this.keys.indexOf(e.key) === -1
-				) {
+				if (keys.indexOf(e.key) > -1 && this.keys.indexOf(e.key) === -1) {
 					this.keys.push(e.key);
 				}
 			});
 
 			window.addEventListener("keyup", (e) => {
-				if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "ArrowLeft" || e.key === "ArrowRight") {
+				if (keys.indexOf(e.key) > -1) {
 					this.keys.splice(this.keys.indexOf(e.key), 1);
 				}
 			});
@@ -76,12 +75,12 @@ export const control = (opt: control_option) => {
 		}
 
 		draw(ctx: CanvasRenderingContext2D) {
-			// ctx.strokeStyle = "white";
+			ctx.strokeStyle = "white";
 			// ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-			// ctx.beginPath();
-			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
-			// ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.25, 0, Math.PI * 2);
+			ctx.stroke();
 
 			ctx.drawImage(
 				this.img,
@@ -103,7 +102,7 @@ export const control = (opt: control_option) => {
 
 				const distance = Math.sqrt(dx * dx + dy * dy);
 
-				if (distance < i.width * 0.5 + this.width * 0.5) {
+				if (distance < i.width * 0.25 + this.width * 0.25) {
 					game_over = true;
 				}
 			});
@@ -243,12 +242,12 @@ export const control = (opt: control_option) => {
 			this.mark_delete = false;
 		}
 		draw(ctx: CanvasRenderingContext2D) {
-			// ctx.strokeStyle = "white";
+			ctx.strokeStyle = "white";
 			// ctx.strokeRect(this.x, this.y, this.width, this.height);
 
-			// ctx.beginPath();
-			// ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.5, 0, Math.PI * 2);
-			// ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(this.x + this.width * 0.5, this.y + this.height * 0.5, this.width * 0.25, 0, Math.PI * 2);
+			ctx.stroke();
 
 			ctx.drawImage(
 				this.img,
