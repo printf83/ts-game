@@ -58,7 +58,7 @@ export class player extends baseAnimation {
 		super({
 			img,
 
-			x: (opt.canvas_width - width) * 0.5,
+			x: opt.canvas_width * 0.1,
 			y: opt.canvas_height - height,
 			width,
 			height,

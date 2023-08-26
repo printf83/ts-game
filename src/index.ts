@@ -48,8 +48,8 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 // });
 
 (function () {
-	//move
-	controlCanvas.width = 800;
+	//control
+	controlCanvas.width = 1200;
 	controlCanvas.height = 700;
 	const controlCtx = controlCanvas.getContext("2d");
 	if (controlCtx) {
