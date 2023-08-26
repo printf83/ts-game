@@ -54,4 +54,8 @@ export class enemy8 extends baseEnemy {
 		ctx.stroke();
 		super.draw(ctx);
 	}
+
+	set_position(game_speed: number): void {
+		this.x -= game_speed;
+	}
 }

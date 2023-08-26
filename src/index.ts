@@ -50,7 +50,7 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 (function () {
 	//move
 	controlCanvas.width = 800;
-	controlCanvas.height = 720;
+	controlCanvas.height = 700;
 	const controlCtx = controlCanvas.getContext("2d");
 	if (controlCtx) {
 		control({
@@ -97,9 +97,6 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 	cboEnemyType.dispatchEvent(new Event("change"));
 
 	//bg
-	// bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });
-	// inputBgSpeed.addEventListener("change", inputBgSpeedChange);
-	// inputBgSpeed.dispatchEvent(new Event("change"));
 	bgCanvas.width = 800;
 	bgCanvas.height = 700;
 	const bgCtx = bgCanvas.getContext("2d");

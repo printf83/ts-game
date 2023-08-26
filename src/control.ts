@@ -9,7 +9,6 @@ import { enemy6 } from "./enemy/enemy6.js";
 import { enemy7 } from "./enemy/enemy7.js";
 import { enemy8 } from "./enemy/enemy8.js";
 import { explosion } from "./explosion.js";
-import { game } from "./game.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 
@@ -34,6 +33,8 @@ interface control_option {
 const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " "];
 
 export const control = (opt: control_option) => {
+	let base_height = opt.canvas_height - 118;
+
 	class input_handler {
 		keys: string[];
 		constructor() {
@@ -91,10 +92,10 @@ export const control = (opt: control_option) => {
 
 	let player_speed = 0;
 	let player_velocity_y = 0;
-	let player_weight = 1.5;
+	let player_weight = 1;
 	let player_power = 0;
 
-	const player_on_ground = (player: player) => player.y >= opt.canvas_height - player.height;
+	const player_on_ground = (player: player) => player.y >= base_height - player.height;
 
 	const player_control = (input: input_handler, player: player) => {
 		//control
@@ -112,7 +113,7 @@ export const control = (opt: control_option) => {
 			game_speed = 0;
 			player.set_action("sit");
 		} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
-			player_velocity_y -= 40;
+			player_velocity_y -= 30;
 			player.set_action("jump");
 		} else if (input.keys.indexOf(" ") > -1) {
 			player.set_action("bite");
@@ -146,51 +147,13 @@ export const control = (opt: control_option) => {
 			player_velocity_y = 0;
 		}
 
-		if (player.y > opt.canvas_height - player.height) player.y = opt.canvas_height - player.height;
+		if (player.y > base_height - player.height) player.y = base_height - player.height;
 	};
 
 	const handle_control = (input: input_handler, player: player, enemy_list: baseEnemy[]) => {
 		collision_detection(player, enemy_list);
 		player_control(input, player);
 	};
-
-	// class bg {
-	// 	canvas_width: number;
-	// 	canvas_height: number;
-
-	// 	x: number;
-	// 	y: number;
-	// 	width: number;
-	// 	height: number;
-
-	// 	img: HTMLImageElement;
-
-	// 	sprite_width = 2400;
-	// 	sprite_height = 720;
-
-	// 	constructor(canvas_width: number, canvas_height: number) {
-	// 		this.canvas_width = canvas_width;
-	// 		this.canvas_height = canvas_height;
-
-	// 		this.img = new Image();
-	// 		this.img.src = "./res/bg-single.png";
-
-	// 		this.x = 0;
-	// 		this.y = 0;
-
-	// 		this.width = this.sprite_width;
-	// 		this.height = this.sprite_height;
-	// 	}
-
-	// 	draw(ctx: CanvasRenderingContext2D) {
-	// 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-	// 		ctx.drawImage(this.img, this.x + this.width - game_speed, this.y, this.width, this.height);
-	// 	}
-	// 	update() {
-	// 		this.x -= game_speed;
-	// 		if (this.x < 0 - this.width) this.x = 0;
-	// 	}
-	// }
 
 	const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8"];
 	let enemy_list: baseEnemy[] = [];
@@ -202,7 +165,7 @@ export const control = (opt: control_option) => {
 			const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
 
 			let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
-			const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height });
+			const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: base_height });
 
 			if (new_enemy.explode_in) {
 				explosion_list.push(
@@ -218,7 +181,7 @@ export const control = (opt: control_option) => {
 			enemy_list.push(new_enemy);
 			enemy_list.sort((a, b) => a.width - b.width);
 
-			enemy_random_interval = Math.random() * 1000 + 500;
+			enemy_random_interval = Math.random() * 1000 + 1000;
 			enemy_timer = 0;
 		} else {
 			enemy_timer += delta_time;
@@ -226,11 +189,12 @@ export const control = (opt: control_option) => {
 
 		[...particle_list, ...explosion_list].forEach((i) => {
 			i.update(delta_time);
+			i.set_position(game_speed);
 			i.draw(opt.ctx);
 		});
 
 		enemy_list.forEach((i) => {
-			i.x -= game_speed;
+			i.set_position(game_speed);
 			if (i.x < 0 - i.width) i.mark_delete = true;
 
 			i.update(delta_time);
@@ -283,14 +247,14 @@ export const control = (opt: control_option) => {
 			ctx.font = "50px Helvetica";
 
 			ctx.fillStyle = "black";
-			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5, opt.canvas_height * 0.5);
+			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5, base_height * 0.5);
 			ctx.fillStyle = "white";
-			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5 + 2, opt.canvas_height * 0.5 + 2);
+			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5 + 2, base_height * 0.5 + 2);
 		}
 	};
 
 	const obj_input = new input_handler();
-	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height });
+	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
 	const obj_bg = new bg({ game_speed: game_speed });
 
 	let lastTime = 0;

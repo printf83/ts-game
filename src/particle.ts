@@ -43,4 +43,7 @@ export class particle {
 		ctx.fill();
 		ctx.restore();
 	}
+	set_position(game_speed: number) {
+		this.x -= game_speed;
+	}
 }

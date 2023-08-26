@@ -91,4 +91,8 @@ export class baseAnimation {
 			this.height
 		);
 	}
+
+	set_position(game_speed: number) {
+		this.x -= game_speed;
+	}
 }

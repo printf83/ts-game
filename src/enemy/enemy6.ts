@@ -52,4 +52,8 @@ export class enemy6 extends baseEnemy {
 		super.draw(ctx);
 		ctx.restore();
 	}
+
+	set_position(game_speed: number): void {
+		this.x -= game_speed;
+	}
 }
