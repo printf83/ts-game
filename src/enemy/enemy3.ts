@@ -45,9 +45,11 @@ export class enemy3 extends baseEnemy {
 
 	update(delta_time: number, onframechange?: () => void) {
 		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
+
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
 		this.y = (this.canvas_height / 2) * Math.sin((this.angle * Math.PI) / 270) + (this.canvas_height / 2 - this.height / 2);
+
 		if (this.y + this.height < 0) this.y = this.canvas_height;
 
 		this.angle += this.angle_speed;
