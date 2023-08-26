@@ -1,6 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
-import { bg, bgDB, update_game_speed } from "./bg.js";
+import { animate_bg } from "./bg.js";
 import { enemy, enemyDBType, enemyType } from "./enemy.js";
 import { animate_player } from "./player.js";
 import { bindExplosion } from "./explosion.js";
@@ -16,15 +16,6 @@ const cboPlayerAnimation = document.getElementById("playerAnimation") as HTMLSel
 const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
 const inputBgSpeed = document.getElementById("bgSpeed") as HTMLInputElement;
 const bgSpeedValue = document.getElementById("bgSpeedValue") as HTMLSpanElement;
-
-const inputBgSpeedChange = (event: Event) => {
-	const target = event.currentTarget as HTMLInputElement;
-	const value = target.value;
-	if (value) {
-		bgSpeedValue.innerText = `[${value}]`;
-		update_game_speed(parseInt(value));
-	}
-};
 
 //enemy
 const enemyCanvas = document.getElementById("enemyCanvas") as HTMLCanvasElement;
@@ -106,9 +97,21 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 	cboEnemyType.dispatchEvent(new Event("change"));
 
 	//bg
-	bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });
-	inputBgSpeed.addEventListener("change", inputBgSpeedChange);
-	inputBgSpeed.dispatchEvent(new Event("change"));
+	// bg({ canvas: bgCanvas, game_speed: 4, bg: bgDB });
+	// inputBgSpeed.addEventListener("change", inputBgSpeedChange);
+	// inputBgSpeed.dispatchEvent(new Event("change"));
+	bgCanvas.width = 800;
+	bgCanvas.height = 700;
+	const bgCtx = bgCanvas.getContext("2d");
+	if (bgCtx) {
+		animate_bg({
+			ctx: bgCtx,
+			ctl: inputBgSpeed,
+			lbl: bgSpeedValue,
+			canvas_width: bgCanvas.width,
+			canvas_height: bgCanvas.height,
+		});
+	}
 
 	//player
 	playerCanvas.width = 575;

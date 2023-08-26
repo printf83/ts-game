@@ -1,6 +1,6 @@
 import { baseAnimation } from "./base.js";
 
-const actionDB = {
+const player_action_list = {
 	idle: {
 		frame_y: 0,
 		sprite_length: 7,
@@ -43,7 +43,7 @@ const actionDB = {
 	},
 };
 
-type actionDBType = keyof typeof actionDB;
+type player_action_type = keyof typeof player_action_list;
 
 export class player extends baseAnimation {
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
@@ -71,8 +71,8 @@ export class player extends baseAnimation {
 		});
 	}
 
-	set_action = (action: actionDBType) => {
-		const act = actionDB[action];
+	set_action = (action: player_action_type) => {
+		const act = player_action_list[action];
 		this.frame_y = act.frame_y * this.sprite_height;
 		this.sprite_length = act.sprite_length - 1;
 	};
@@ -93,7 +93,7 @@ export const animate_player = (opt: {
 		const target = event.currentTarget as HTMLSelectElement;
 		const value = target.value;
 		if (value && obj_player) {
-			obj_player.set_action(value as actionDBType);
+			obj_player.set_action(value as player_action_type);
 		}
 	});
 
@@ -109,7 +109,6 @@ export const animate_player = (opt: {
 };
 
 let player_last_timestamp = 0;
-
 const player_animate = (opt: {
 	ctx: CanvasRenderingContext2D;
 	player: player;

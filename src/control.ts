@@ -1,3 +1,4 @@
+import { bg } from "./bg.js";
 import { baseEnemy } from "./enemy/base.js";
 import { enemy1 } from "./enemy/enemy1.js";
 import { enemy2 } from "./enemy/enemy2.js";
@@ -153,43 +154,43 @@ export const control = (opt: control_option) => {
 		player_control(input, player);
 	};
 
-	class bg {
-		canvas_width: number;
-		canvas_height: number;
+	// class bg {
+	// 	canvas_width: number;
+	// 	canvas_height: number;
 
-		x: number;
-		y: number;
-		width: number;
-		height: number;
+	// 	x: number;
+	// 	y: number;
+	// 	width: number;
+	// 	height: number;
 
-		img: HTMLImageElement;
+	// 	img: HTMLImageElement;
 
-		sprite_width = 2400;
-		sprite_height = 720;
+	// 	sprite_width = 2400;
+	// 	sprite_height = 720;
 
-		constructor(canvas_width: number, canvas_height: number) {
-			this.canvas_width = canvas_width;
-			this.canvas_height = canvas_height;
+	// 	constructor(canvas_width: number, canvas_height: number) {
+	// 		this.canvas_width = canvas_width;
+	// 		this.canvas_height = canvas_height;
 
-			this.img = new Image();
-			this.img.src = "./res/bg-single.png";
+	// 		this.img = new Image();
+	// 		this.img.src = "./res/bg-single.png";
 
-			this.x = 0;
-			this.y = 0;
+	// 		this.x = 0;
+	// 		this.y = 0;
 
-			this.width = this.sprite_width;
-			this.height = this.sprite_height;
-		}
+	// 		this.width = this.sprite_width;
+	// 		this.height = this.sprite_height;
+	// 	}
 
-		draw(ctx: CanvasRenderingContext2D) {
-			ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-			ctx.drawImage(this.img, this.x + this.width - game_speed, this.y, this.width, this.height);
-		}
-		update() {
-			this.x -= game_speed;
-			if (this.x < 0 - this.width) this.x = 0;
-		}
-	}
+	// 	draw(ctx: CanvasRenderingContext2D) {
+	// 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+	// 		ctx.drawImage(this.img, this.x + this.width - game_speed, this.y, this.width, this.height);
+	// 	}
+	// 	update() {
+	// 		this.x -= game_speed;
+	// 		if (this.x < 0 - this.width) this.x = 0;
+	// 	}
+	// }
 
 	const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8"];
 	let enemy_list: baseEnemy[] = [];
@@ -290,7 +291,7 @@ export const control = (opt: control_option) => {
 
 	const obj_input = new input_handler();
 	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: opt.canvas_height });
-	const obj_bg = new bg(opt.canvas_width, opt.canvas_height);
+	const obj_bg = new bg({ game_speed: game_speed });
 
 	let lastTime = 0;
 	let enemy_timer = 0;
@@ -303,7 +304,7 @@ export const control = (opt: control_option) => {
 
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-		obj_bg.update();
+		obj_bg.update(game_speed);
 		obj_bg.draw(opt.ctx);
 		obj_player.update(delta_time);
 		obj_player.draw(opt.ctx);

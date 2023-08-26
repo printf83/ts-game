@@ -1,9 +1,3 @@
-let BG_GAME_SPEED = 5;
-
-export const update_game_speed = (value: number) => {
-	BG_GAME_SPEED = value;
-};
-
 class layer {
 	img: HTMLImageElement;
 
@@ -12,7 +6,8 @@ class layer {
 	width: number;
 	height: number;
 
-	game_speed: number;
+	x2: number;
+
 	speed_modifier: number;
 	constructor(opt: { img: HTMLImageElement; width: number; height: number; speed_modifier: number }) {
 		this.img = opt.img;
@@ -23,76 +18,101 @@ class layer {
 		this.height = opt.height;
 
 		this.speed_modifier = opt.speed_modifier;
-		this.game_speed = BG_GAME_SPEED * this.speed_modifier;
+
+		this.x2 = this.x + this.width;
 	}
 
-	update(game_frame: number, game_speed: number) {
-		this.game_speed = game_speed * this.speed_modifier;
-		this.x = (game_frame * this.game_speed) % this.width;
+	update(game_speed: number) {
+		this.x -= game_speed * this.speed_modifier;
+		if (this.x < 0 - this.width) this.x = 0;
+		this.x2 = this.x + this.width;
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-		ctx.drawImage(this.img, this.x + this.width, this.y, this.width, this.height);
+		ctx.drawImage(this.img, this.x2, this.y, this.width, this.height);
 	}
 }
 
-const bg_img_width = 2400;
-const bg_img_height = 700;
-const bg_img_setup = (src: string) => {
-	const result = new Image();
-	result.src = src;
-	return result;
-};
+export class bg {
+	width = 2400;
+	height = 700;
+	img_setup = (src: string) => {
+		const result = new Image();
+		result.src = src;
+		return result;
+	};
 
-export const bgDB = [new layer({ img: bg_img_setup("./res/layer-1.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.2 }), new layer({ img: bg_img_setup("./res/layer-2.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.4 }), new layer({ img: bg_img_setup("./res/layer-3.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.6 }), new layer({ img: bg_img_setup("./res/layer-4.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 0.8 }), new layer({ img: bg_img_setup("./res/layer-5.png"), width: bg_img_width, height: bg_img_height, speed_modifier: 1 })];
+	bg_list = [
+		new layer({ img: this.img_setup("./res/layer-1.png"), width: this.width, height: this.height, speed_modifier: 0.2 }),
+		new layer({ img: this.img_setup("./res/layer-2.png"), width: this.width, height: this.height, speed_modifier: 0.4 }),
+		new layer({ img: this.img_setup("./res/layer-3.png"), width: this.width, height: this.height, speed_modifier: 0.6 }),
+		new layer({ img: this.img_setup("./res/layer-4.png"), width: this.width, height: this.height, speed_modifier: 0.8 }),
+		new layer({ img: this.img_setup("./res/layer-5.png"), width: this.width, height: this.height, speed_modifier: 1 }),
+	];
 
-let bg_animated_id = "";
-export const bg = (opt: { canvas: HTMLCanvasElement; game_speed: number; bg: layer[] }) => {
-	BG_GAME_SPEED = BG_GAME_SPEED;
+	game_speed: number;
 
-	const ctx = opt.canvas.getContext("2d");
-
-	const CANVAS_WIDTH = (opt.canvas.width = 800);
-	const CANVAS_HEIGHT = (opt.canvas.height = 700);
-
-	if (ctx) {
-		bg_animated_id = Math.random()
-			.toString(36)
-			.replace(/[^a-z]+/g, "");
-
-		animate_bg({
-			animateId: bg_animated_id,
-			ctx,
-			bg: opt.bg,
-			game_frame: 0,
-			canvas_width: CANVAS_WIDTH,
-			canvas_height: CANVAS_HEIGHT,
-		});
+	constructor(opt: { game_speed: number }) {
+		this.game_speed = opt.game_speed;
 	}
-};
 
-interface option {
-	animateId: string;
+	set_game_speed = (game_speed: number) => {
+		this.game_speed = game_speed;
+	};
+
+	update = (game_speed: number) => {
+		this.bg_list.forEach((i) => {
+			i.update(game_speed);
+		});
+	};
+
+	draw = (ctx: CanvasRenderingContext2D) => {
+		this.bg_list.forEach((i) => {
+			i.draw(ctx);
+		});
+	};
+}
+
+export const animate_bg = (opt: {
 	ctx: CanvasRenderingContext2D;
-	bg: layer[];
-	game_frame: number;
+	ctl: HTMLInputElement;
+	lbl: HTMLSpanElement;
 	canvas_width: number;
 	canvas_height: number;
-}
-
-const animate_bg = (opt: option) => {
-	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-
-	opt.bg.forEach((i) => {
-		i.update(opt.game_frame, BG_GAME_SPEED);
-		i.draw(opt.ctx);
+}) => {
+	const obj_bg = new bg({
+		game_speed: 5,
 	});
 
-	opt.game_frame--;
+	opt.ctl.addEventListener("change", (event) => {
+		const target = event.currentTarget as HTMLInputElement;
+		const value = target.value;
+		if (value && obj_bg) {
+			opt.lbl.innerText = `[${value}]`;
+			obj_bg.set_game_speed(parseInt(value));
+		}
+	});
+
+	bg_animate({
+		ctx: opt.ctx,
+		bg: obj_bg,
+		canvas_width: opt.canvas_width,
+		canvas_height: opt.canvas_height,
+		game_frame: 0,
+	});
+
+	opt.ctl.dispatchEvent(new Event("change"));
+};
+
+const bg_animate = (opt: { ctx: CanvasRenderingContext2D; bg: bg; canvas_width: number; canvas_height: number; game_frame: number }) => {
+	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
+
+	if (opt.bg) {
+		opt.bg.update(opt.bg.game_speed);
+		opt.bg.draw(opt.ctx);
+	}
 
 	requestAnimationFrame(() => {
-		if (bg_animated_id === opt.animateId) {
-			animate_bg(opt);
-		}
+		bg_animate(opt);
 	});
 };
