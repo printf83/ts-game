@@ -8,6 +8,7 @@ import { enemy6 } from "./enemy/enemy6.js";
 import { enemy7 } from "./enemy/enemy7.js";
 import { enemy8 } from "./enemy/enemy8.js";
 import { explosion } from "./explosion.js";
+import { game } from "./game.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 
@@ -47,6 +48,8 @@ export const control = (opt: control_option) => {
 
 			window.addEventListener("keyup", (e) => {
 				if (keys.indexOf(e.key) > -1) {
+					if (e.key === " " && game_over === true) reset();
+
 					this.keys.splice(this.keys.indexOf(e.key), 1);
 
 					e.stopPropagation();
@@ -95,21 +98,32 @@ export const control = (opt: control_option) => {
 	const player_control = (input: input_handler, player: player) => {
 		//control
 		if (input.keys.indexOf("ArrowRight") > -1) {
-			player_speed = 5;
+			player_speed = 0;
 			game_speed = 25;
 			player_power = 1;
 			player.set_action("roll");
 		} else if (input.keys.indexOf("ArrowLeft") > -1) {
-			player_speed = -5;
+			player_speed = 0;
+			game_speed = 0;
 			player.set_action("idle");
+		} else if (input.keys.indexOf("ArrowDown") > -1) {
+			player_speed = 0;
+			game_speed = 0;
+			player.set_action("sit");
 		} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
-			player_velocity_y -= 32;
+			player_velocity_y -= 40;
 			player.set_action("jump");
+		} else if (input.keys.indexOf(" ") > -1) {
+			player.set_action("bite");
+			player_power = 5;
+			game_speed = 0;
+			player_speed = 0;
 		} else {
 			player.set_action("run");
 			game_speed = 5;
 			player_speed = 0;
-			player_power = 0;
+			if (player_power > 0) player_power--;
+			else player_power = 0;
 		}
 
 		//horizontal movement
@@ -121,6 +135,12 @@ export const control = (opt: control_option) => {
 		player.y += player_velocity_y;
 		if (!player_on_ground(player)) {
 			player_velocity_y += player_weight;
+			if (!player_power) {
+				if (player_velocity_y <= 0) player.set_action("jump");
+				else player.set_action("fall");
+			} else {
+				player.set_action("roll");
+			}
 		} else {
 			player_velocity_y = 0;
 		}
@@ -228,7 +248,6 @@ export const control = (opt: control_option) => {
 			}
 
 			i.draw(opt.ctx);
-			if (i.mark_delete) score++;
 		});
 
 		enemy_list = enemy_list.filter((i) => !i.mark_delete);
@@ -240,8 +259,18 @@ export const control = (opt: control_option) => {
 	let game_speed = 7;
 	let score = 0;
 
+	const reset = () => {
+		enemy_list = [];
+		particle_list = [];
+		explosion_list = [];
+		score = 0;
+		game_over = false;
+		animate(0);
+	};
+
 	const display_status = (ctx: CanvasRenderingContext2D) => {
-		ctx.font = "40px Helvetica";
+		ctx.textAlign = "left";
+		ctx.font = "30px Helvetica";
 
 		ctx.fillStyle = "black";
 		ctx.fillText(`Score: ${score}`, 20, 50);
@@ -250,10 +279,12 @@ export const control = (opt: control_option) => {
 
 		if (game_over) {
 			ctx.textAlign = "center";
+			ctx.font = "50px Helvetica";
+
 			ctx.fillStyle = "black";
-			ctx.fillText(`Game Over`, opt.canvas_width * 0.5, opt.canvas_height * 0.5);
+			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5, opt.canvas_height * 0.5);
 			ctx.fillStyle = "white";
-			ctx.fillText(`Game Over`, opt.canvas_width * 0.5 + 2, opt.canvas_height * 0.5 + 2);
+			ctx.fillText(`Game Over!`, opt.canvas_width * 0.5 + 2, opt.canvas_height * 0.5 + 2);
 		}
 	};
 
