@@ -203,7 +203,6 @@ export class state_jump_roll extends state {
 
 		this.player.velocity_y += this.player.weight;
 		this.player.y += this.player.velocity_y;
-		// if (this.player.velocity_y > 0) this.player.set_state("fall_roll");
 		if (this.player.is_ground()) this.player.set_state("run");
 
 		this.player.power--;
