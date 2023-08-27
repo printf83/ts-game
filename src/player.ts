@@ -76,13 +76,20 @@ export class player extends baseAnimation {
 	is_floating() {
 		return this.y < this.canvas_height - this.height;
 	}
-	set_state = (action: state_type) => {
-		this.current_state = this.state_list[action];
+	set_state = (state: state_type) => {
+		this.current_state = this.state_list[state];
 		this.current_state?.enter();
 	};
 	update(delta_time: number, onframechange?: (() => void) | undefined): void {
+		this.y += this.velocity_y;
+		if (!this.is_ground()) this.velocity_y += this.weight;
+		else this.velocity_y = 0;
+
+		if (this.y > this.canvas_height - this.height) this.y = this.canvas_height - this.height;
+
 		this.power += 0.1;
 		if (this.power > 100) this.power = 100;
+		if (this.power < 0) this.power = 0;
 
 		this.current_state?.update();
 		super.update(delta_time, onframechange);

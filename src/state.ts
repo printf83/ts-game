@@ -67,7 +67,7 @@ export class state {
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
 	}
 	update() {}
-	handle_input(input: input) {}
+	handle_input(_input: input) {}
 }
 
 export class state_idle extends state {
@@ -77,7 +77,6 @@ export class state_idle extends state {
 	enter(): void {
 		super.enter();
 		this.player.speed = 0;
-		this.player.velocity_y = 0;
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS right") this.player.set_state("run");
@@ -96,8 +95,6 @@ export class state_jump extends state {
 	}
 	update(): void {
 		super.update();
-		this.player.velocity_y += this.player.weight;
-		this.player.y += this.player.velocity_y;
 		if (this.player.velocity_y > 0) this.player.set_state("fall");
 	}
 	handle_input(input: input) {
@@ -114,14 +111,10 @@ export class state_fall extends state {
 	}
 	update() {
 		if (this.player.is_ground()) {
-			this.player.velocity_y = 0;
-			this.player.y = this.player.canvas_height - this.player.height;
 			if (this.player.speed > 0) this.player.set_state("run");
 			else this.player.set_state("idle");
 		} else {
 			super.update();
-			this.player.velocity_y += this.player.weight;
-			this.player.y += this.player.velocity_y;
 		}
 	}
 	handle_input(input: input) {
@@ -211,23 +204,18 @@ export class state_jump_roll extends state {
 		super("jump_roll", player);
 	}
 	enter(): void {
+		super.enter();
 		if (this.player.power > 0) {
-			super.enter();
 			this.player.speed = this.player.max_speed;
 		} else this.player.set_state("jump");
 	}
 	update(): void {
 		super.update();
-
-		this.player.velocity_y += this.player.weight;
-		this.player.y += this.player.velocity_y;
-		if (this.player.velocity_y > 0) this.player.set_state("fall");
-		else {
-			this.player.power--;
-			if (this.player.power < 0) {
-				this.player.power = 0;
-				this.player.set_state("jump");
-			}
+		this.player.power--;
+		if (this.player.velocity_y > 0) {
+			if (this.player.power <= 0) this.player.set_state("fall");
+		} else {
+			if (this.player.power <= 0) this.player.set_state("jump");
 		}
 	}
 
@@ -250,20 +238,13 @@ export class state_fall_roll extends state {
 	}
 	update(): void {
 		if (this.player.is_ground()) {
-			this.player.velocity_y = 0;
-			this.player.y = this.player.canvas_height - this.player.height;
 			if (this.player.power > 0) this.player.set_state("roll");
 			else this.player.set_state("run");
 		} else {
 			super.update();
-			this.player.velocity_y += this.player.weight;
-			this.player.y += this.player.velocity_y;
 
 			this.player.power--;
-			if (this.player.power < 0) {
-				this.player.power = 0;
-				this.player.set_state("fall");
-			}
+			if (this.player.power <= 0) this.player.set_state("fall");
 		}
 	}
 
