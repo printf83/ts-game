@@ -150,8 +150,6 @@ export const control = (opt: control_option) => {
 			} else if (input.keys.indexOf(" ") > -1) {
 				player.set_action("bite");
 				player_power_on = 5;
-				game_speed = 0;
-				player_speed = 0;
 			} else {
 				player.set_action("run");
 				game_speed = 5;
