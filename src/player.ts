@@ -5,9 +5,11 @@ import {
 	state_bite,
 	state_dizzy,
 	state_fall,
+	state_fall_roll,
 	state_gethit,
 	state_idle,
 	state_jump,
+	state_jump_roll,
 	state_ko,
 	state_roll,
 	state_run,
@@ -23,6 +25,9 @@ export class player extends baseAnimation {
 	canvas_width: number;
 	canvas_height: number;
 
+	power: number;
+	speed: number;
+	max_speed: number;
 	velocity_y: number;
 	weight: number;
 
@@ -55,6 +60,9 @@ export class player extends baseAnimation {
 
 		this.velocity_y = 0;
 		this.weight = 1;
+		this.speed = 0;
+		this.max_speed = 25;
+		this.power = 1000;
 
 		this.state_list = {
 			idle: new state_idle(this),
@@ -64,6 +72,8 @@ export class player extends baseAnimation {
 			dizzy: new state_dizzy(this),
 			sit: new state_sit(this),
 			roll: new state_roll(this),
+			jump_roll: new state_jump_roll(this),
+			fall_roll: new state_fall_roll(this),
 			bite: new state_bite(this),
 			ko: new state_ko(this),
 			gethit: new state_gethit(this),
@@ -74,15 +84,22 @@ export class player extends baseAnimation {
 		this.current_state?.handle_input(input);
 	}
 	is_ground() {
-		return this.y <= this.canvas_height - this.height;
+		return this.y >= this.canvas_height - this.height;
 	}
 	is_floating() {
-		return this.y > this.canvas_height - this.height;
+		return this.y < this.canvas_height - this.height;
 	}
 	set_state = (action: state_type) => {
 		this.current_state = this.state_list[action];
 		this.current_state?.enter();
 	};
+	update(delta_time: number, onframechange?: (() => void) | undefined): void {
+		this.power += 0.1;
+		if (this.power > 100) this.power = 100;
+
+		this.current_state?.update();
+		super.update(delta_time, onframechange);
+	}
 }
 
 export const animate_player = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) => {
@@ -133,6 +150,33 @@ const player_animate = (opt: {
 		text_color: "black",
 		shadow_color: "gray",
 		text: `Player state : ${opt.player.frame_y}`,
+	});
+
+	draw_text({
+		ctx: opt.ctx,
+		x: 20,
+		y: 90,
+		text_color: "black",
+		shadow_color: "gray",
+		text: `Player Y : ${opt.player.y}`,
+	});
+
+	draw_text({
+		ctx: opt.ctx,
+		x: 20,
+		y: 120,
+		text_color: "black",
+		shadow_color: "gray",
+		text: `Player Speed : ${opt.player.speed}`,
+	});
+
+	draw_text({
+		ctx: opt.ctx,
+		x: 20,
+		y: 150,
+		text_color: "black",
+		shadow_color: "gray",
+		text: `Player Power : ${opt.player.power}`,
 	});
 
 	if (opt.player) {

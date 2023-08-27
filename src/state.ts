@@ -30,6 +30,14 @@ export const state_list = {
 		frame_y: 6,
 		sprite_length: 7,
 	},
+	jump_roll: {
+		frame_y: 6,
+		sprite_length: 7,
+	},
+	fall_roll: {
+		frame_y: 6,
+		sprite_length: 7,
+	},
 	bite: {
 		frame_y: 7,
 		sprite_length: 7,
@@ -53,16 +61,23 @@ export class state {
 		this.current_state = current_state;
 		this.player = player;
 	}
+
 	enter() {
 		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
 	}
+	update() {}
 	handle_input(input: input) {}
 }
 
 export class state_idle extends state {
 	constructor(player: player) {
 		super("idle", player);
+	}
+	enter(): void {
+		super.enter();
+		this.player.speed = 0;
+		this.player.velocity_y = 0;
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS right") this.player.set_state("run");
@@ -74,29 +89,69 @@ export class state_jump extends state {
 	constructor(player: player) {
 		super("jump", player);
 	}
+	enter(): void {
+		super.enter();
+		this.player.velocity_y -= 32;
+	}
+	update(): void {
+		super.update();
+		this.player.velocity_y += this.player.weight;
+		this.player.y += this.player.velocity_y;
+		if (this.player.velocity_y > 0) this.player.set_state("fall");
+	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS down") this.player.set_state("fall");
+		if (input.last_key === "PRESS right") this.player.set_state("jump_roll");
 	}
 }
 export class state_fall extends state {
 	constructor(player: player) {
 		super("fall", player);
 	}
-	handle_input(_input: input) {}
+	enter(): void {
+		super.enter();
+	}
+	update() {
+		super.update();
+		this.player.velocity_y += this.player.weight;
+		this.player.y += this.player.velocity_y;
+		if (this.player.is_ground()) this.player.set_state("run");
+	}
+	handle_input(input: input) {
+		if (input.last_key === "PRESS right") this.player.set_state("fall_roll");
+	}
 }
 export class state_run extends state {
 	constructor(player: player) {
 		super("run", player);
 	}
+	enter(): void {
+		super.enter();
+		this.player.speed = this.player.max_speed * 0.5;
+	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS left") this.player.set_state("idle");
 		if (input.last_key === "PRESS right") this.player.set_state("roll");
 		if (input.last_key === "PRESS down") this.player.set_state("sit");
+		if (input.last_key === "PRESS up") this.player.set_state("jump");
 	}
 }
 export class state_dizzy extends state {
+	interval: number;
+
 	constructor(player: player) {
 		super("dizzy", player);
+		this.interval = 1000;
+	}
+	enter(): void {
+		super.enter();
+		this.player.speed = 0;
+		this.interval = 1000;
+	}
+	update(): void {
+		super.update();
+		this.interval--;
+		if (this.interval === 0) this.player.set_state("idle");
 	}
 	handle_input(_input: input) {}
 }
@@ -104,25 +159,94 @@ export class state_sit extends state {
 	constructor(player: player) {
 		super("sit", player);
 	}
+	enter(): void {
+		super.enter();
+		this.player.speed = 0;
+	}
 	handle_input(input: input) {
-		if (input.last_key === "PRESS up") this.player.set_state("idle");
-		if (input.last_key === "PRESS left") this.player.set_state("idle");
-		if (input.last_key === "PRESS right") this.player.set_state("run");
+		if (input.last_key === "RELEASE down") this.player.set_state("idle");
 	}
 }
 export class state_roll extends state {
 	constructor(player: player) {
 		super("roll", player);
 	}
+	enter(): void {
+		super.enter();
+		if (this.player.power > 0) this.player.speed = this.player.max_speed;
+		else this.player.set_state("run");
+	}
+	update(): void {
+		super.update();
+		this.player.power--;
+		if (this.player.power <= 0) this.player.set_state("run");
+	}
+
 	handle_input(input: input) {
-		if (input.last_key === "PRESS up") this.player.set_state("jump");
-		if (input.last_key === "PRESS right") this.player.set_state("run");
+		if (input.last_key === "RELEASE right") this.player.set_state("run");
+		if (input.last_key === "PRESS up") this.player.set_state("jump_roll");
 		if (input.last_key === "PRESS left") this.player.set_state("idle");
+		if (input.last_key === "PRESS down") this.player.set_state("sit");
+	}
+}
+export class state_jump_roll extends state {
+	constructor(player: player) {
+		super("roll", player);
+	}
+	enter(): void {
+		super.enter();
+		if (this.player.power > 0) this.player.speed = this.player.max_speed;
+		else this.player.set_state("fall");
+	}
+	update(): void {
+		super.update();
+
+		this.player.velocity_y += this.player.weight;
+		this.player.y += this.player.velocity_y;
+		// if (this.player.velocity_y > 0) this.player.set_state("fall_roll");
+		if (this.player.is_ground()) this.player.set_state("run");
+
+		this.player.power--;
+		if (this.player.power <= 0) this.player.set_state("jump");
+	}
+
+	handle_input(input: input) {
+		if (input.last_key === "RELEASE up") this.player.set_state("fall");
+		if (input.last_key === "RELEASE down") this.player.set_state("fall");
+	}
+}
+export class state_fall_roll extends state {
+	constructor(player: player) {
+		super("roll", player);
+	}
+	enter(): void {
+		super.enter();
+		if (this.player.power > 0) this.player.speed = this.player.max_speed;
+		else this.player.set_state("run");
+	}
+	update(): void {
+		super.update();
+
+		this.player.velocity_y += this.player.weight;
+		this.player.y += this.player.velocity_y;
+		if (this.player.is_ground()) this.player.set_state("run");
+
+		this.player.power--;
+		if (this.player.power <= 0) this.player.set_state("fall");
+	}
+
+	handle_input(input: input) {
+		// if (input.last_key === "RELEASE up") this.player.set_state("fall");
+		// if (input.last_key === "RELEASE down") this.player.set_state("fall");
 	}
 }
 export class state_bite extends state {
 	constructor(player: player) {
 		super("bite", player);
+	}
+	enter(): void {
+		super.enter();
+		this.player.speed = this.player.max_speed * 0.25;
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
@@ -134,11 +258,26 @@ export class state_ko extends state {
 	constructor(player: player) {
 		super("ko", player);
 	}
+	enter(): void {
+		super.enter();
+		this.player.speed = 0;
+	}
 	handle_input(_input: input) {}
 }
 export class state_gethit extends state {
+	interval: number;
 	constructor(player: player) {
 		super("gethit", player);
+		this.interval = 1000;
+	}
+	enter(): void {
+		super.enter();
+		this.player.speed = 0;
+	}
+	update(): void {
+		super.update();
+		this.interval--;
+		if (this.interval <= 0) this.player.set_state("run");
 	}
 	handle_input(_input: input) {}
 }
