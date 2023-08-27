@@ -83,6 +83,7 @@ export class state_idle extends state {
 		if (input.last_key === "PRESS right") this.player.set_state("run");
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
 		if (input.last_key === "PRESS down") this.player.set_state("sit");
+		if (input.last_key === "PRESS space") this.player.set_state("bite");
 	}
 }
 export class state_jump extends state {
@@ -91,7 +92,7 @@ export class state_jump extends state {
 	}
 	enter(): void {
 		super.enter();
-		this.player.velocity_y -= 32;
+		if (this.player.is_ground()) this.player.velocity_y -= 32;
 	}
 	update(): void {
 		super.update();
@@ -112,10 +113,16 @@ export class state_fall extends state {
 		super.enter();
 	}
 	update() {
-		super.update();
-		this.player.velocity_y += this.player.weight;
-		this.player.y += this.player.velocity_y;
-		if (this.player.is_ground()) this.player.set_state("run");
+		if (this.player.is_ground()) {
+			this.player.velocity_y = 0;
+			this.player.y = this.player.canvas_height - this.player.height;
+			if (this.player.speed > 0) this.player.set_state("run");
+			else this.player.set_state("idle");
+		} else {
+			super.update();
+			this.player.velocity_y += this.player.weight;
+			this.player.y += this.player.velocity_y;
+		}
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS right") this.player.set_state("fall_roll");
@@ -127,6 +134,7 @@ export class state_run extends state {
 	}
 	enter(): void {
 		super.enter();
+		this.player.y = this.player.canvas_height - this.player.height;
 		this.player.speed = this.player.max_speed * 0.5;
 	}
 	handle_input(input: input) {
@@ -134,6 +142,7 @@ export class state_run extends state {
 		if (input.last_key === "PRESS right") this.player.set_state("roll");
 		if (input.last_key === "PRESS down") this.player.set_state("sit");
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
+		if (input.last_key === "PRESS space") this.player.set_state("bite");
 	}
 }
 export class state_dizzy extends state {
@@ -141,16 +150,18 @@ export class state_dizzy extends state {
 
 	constructor(player: player) {
 		super("dizzy", player);
-		this.interval = 1000;
+		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
 		this.player.speed = 0;
-		this.interval = 1000;
+		this.interval = 150;
+		this.player.invulnerable = this.interval;
 	}
 	update(): void {
 		super.update();
 		this.interval--;
+		this.player.invulnerable = this.interval;
 		if (this.interval === 0) this.player.set_state("idle");
 	}
 	handle_input(_input: input) {}
@@ -162,6 +173,7 @@ export class state_sit extends state {
 	enter(): void {
 		super.enter();
 		this.player.speed = 0;
+		this.player.power += 0.2;
 	}
 	handle_input(input: input) {
 		if (input.last_key === "RELEASE down") this.player.set_state("idle");
@@ -173,13 +185,18 @@ export class state_roll extends state {
 	}
 	enter(): void {
 		super.enter();
-		if (this.player.power > 0) this.player.speed = this.player.max_speed;
-		else this.player.set_state("run");
+		if (this.player.power > 0) {
+			super.enter();
+			this.player.speed = this.player.max_speed;
+		} else this.player.set_state("run");
 	}
 	update(): void {
 		super.update();
 		this.player.power--;
-		if (this.player.power <= 0) this.player.set_state("run");
+		if (this.player.power < 0) {
+			this.player.power = 0;
+			this.player.set_state("run");
+		}
 	}
 
 	handle_input(input: input) {
@@ -191,66 +208,94 @@ export class state_roll extends state {
 }
 export class state_jump_roll extends state {
 	constructor(player: player) {
-		super("roll", player);
+		super("jump_roll", player);
 	}
 	enter(): void {
-		super.enter();
-		if (this.player.power > 0) this.player.speed = this.player.max_speed;
-		else this.player.set_state("fall");
+		if (this.player.power > 0) {
+			super.enter();
+			this.player.speed = this.player.max_speed;
+		} else this.player.set_state("jump");
 	}
 	update(): void {
 		super.update();
 
 		this.player.velocity_y += this.player.weight;
 		this.player.y += this.player.velocity_y;
-		if (this.player.is_ground()) this.player.set_state("run");
-
-		this.player.power--;
-		if (this.player.power <= 0) this.player.set_state("jump");
+		if (this.player.velocity_y > 0) this.player.set_state("fall");
+		else {
+			this.player.power--;
+			if (this.player.power < 0) {
+				this.player.power = 0;
+				this.player.set_state("jump");
+			}
+		}
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE up") this.player.set_state("fall");
-		if (input.last_key === "RELEASE down") this.player.set_state("fall");
+		if (input.last_key === "RELEASE right") {
+			this.player.speed = this.player.max_speed * 0.5;
+			this.player.set_state("jump");
+		}
 	}
 }
 export class state_fall_roll extends state {
 	constructor(player: player) {
-		super("roll", player);
+		super("fall_roll", player);
 	}
 	enter(): void {
-		super.enter();
-		if (this.player.power > 0) this.player.speed = this.player.max_speed;
-		else this.player.set_state("run");
+		if (this.player.power > 0) {
+			super.enter();
+			this.player.speed = this.player.max_speed;
+		} else this.player.set_state("fall");
 	}
 	update(): void {
-		super.update();
+		if (this.player.is_ground()) {
+			this.player.velocity_y = 0;
+			this.player.y = this.player.canvas_height - this.player.height;
+			if (this.player.power > 0) this.player.set_state("roll");
+			else this.player.set_state("run");
+		} else {
+			super.update();
+			this.player.velocity_y += this.player.weight;
+			this.player.y += this.player.velocity_y;
 
-		this.player.velocity_y += this.player.weight;
-		this.player.y += this.player.velocity_y;
-		if (this.player.is_ground()) this.player.set_state("run");
-
-		this.player.power--;
-		if (this.player.power <= 0) this.player.set_state("fall");
+			this.player.power--;
+			if (this.player.power < 0) {
+				this.player.power = 0;
+				this.player.set_state("fall");
+			}
+		}
 	}
 
 	handle_input(input: input) {
-		// if (input.last_key === "RELEASE up") this.player.set_state("fall");
-		// if (input.last_key === "RELEASE down") this.player.set_state("fall");
+		if (input.last_key === "RELEASE right") {
+			this.player.speed = this.player.max_speed * 0.5;
+			this.player.set_state("fall");
+		}
 	}
 }
 export class state_bite extends state {
+	interval: number;
 	constructor(player: player) {
 		super("bite", player);
+		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
-		this.player.speed = this.player.max_speed * 0.25;
+		this.interval = 25;
+		this.player.invulnerable = this.interval;
+		this.player.speed = 0;
 	}
-	handle_input(input: input) {
-		if (input.last_key === "PRESS up") this.player.set_state("jump");
-		if (input.last_key === "PRESS right") this.player.set_state("run");
-		if (input.last_key === "PRESS left") this.player.set_state("idle");
+	update(): void {
+		super.update();
+		this.interval--;
+		this.player.invulnerable = this.interval;
+		if (this.interval <= 0) this.player.set_state("idle");
+	}
+	handle_input(_input: input) {
+		// if (input.last_key === "PRESS up") this.player.set_state("jump");
+		// if (input.last_key === "PRESS right") this.player.set_state("run");
+		// if (input.last_key === "PRESS left") this.player.set_state("idle");
 	}
 }
 export class state_ko extends state {
@@ -267,16 +312,19 @@ export class state_gethit extends state {
 	interval: number;
 	constructor(player: player) {
 		super("gethit", player);
-		this.interval = 1000;
+		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
+		this.interval = 25;
+		this.player.invulnerable = this.interval;
 		this.player.speed = 0;
 	}
 	update(): void {
 		super.update();
 		this.interval--;
-		if (this.interval <= 0) this.player.set_state("run");
+		this.player.invulnerable = this.interval;
+		if (this.interval <= 0) this.player.set_state("idle");
 	}
 	handle_input(_input: input) {}
 }
