@@ -1,51 +1,27 @@
 import { baseAnimation } from "./base.js";
-
-const player_action_list = {
-	idle: {
-		frame_y: 0,
-		sprite_length: 7,
-	},
-	jump: {
-		frame_y: 1,
-		sprite_length: 7,
-	},
-	fall: {
-		frame_y: 2,
-		sprite_length: 7,
-	},
-	run: {
-		frame_y: 3,
-		sprite_length: 8,
-	},
-	dizzy: {
-		frame_y: 4,
-		sprite_length: 11,
-	},
-	sit: {
-		frame_y: 5,
-		sprite_length: 5,
-	},
-	roll: {
-		frame_y: 6,
-		sprite_length: 7,
-	},
-	bite: {
-		frame_y: 7,
-		sprite_length: 7,
-	},
-	ko: {
-		frame_y: 8,
-		sprite_length: 12,
-	},
-	gethit: {
-		frame_y: 9,
-		sprite_length: 4,
-	},
-};
-
-type player_action_type = keyof typeof player_action_list;
+import { input } from "./input.js";
+import {
+	state,
+	state_bite,
+	state_dizzy,
+	state_fall,
+	state_gethit,
+	state_idle,
+	state_jump,
+	state_ko,
+	state_roll,
+	state_run,
+	state_sit,
+	state_type,
+} from "./state.js";
 
 export class player extends baseAnimation {
+	state_list: { [key: string]: state } = {};
+	current_state?: state;
+
+	canvas_width: number;
+	canvas_height: number;
+
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const img = new Image();
 		img.src = "./res/player.png";
@@ -69,49 +45,62 @@ export class player extends baseAnimation {
 
 			fps: 20,
 		});
-	}
 
-	set_action = (action: player_action_type) => {
-		const act = player_action_list[action];
-		this.frame_y = act.frame_y * this.sprite_height;
-		this.sprite_length = act.sprite_length - 1;
+		this.canvas_width = opt.canvas_width;
+		this.canvas_height = opt.canvas_height;
+
+		this.state_list = {
+			idle: new state_idle(this),
+			jump: new state_jump(this),
+			fall: new state_fall(this),
+			run: new state_run(this),
+			dizzy: new state_dizzy(this),
+			sit: new state_sit(this),
+			roll: new state_roll(this),
+			bite: new state_bite(this),
+			ko: new state_ko(this),
+			gethit: new state_gethit(this),
+		};
+		this.current_state = this.state_list.idle;
+	}
+	update_input(input: input) {
+		this.current_state?.handle_input(input);
+	}
+	is_ground() {
+		return this.y <= this.canvas_height - this.height;
+	}
+	is_floating() {
+		return this.y > this.canvas_height - this.height;
+	}
+	set_state = (action: state_type) => {
+		this.current_state = this.state_list[action];
+		this.current_state?.enter();
 	};
 }
 
-export const animate_player = (opt: {
-	ctx: CanvasRenderingContext2D;
-	cbo: HTMLSelectElement;
-	canvas_width: number;
-	canvas_height: number;
-}) => {
+export const animate_player = (opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) => {
 	const obj_player = new player({
 		canvas_width: opt.canvas_height,
 		canvas_height: opt.canvas_height,
 	});
 
-	opt.cbo.addEventListener("change", (event) => {
-		const target = event.currentTarget as HTMLSelectElement;
-		const value = target.value;
-		if (value && obj_player) {
-			obj_player.set_action(value as player_action_type);
-		}
-	});
+	const obj_input = new input();
 
 	player_animate({
 		ctx: opt.ctx,
 		player: obj_player,
+		input: obj_input,
 		canvas_width: opt.canvas_width,
 		canvas_height: opt.canvas_height,
 		timestamp: 0,
 	});
-
-	opt.cbo.dispatchEvent(new Event("change"));
 };
 
 let player_last_timestamp = 0;
 const player_animate = (opt: {
 	ctx: CanvasRenderingContext2D;
 	player: player;
+	input: input;
 	canvas_width: number;
 	canvas_height: number;
 	timestamp: number;
@@ -122,6 +111,7 @@ const player_animate = (opt: {
 	player_last_timestamp = opt.timestamp;
 
 	if (opt.player) {
+		opt.player.update_input(opt.input);
 		opt.player.update(delta_time);
 		opt.player.draw(opt.ctx);
 	}

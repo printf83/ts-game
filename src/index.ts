@@ -10,7 +10,6 @@ import { control } from "./control.js";
 
 //player
 const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
-const cboPlayerAnimation = document.getElementById("playerAnimation") as HTMLSelectElement;
 
 //bg
 const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
@@ -39,7 +38,7 @@ const ravenCanvas = document.getElementById("ravenCanvas") as HTMLCanvasElement;
 //game
 const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 
-//move
+//control
 const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElement;
 
 //start
@@ -49,16 +48,16 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 
 (function () {
 	//control
-	controlCanvas.width = 1200;
-	controlCanvas.height = 700;
-	const controlCtx = controlCanvas.getContext("2d");
-	if (controlCtx) {
-		control({
-			ctx: controlCtx,
-			canvas_width: controlCanvas.width,
-			canvas_height: controlCanvas.height,
-		});
-	}
+	// controlCanvas.width = 1200;
+	// controlCanvas.height = 700;
+	// const controlCtx = controlCanvas.getContext("2d");
+	// if (controlCtx) {
+	// 	control({
+	// 		ctx: controlCtx,
+	// 		canvas_width: controlCanvas.width,
+	// 		canvas_height: controlCanvas.height,
+	// 	});
+	// }
 
 	//game
 	gameCanvas.width = 500;
@@ -117,7 +116,6 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 	if (playerCtx) {
 		animate_player({
 			ctx: playerCtx,
-			cbo: cboPlayerAnimation,
 			canvas_width: playerCanvas.width,
 			canvas_height: playerCanvas.height,
 		});

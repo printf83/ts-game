@@ -92,13 +92,13 @@ export const control = (opt: control_option) => {
 						if (player_life > 30) {
 							player_life -= 10;
 							player_dizzy_index = 50;
-							player.set_action("gethit");
+							player.set_state("gethit");
 						} else if (player_life > 0) {
 							player_life -= 10;
 							player_dizzy_index = 200;
-							player.set_action("dizzy");
+							player.set_state("dizzy");
 						} else {
-							player.set_action("ko");
+							player.set_state("ko");
 							game_over = true;
 						}
 					}
@@ -128,10 +128,10 @@ export const control = (opt: control_option) => {
 					game_speed = 25;
 					player_power_on = 1;
 					player_power -= 1;
-					player.set_action("roll");
+					player.set_state("roll");
 				} else {
 					player_power -= 0.1;
-					player.set_action("run");
+					player.set_state("run");
 					game_speed = 5;
 					player_power_on = 0;
 					player_speed = 0;
@@ -139,19 +139,19 @@ export const control = (opt: control_option) => {
 			} else if (input.keys.indexOf("ArrowLeft") > -1) {
 				player_speed = 0;
 				game_speed = 0;
-				player.set_action("idle");
+				player.set_state("idle");
 			} else if (input.keys.indexOf("ArrowDown") > -1) {
 				player_speed = 0;
 				game_speed = 0;
-				player.set_action("sit");
+				player.set_state("sit");
 			} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
 				player_velocity_y -= 30;
-				player.set_action("jump");
+				player.set_state("jump");
 			} else if (input.keys.indexOf(" ") > -1) {
-				player.set_action("bite");
+				player.set_state("bite");
 				player_power_on = 5;
 			} else {
-				player.set_action("run");
+				player.set_state("run");
 				game_speed = 5;
 				player_speed = 0;
 				if (player_power_on > 0) player_power_on--;
@@ -169,10 +169,10 @@ export const control = (opt: control_option) => {
 		if (!player_on_ground(player)) {
 			player_velocity_y += player_weight;
 			if (!player_power_on) {
-				if (player_velocity_y <= 0) player.set_action("jump");
-				else player.set_action("fall");
+				if (player_velocity_y <= 0) player.set_state("jump");
+				else player.set_state("fall");
 			} else {
-				player.set_action("roll");
+				player.set_state("roll");
 			}
 		} else {
 			player_velocity_y = 0;
