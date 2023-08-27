@@ -1,15 +1,15 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
-import { animate_bg } from "./bg.js";
-import { enemy, enemyDBType, enemyType } from "./enemy.js";
-import { animate_player } from "./player.js";
-import { bindExplosion } from "./explosion.js";
-import { raven } from "./raven.js";
-import { animate_game, game } from "./game.js";
+// import { animate_bg } from "./bg.js";
+// import { enemy, enemyDBType, enemyType } from "./enemy.js";
+// import { animate_player } from "./player.js";
+// import { bindExplosion } from "./explosion.js";
+// import { raven } from "./raven.js";
+// import { animate_game, game } from "./game.js";
 import { control } from "./control.js";
 
-//player
-const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
+// //player
+// const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElement;
 
 // //bg
 // const bgCanvas = document.getElementById("bgCanvas") as HTMLCanvasElement;
@@ -38,8 +38,8 @@ const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElemen
 // //game
 // const gameCanvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 
-// //control
-// const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElement;
+//control
+const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElement;
 
 //start
 // document.addEventListener("DOMContentLoaded", () => {
@@ -47,18 +47,17 @@ const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElemen
 // });
 
 (function () {
-	// //control
-	// controlCanvas.width = 1200;
-	// controlCanvas.height = 700;
-	// const controlCtx = controlCanvas.getContext("2d");
-	// if (controlCtx) {
-	// 	control({
-	// 		ctx: controlCtx,
-	// 		canvas_width: controlCanvas.width,
-	// 		canvas_height: controlCanvas.height,
-	// 	});
-	// }
-
+	//control
+	controlCanvas.width = 1200;
+	controlCanvas.height = 700;
+	const controlCtx = controlCanvas.getContext("2d");
+	if (controlCtx) {
+		control({
+			ctx: controlCtx,
+			canvas_width: controlCanvas.width,
+			canvas_height: controlCanvas.height,
+		});
+	}
 	// //game
 	// gameCanvas.width = 500;
 	// gameCanvas.height = 800;
@@ -73,7 +72,6 @@ const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElemen
 	// 		timestamp: 0,
 	// 	});
 	// }
-
 	// //raven
 	// ravenCanvas.width = ravenCollisionCanvas.width = 800;
 	// ravenCanvas.height = ravenCollisionCanvas.height = 700;
@@ -83,18 +81,15 @@ const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElemen
 	// 	canvas_width: 800,
 	// 	canvas_height: 700,
 	// });
-
 	// //explosion
 	// explosionCanvas.width = 400;
 	// explosionCanvas.height = 700;
 	// bindExplosion({ canvas: explosionCanvas });
-
 	// //enemy
 	// enemyCanvas.width = 400;
 	// enemyCanvas.height = 700;
 	// cboEnemyType.addEventListener("change", enemyTypeChange);
 	// cboEnemyType.dispatchEvent(new Event("change"));
-
 	// //bg
 	// bgCanvas.width = 800;
 	// bgCanvas.height = 700;
@@ -108,16 +103,15 @@ const playerCanvas = document.getElementById("playerCanvas") as HTMLCanvasElemen
 	// 		canvas_height: bgCanvas.height,
 	// 	});
 	// }
-
-	//player
-	playerCanvas.width = 575;
-	playerCanvas.height = 523;
-	const playerCtx = playerCanvas.getContext("2d");
-	if (playerCtx) {
-		animate_player({
-			ctx: playerCtx,
-			canvas_width: playerCanvas.width,
-			canvas_height: playerCanvas.height,
-		});
-	}
+	// //player
+	// playerCanvas.width = 575;
+	// playerCanvas.height = 523;
+	// const playerCtx = playerCanvas.getContext("2d");
+	// if (playerCtx) {
+	// 	animate_player({
+	// 		ctx: playerCtx,
+	// 		canvas_width: playerCanvas.width,
+	// 		canvas_height: playerCanvas.height,
+	// 	});
+	// }
 })();

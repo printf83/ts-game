@@ -12,7 +12,9 @@ export class player extends baseAnimation {
 
 	invulnerable: number;
 	power: number;
+	powered: number;
 	speed: number;
+	life: number;
 	max_speed: number;
 	velocity_y: number;
 	weight: number;
@@ -47,8 +49,10 @@ export class player extends baseAnimation {
 		this.velocity_y = 0;
 		this.weight = 1;
 		this.speed = 0;
-		this.max_speed = 25;
-		this.power = 1000;
+		this.life = 100;
+		this.max_speed = 14;
+		this.power = 100;
+		this.powered = 0;
 		this.invulnerable = 0;
 
 		this.state_list = {
@@ -73,8 +77,8 @@ export class player extends baseAnimation {
 	is_ground() {
 		return this.y >= this.canvas_height - this.height;
 	}
-	is_floating() {
-		return this.y < this.canvas_height - this.height;
+	is_powered() {
+		return this.powered > 0 || this.speed === this.max_speed;
 	}
 	set_state = (state: state_type) => {
 		this.current_state = this.state_list[state];

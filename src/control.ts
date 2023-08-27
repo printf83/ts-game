@@ -12,6 +12,8 @@ import { explosion } from "./explosion.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
+import { draw_text } from "./util.js";
+import { input } from "./input.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -35,35 +37,9 @@ const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " "];
 
 export const control = (opt: control_option) => {
 	let base_height = opt.canvas_height - 118;
-
-	class input_handler {
-		keys: string[];
-		constructor() {
-			this.keys = [];
-			window.addEventListener("keydown", (e) => {
-				if (keys.indexOf(e.key) > -1) {
-					if (this.keys.indexOf(e.key) === -1) this.keys.push(e.key);
-
-					e.stopPropagation();
-					e.preventDefault();
-				}
-			});
-
-			window.addEventListener("keyup", (e) => {
-				if (keys.indexOf(e.key) > -1) {
-					if (e.key === " ") {
-						if (game_over === true) restart_game();
-						if (game_up === true) level_up_game();
-					}
-
-					this.keys.splice(this.keys.indexOf(e.key), 1);
-
-					e.stopPropagation();
-					e.preventDefault();
-				}
-			});
-		}
-	}
+	const obj_input = new input();
+	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
+	const obj_bg = new bg({ game_speed: obj_player.speed });
 
 	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
 		enemy_list.forEach((i) => {
@@ -73,7 +49,7 @@ export const control = (opt: control_option) => {
 			const distance = Math.sqrt(dx * dx + dy * dy);
 
 			if (distance < i.width * 0.25 + player.width * 0.25) {
-				if (player_power_on > 0) {
+				if (player.is_powered()) {
 					i.explode_out = false;
 
 					explosion_list.push(
@@ -88,14 +64,12 @@ export const control = (opt: control_option) => {
 					i.mark_delete = true;
 					score += 3;
 				} else {
-					if (player_dizzy_index <= 0) {
-						if (player_life > 30) {
-							player_life -= 10;
-							player_dizzy_index = 50;
+					if (player.invulnerable <= 0) {
+						if (player.life > 30) {
+							player.life -= 10;
 							player.set_state("gethit");
-						} else if (player_life > 0) {
-							player_life -= 10;
-							player_dizzy_index = 200;
+						} else if (player.life > 0) {
+							player.life -= 10;
 							player.set_state("dizzy");
 						} else {
 							player.set_state("ko");
@@ -105,85 +79,6 @@ export const control = (opt: control_option) => {
 				}
 			}
 		});
-	};
-
-	let player_speed = 0;
-	let player_velocity_y = 0;
-	let player_weight = 1;
-	let player_power_on = 0;
-	let player_dizzy_index = 0;
-
-	const player_on_ground = (player: player) => player.y >= base_height - player.height;
-
-	const player_control = (input: input_handler, player: player) => {
-		//control
-		if (player_dizzy_index > 0) {
-			player_speed = 0;
-			game_speed = 0;
-			player_dizzy_index--;
-		} else {
-			if (input.keys.indexOf("ArrowRight") > -1) {
-				if (player_power > 3) {
-					player_speed = 0;
-					game_speed = 25;
-					player_power_on = 1;
-					player_power -= 1;
-					player.set_state("roll");
-				} else {
-					player_power -= 0.1;
-					player.set_state("run");
-					game_speed = 5;
-					player_power_on = 0;
-					player_speed = 0;
-				}
-			} else if (input.keys.indexOf("ArrowLeft") > -1) {
-				player_speed = 0;
-				game_speed = 0;
-				player.set_state("idle");
-			} else if (input.keys.indexOf("ArrowDown") > -1) {
-				player_speed = 0;
-				game_speed = 0;
-				player.set_state("sit");
-			} else if (input.keys.indexOf("ArrowUp") > -1 && player_on_ground(player)) {
-				player_velocity_y -= 30;
-				player.set_state("jump");
-			} else if (input.keys.indexOf(" ") > -1) {
-				player.set_state("bite");
-				player_power_on = 5;
-			} else {
-				player.set_state("run");
-				game_speed = 5;
-				player_speed = 0;
-				if (player_power_on > 0) player_power_on--;
-				else player_power_on = 0;
-			}
-
-			//horizontal movement
-			player.x += player_speed;
-			if (player.x < 0) player.x = 0;
-			else if (player.x > opt.canvas_width - player.width) player.x = opt.canvas_width - player.width;
-		}
-
-		//vertical movement
-		player.y += player_velocity_y;
-		if (!player_on_ground(player)) {
-			player_velocity_y += player_weight;
-			if (!player_power_on) {
-				if (player_velocity_y <= 0) player.set_state("jump");
-				else player.set_state("fall");
-			} else {
-				player.set_state("roll");
-			}
-		} else {
-			player_velocity_y = 0;
-		}
-
-		if (player.y > base_height - player.height) player.y = base_height - player.height;
-	};
-
-	const handle_control = (input: input_handler, player: player, enemy_list: baseEnemy[]) => {
-		collision_detection(player, enemy_list);
-		player_control(input, player);
 	};
 
 	const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8"];
@@ -220,12 +115,12 @@ export const control = (opt: control_option) => {
 
 		[...particle_list, ...explosion_list].forEach((i) => {
 			i.update(delta_time);
-			i.set_position(game_speed);
+			i.set_position(obj_player.speed);
 			i.draw(opt.ctx);
 		});
 
 		enemy_list.forEach((i) => {
-			i.set_position(game_speed);
+			i.set_position(obj_player.speed);
 			if (i.x < 0 - i.width) i.mark_delete = true;
 
 			i.update(delta_time);
@@ -254,13 +149,12 @@ export const control = (opt: control_option) => {
 	let game_up = false;
 	let game_level = 1;
 	let game_over = false;
-	let game_speed = 7;
 	let score = 0;
 
 	const restart_game = () => {
 		player_progress = 0;
-		player_life = 100;
-		player_power = 0;
+		obj_player.life = 100;
+		obj_player.power = 0;
 		game_level = 1;
 		enemy_interval = 1000;
 		enemy_random_interval = Math.random() * enemy_interval + 500;
@@ -274,8 +168,8 @@ export const control = (opt: control_option) => {
 
 	const level_up_game = () => {
 		player_progress = 0;
-		player_life += 10;
-		if (player_life > 100) player_life = 100;
+		obj_player.life += 10;
+		if (obj_player.life > 100) obj_player.life = 100;
 
 		game_level++;
 		enemy_interval = 1000 - game_level * 50;
@@ -288,7 +182,6 @@ export const control = (opt: control_option) => {
 	};
 
 	//progress
-
 	let player_progress = 0;
 	let player_progress_max = 1000;
 	const progess_level = new progress({
@@ -301,52 +194,22 @@ export const control = (opt: control_option) => {
 	});
 
 	//player_live
-	let player_life = 100;
 	const progess_life = new progress({
 		x: opt.canvas_width - 130,
 		y: 30,
 		width: 100,
-		value: player_life,
+		value: obj_player.life,
 	});
 
 	//player_pwr
-	let player_power = 0;
 	const progess_power = new progress({
 		x: opt.canvas_width - 130,
 		y: 60,
 		width: 100,
-		value: player_power,
+		value: obj_player.power,
 	});
 
 	const progress_list = [progess_level, progess_life, progess_power];
-
-	//draw_text
-	const draw_text = (opt: {
-		ctx: CanvasRenderingContext2D;
-		x: number;
-		y: number;
-		text: string;
-		text_align?: CanvasTextAlign;
-		font_weight?: string;
-		font_family?: string;
-		text_color?: string | CanvasGradient | CanvasPattern;
-		shadow_color?: string | CanvasGradient | CanvasPattern;
-	}) => {
-		opt.font_family ??= "Helvetica";
-		opt.font_weight ??= "20px";
-		opt.text_color ??= "white";
-		opt.shadow_color ??= "black";
-		opt.text_align ??= "left";
-
-		opt.ctx.save();
-		opt.ctx.textAlign = opt.text_align;
-		opt.ctx.font = `${opt.font_weight} ${opt.font_family}`;
-		opt.ctx.fillStyle = opt.shadow_color;
-		opt.ctx.fillText(opt.text, opt.x, opt.y);
-		opt.ctx.fillStyle = opt.text_color;
-		opt.ctx.fillText(opt.text, opt.x + 1, opt.y);
-		opt.ctx.restore();
-	};
 
 	const display_status = (ctx: CanvasRenderingContext2D) => {
 		draw_text({
@@ -374,7 +237,7 @@ export const control = (opt: control_option) => {
 			text: `💖`,
 			text_align: "end",
 		});
-		progess_life.update(player_life);
+		progess_life.update(obj_player.life);
 
 		draw_text({
 			ctx,
@@ -383,7 +246,7 @@ export const control = (opt: control_option) => {
 			text: `🔥`,
 			text_align: "end",
 		});
-		progess_power.update(player_power);
+		progess_power.update(obj_player.power);
 
 		progress_list.forEach((i) => i.draw(opt.ctx));
 
@@ -412,10 +275,6 @@ export const control = (opt: control_option) => {
 		}
 	};
 
-	const obj_input = new input_handler();
-	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
-	const obj_bg = new bg({ game_speed: game_speed });
-
 	let lastTime = 0;
 	let enemy_timer = 0;
 	let enemy_interval = 1000;
@@ -425,23 +284,24 @@ export const control = (opt: control_option) => {
 		const delta_time = timestamp - lastTime;
 		lastTime = timestamp;
 
-		player_progress += game_speed * 0.1;
+		player_progress += obj_player.speed * 0.1;
 		if (player_progress >= player_progress_max) {
 			game_up = true;
 		}
 
-		player_power += 0.1;
-		if (player_power > 100) player_power = 100;
+		obj_player.power += 0.1;
+		if (obj_player.power > 100) obj_player.power = 100;
 
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
-		obj_bg.update(game_speed);
+		obj_bg.update(obj_player.speed);
 		obj_bg.draw(opt.ctx);
+		obj_player.update_input(obj_input);
 		obj_player.update(delta_time);
 		obj_player.draw(opt.ctx);
 
 		handle_enemy(delta_time);
-		handle_control(obj_input, obj_player, enemy_list);
+		collision_detection(obj_player, enemy_list);
 
 		display_status(opt.ctx);
 
@@ -449,6 +309,16 @@ export const control = (opt: control_option) => {
 			requestAnimationFrame(animate);
 		}
 	};
+
+	window.addEventListener("keyup", (e) => {
+		if (e.key === " ") {
+			e.preventDefault();
+			e.stopPropagation();
+
+			if (game_over) restart_game();
+			if (game_up) level_up_game();
+		}
+	});
 
 	animate(0);
 };

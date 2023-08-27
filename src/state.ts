@@ -205,9 +205,8 @@ export class state_jump_roll extends state {
 	}
 	enter(): void {
 		super.enter();
-		if (this.player.power > 0) {
-			this.player.speed = this.player.max_speed;
-		} else this.player.set_state("jump");
+		if (this.player.power > 0) this.player.speed = this.player.max_speed;
+		else this.player.set_state("jump");
 	}
 	update(): void {
 		super.update();
@@ -264,12 +263,14 @@ export class state_bite extends state {
 	enter(): void {
 		super.enter();
 		this.interval = 25;
+		this.player.powered = this.interval;
 		this.player.invulnerable = this.interval;
 		this.player.speed = 0;
 	}
 	update(): void {
 		super.update();
 		this.interval--;
+		this.player.powered = this.interval;
 		this.player.invulnerable = this.interval;
 		if (this.interval <= 0) this.player.set_state("idle");
 	}
