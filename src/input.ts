@@ -4,6 +4,8 @@ export class input {
 		this.last_key = "";
 
 		window.addEventListener("keydown", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
 			switch (e.key) {
 				case "ArrowLeft":
 					this.last_key = "PRESS left";
@@ -27,6 +29,8 @@ export class input {
 		});
 
 		window.addEventListener("keyup", (e) => {
+			e.preventDefault();
+			e.stopPropagation();
 			switch (e.key) {
 				case "ArrowLeft":
 					this.last_key = "RELEASE left";

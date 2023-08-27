@@ -54,9 +54,8 @@ export class state {
 		this.player = player;
 	}
 	enter() {
-		this.player.frame_y = state_list[this.current_state].frame_y;
+		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
-		console.log(this.player.frame_y);
 	}
 	handle_input(input: input) {}
 }
@@ -68,6 +67,7 @@ export class state_idle extends state {
 	handle_input(input: input) {
 		if (input.last_key === "PRESS right") this.player.set_state("run");
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
+		if (input.last_key === "PRESS down") this.player.set_state("sit");
 	}
 }
 export class state_jump extends state {
@@ -102,7 +102,7 @@ export class state_dizzy extends state {
 }
 export class state_sit extends state {
 	constructor(player: player) {
-		super("dizzy", player);
+		super("sit", player);
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS up") this.player.set_state("idle");

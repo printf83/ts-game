@@ -14,6 +14,7 @@ import {
 	state_sit,
 	state_type,
 } from "./state.js";
+import { draw_text } from "./util.js";
 
 export class player extends baseAnimation {
 	state_list: { [key: string]: state } = {};
@@ -21,6 +22,9 @@ export class player extends baseAnimation {
 
 	canvas_width: number;
 	canvas_height: number;
+
+	velocity_y: number;
+	weight: number;
 
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const img = new Image();
@@ -48,6 +52,9 @@ export class player extends baseAnimation {
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
+
+		this.velocity_y = 0;
+		this.weight = 1;
 
 		this.state_list = {
 			idle: new state_idle(this),
@@ -109,6 +116,24 @@ const player_animate = (opt: {
 
 	const delta_time = opt.timestamp - player_last_timestamp;
 	player_last_timestamp = opt.timestamp;
+
+	draw_text({
+		ctx: opt.ctx,
+		x: 20,
+		y: 30,
+		text_color: "black",
+		shadow_color: "gray",
+		text: `Last input : ${opt.input.last_key}`,
+	});
+
+	draw_text({
+		ctx: opt.ctx,
+		x: 20,
+		y: 60,
+		text_color: "black",
+		shadow_color: "gray",
+		text: `Player state : ${opt.player.frame_y}`,
+	});
 
 	if (opt.player) {
 		opt.player.update_input(opt.input);
