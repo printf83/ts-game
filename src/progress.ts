@@ -48,7 +48,10 @@ export class progress {
 		this.bg_color = opt.bg_color ? opt.bg_color : "white";
 		this.bar_color = opt.bar_color ? opt.bar_color : "red";
 	}
-	update(value: number) {
+	update(value: number, min?: number, max?: number) {
+		this.min = min ?? this.min;
+		this.max = max ?? this.max;
+
 		this.value = value;
 		if (this.value < this.min) this.value = this.min;
 		if (this.value > this.max) this.value = this.max;

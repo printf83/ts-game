@@ -162,6 +162,7 @@ export const control = (opt: control_option) => {
 		player_progress = 0;
 		obj_player.life = 100;
 		obj_player.power = 0;
+		obj_player.max_speed = 14;
 		game_level = 1;
 		enemy_interval = 1000;
 		enemy_random_interval = Math.random() * enemy_interval + 500;
@@ -179,6 +180,7 @@ export const control = (opt: control_option) => {
 		if (obj_player.life > 100) obj_player.life = 100;
 
 		game_level++;
+		obj_player.max_speed = 14 + game_level * 2;
 		enemy_interval = 1000 - game_level * 50;
 		enemy_random_interval = Math.random() * enemy_interval + 500;
 		enemy_list = [];
@@ -195,7 +197,7 @@ export const control = (opt: control_option) => {
 		x: opt.canvas_width * 0.5 - opt.canvas_width * 0.4 * 0.5,
 		y: 30,
 		min: 0,
-		max: 1000,
+		max: player_progress_max,
 		width: opt.canvas_width * 0.4,
 		value: player_progress,
 	});
@@ -267,10 +269,10 @@ export const control = (opt: control_option) => {
 				ctx,
 				x: opt.canvas_width - 150,
 				y: 105,
-				text: `🤕`,
+				text: `🔒`,
 				text_align: "end",
 			});
-			progess_invulnerable.update(obj_player.invulnerable);
+			progess_invulnerable.update(obj_player.invulnerable, 0, obj_player.invulnerable_max);
 			progess_invulnerable.draw(opt.ctx);
 		}
 

@@ -1,6 +1,21 @@
 import { baseAnimation } from "./base.js";
 import { input } from "./input.js";
-import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_roll, state_run, state_sit, state_type } from "./state.js";
+import {
+	state,
+	state_bite,
+	state_dizzy,
+	state_fall,
+	state_fall_roll,
+	state_gethit,
+	state_idle,
+	state_jump,
+	state_jump_roll,
+	state_ko,
+	state_roll,
+	state_run,
+	state_sit,
+	state_type,
+} from "./state.js";
 import { draw_text } from "./util.js";
 
 export class player extends baseAnimation {
@@ -10,6 +25,7 @@ export class player extends baseAnimation {
 	canvas_width: number;
 	canvas_height: number;
 
+	invulnerable_max: number;
 	invulnerable: number;
 	power: number;
 	powered: number;
@@ -54,6 +70,7 @@ export class player extends baseAnimation {
 		this.power = 100;
 		this.powered = 0;
 		this.invulnerable = 0;
+		this.invulnerable_max = 0;
 
 		this.state_list = {
 			idle: new state_idle(this),
@@ -119,7 +136,14 @@ export const animate_player = (opt: { ctx: CanvasRenderingContext2D; canvas_widt
 };
 
 let player_last_timestamp = 0;
-const player_animate = (opt: { ctx: CanvasRenderingContext2D; player: player; input: input; canvas_width: number; canvas_height: number; timestamp: number }) => {
+const player_animate = (opt: {
+	ctx: CanvasRenderingContext2D;
+	player: player;
+	input: input;
+	canvas_width: number;
+	canvas_height: number;
+	timestamp: number;
+}) => {
 	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 	const delta_time = opt.timestamp - player_last_timestamp;
