@@ -28,6 +28,8 @@ export class enemy8 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			point: 3,
 		});
 
 		this.destination_y = Math.random() * (opt.canvas_height * 0.8);

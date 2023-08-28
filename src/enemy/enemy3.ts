@@ -34,6 +34,8 @@ export class enemy3 extends baseEnemy {
 
 			explode_out: true,
 			have_particle: true,
+
+			point: 3,
 		});
 
 		this.angle = Math.random() * 2;

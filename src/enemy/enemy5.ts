@@ -31,6 +31,8 @@ export class enemy5 extends baseEnemy {
 			sprite_length,
 
 			have_particle: true,
+
+			point: 3,
 		});
 
 		this.direction_x = Math.random() * 3 + 1.5;

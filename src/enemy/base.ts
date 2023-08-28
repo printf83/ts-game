@@ -11,6 +11,8 @@ export class baseEnemy extends baseAnimation {
 	canvas_width: number;
 	canvas_height: number;
 
+	point: number;
+
 	explode_in: boolean;
 	explode_out: boolean;
 	have_particle: boolean;
@@ -34,6 +36,8 @@ export class baseEnemy extends baseAnimation {
 		explode_out?: boolean;
 
 		have_particle?: boolean;
+
+		point?: number;
 	}) {
 		super(opt);
 
@@ -47,6 +51,8 @@ export class baseEnemy extends baseAnimation {
 		this.explode_out = opt.explode_out ?? false;
 
 		this.have_particle = opt.have_particle ?? false;
+
+		this.point = opt.point ?? 1;
 	}
 
 	update(delta_time: number, onframechange?: () => void) {

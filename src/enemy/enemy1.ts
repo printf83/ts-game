@@ -30,6 +30,8 @@ export class enemy1 extends baseEnemy {
 
 			explode_in: true,
 			explode_out: true,
+
+			point: 3,
 		});
 
 		this.life_index = 0;

@@ -61,8 +61,16 @@ export const control = (opt: control_option) => {
 						})
 					);
 
+					// console.log(`Score before: ${score}
+					// Point: ${i.point}
+					// Y: ${i.y}
+					// {H}eight: ${i.height}
+					// {C}anvas {H}eight: ${i.canvas_height}
+					// CH - H: ${i.canvas_height - i.height}
+					// Y - CH - H: ${Math.floor(i.y - i.canvas_height - i.height + 118)}`);
+					score += i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
+
 					i.mark_delete = true;
-					score += 3;
 				} else {
 					if (player.invulnerable <= 0) {
 						if (player.life > 30) {
@@ -72,7 +80,6 @@ export const control = (opt: control_option) => {
 							player.life -= 10;
 							player.set_state("dizzy");
 						} else {
-							player.set_state("ko");
 							game_over = true;
 						}
 					}
@@ -208,6 +215,13 @@ export const control = (opt: control_option) => {
 		width: 100,
 		value: obj_player.power,
 	});
+	//player_
+	const progess_invulnerable = new progress({
+		x: opt.canvas_width - 130,
+		y: 90,
+		width: 100,
+		value: obj_player.invulnerable,
+	});
 
 	const progress_list = [progess_level, progess_life, progess_power];
 
@@ -234,7 +248,7 @@ export const control = (opt: control_option) => {
 			ctx,
 			x: opt.canvas_width - 150,
 			y: 45,
-			text: `💖`,
+			text: `🧡`,
 			text_align: "end",
 		});
 		progess_life.update(obj_player.life);
@@ -243,10 +257,22 @@ export const control = (opt: control_option) => {
 			ctx,
 			x: opt.canvas_width - 150,
 			y: 75,
-			text: `🔥`,
+			text: `🚀`,
 			text_align: "end",
 		});
 		progess_power.update(obj_player.power);
+
+		if (obj_player.invulnerable > 0) {
+			draw_text({
+				ctx,
+				x: opt.canvas_width - 150,
+				y: 105,
+				text: `🤕`,
+				text_align: "end",
+			});
+			progess_invulnerable.update(obj_player.invulnerable);
+			progess_invulnerable.draw(opt.ctx);
+		}
 
 		progress_list.forEach((i) => i.draw(opt.ctx));
 

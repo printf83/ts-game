@@ -38,6 +38,8 @@ export class enemy4 extends baseEnemy {
 			explode_out: true,
 
 			have_particle: true,
+
+			point: 3,
 		});
 
 		this.new_x = Math.random() * (opt.canvas_width - width);

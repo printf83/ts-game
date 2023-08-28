@@ -166,7 +166,10 @@ export class state_sit extends state {
 	enter(): void {
 		super.enter();
 		this.player.speed = 0;
-		this.player.power += 0.2;
+	}
+	update(): void {
+		super.update();
+		this.player.power += 0.5;
 	}
 	handle_input(input: input) {
 		if (input.last_key === "RELEASE down") this.player.set_state("idle");

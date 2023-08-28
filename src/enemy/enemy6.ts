@@ -29,6 +29,8 @@ export class enemy6 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			point: 3,
 		});
 
 		this.speed = Math.random() * 2 + 2;
