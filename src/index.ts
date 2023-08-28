@@ -48,7 +48,7 @@ const controlCanvas = document.getElementById("controlCanvas") as HTMLCanvasElem
 
 (function () {
 	//control
-	controlCanvas.width = 1200;
+	controlCanvas.width = 1300;
 	controlCanvas.height = 700;
 	const controlCtx = controlCanvas.getContext("2d");
 	if (controlCtx) {

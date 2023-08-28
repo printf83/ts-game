@@ -113,11 +113,10 @@ export class state_fall extends state {
 		super.enter();
 	}
 	update() {
+		super.update();
 		if (this.player.is_ground()) {
 			if (this.player.speed > 0) this.player.set_state("run");
 			else this.player.set_state("idle");
-		} else {
-			super.update();
 		}
 	}
 	handle_input(input: input) {
@@ -307,7 +306,7 @@ export class state_gethit extends state {
 	}
 	enter(): void {
 		super.enter();
-		this.interval = 25;
+		this.interval = 50;
 		this.player.invulnerable_max = this.interval;
 		this.player.invulnerable = this.interval;
 		this.player.speed = 0;

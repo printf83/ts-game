@@ -39,7 +39,11 @@ export const control = (opt: control_option) => {
 	let base_height = opt.canvas_height - 118;
 	const obj_input = new input();
 	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
-	const obj_bg = new bg({ game_speed: obj_player.speed });
+	const obj_bg = new bg({
+		game_speed: obj_player.speed,
+		canvas_width: opt.canvas_width,
+		canvas_height: opt.canvas_height,
+	});
 
 	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
 		enemy_list.forEach((i) => {
