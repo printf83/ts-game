@@ -137,10 +137,12 @@ export class state_power_fall extends state {
 	}
 	enter(): void {
 		super.enter();
-		this.player.weight = 5;
+		this.player.weight = 20;
+		this.player.speed = this.player.max_speed;
 	}
 	update() {
 		super.update();
+		this.player.power--;
 		if (this.player.is_ground()) {
 			if (this.player.power > 0) this.player.set_state("roll");
 			else this.player.set_state("run");
@@ -149,8 +151,10 @@ export class state_power_fall extends state {
 		}
 	}
 	handle_input(input: input) {
-		if (input.last_key === "PRESS right" && this.player.power > 0) this.player.set_state("fall_roll");
-		if (input.last_key === "PRESS down" && this.player.power > 0) this.player.set_state("fall_roll");
+		if (input.last_key === "PRESS right" && this.player.power > 0) {
+			this.player.weight = 1;
+			this.player.set_state("fall_roll");
+		}
 	}
 }
 

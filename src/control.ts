@@ -210,7 +210,7 @@ export const control = (opt: control_option) => {
 		value: player_progress,
 	});
 
-	//player_live
+	//player_life
 	const progess_life = new progress({
 		x: opt.canvas_width - 130,
 		y: 30,
@@ -219,7 +219,7 @@ export const control = (opt: control_option) => {
 		max: 100,
 	});
 
-	//player_pwr
+	//player_power
 	const progess_power = new progress({
 		x: opt.canvas_width - 130,
 		y: 60,
@@ -227,7 +227,8 @@ export const control = (opt: control_option) => {
 		value: obj_player.power,
 		max: 100,
 	});
-	//player_
+
+	//player_invulnerable
 	const progess_invulnerable = new progress({
 		x: opt.canvas_width - 130,
 		y: 90,
@@ -374,6 +375,18 @@ export const control = (opt: control_option) => {
 		obj_bg.draw(opt.ctx);
 		obj_player.update_input(obj_input);
 		obj_player.update(delta_time);
+
+		if (obj_player.speed === obj_player.max_speed) {
+			particle_list.push(
+				new particle({
+					x: obj_player.x + obj_player.width * 0.35,
+					y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
+					size: obj_player.width * 0.5,
+					color: "white",
+				})
+			);
+		}
+
 		obj_player.draw(opt.ctx);
 
 		handle_enemy(delta_time);

@@ -7,7 +7,7 @@ export class input {
 		this.last_key = "";
 
 		window.addEventListener("keydown", (e) => {
-			if (this.key_filter.includes(e.key)) {
+			if (this.key_filter.indexOf(e.key) > -1) {
 				e.preventDefault();
 				e.stopPropagation();
 				switch (e.key) {
@@ -34,7 +34,7 @@ export class input {
 		});
 
 		window.addEventListener("keyup", (e) => {
-			if (this.key_filter.includes(e.key)) {
+			if (this.key_filter.indexOf(e.key) > -1) {
 				e.preventDefault();
 				e.stopPropagation();
 
