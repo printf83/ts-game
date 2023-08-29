@@ -1,7 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 const imgEnemy3 = new Image();
-imgEnemy3.src = "./res/enemy3.png";
+imgEnemy3.src = "./res/enemy/enemy3.png";
 
 export class enemy3 extends baseEnemy {
 	angle: number;

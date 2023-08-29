@@ -1,4 +1,5 @@
-import { bg } from "./bg.js";
+import { bg1 } from "./bg1.js";
+import { bg2 } from "./bg2.js";
 import { baseEnemy } from "./enemy/base.js";
 import { enemy1 } from "./enemy/enemy1.js";
 import { enemy2 } from "./enemy/enemy2.js";
@@ -34,14 +35,15 @@ interface control_option {
 }
 
 export const control = (opt: control_option) => {
-	let base_height = opt.canvas_height - 118;
 	const obj_input = new input();
-	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
-	const obj_bg = new bg({
-		game_speed: obj_player.speed,
+
+	const obj_bg = new bg2({
+		game_speed: 0,
 		canvas_width: opt.canvas_width,
 		canvas_height: opt.canvas_height,
 	});
+	let base_height = opt.canvas_height - obj_bg.ground;
+	const obj_player = new player({ canvas_width: opt.canvas_width, canvas_height: base_height });
 
 	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
 		enemy_list.forEach((i) => {
@@ -377,14 +379,18 @@ export const control = (opt: control_option) => {
 		obj_player.update(delta_time);
 
 		if (obj_player.speed === obj_player.max_speed) {
-			particle_list.push(
-				new particle({
-					x: obj_player.x + obj_player.width * 0.35,
-					y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
-					size: obj_player.width * 0.5,
-					color: "white",
-				})
-			);
+			Array(5)
+				.fill("")
+				.forEach((_i) => {
+					particle_list.push(
+						new particle({
+							x: obj_player.x + obj_player.width * 0.35,
+							y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
+							size: obj_player.width * 0.5,
+							color: "white",
+						})
+					);
+				});
 		}
 
 		obj_player.draw(opt.ctx);

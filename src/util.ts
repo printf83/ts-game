@@ -3,7 +3,7 @@ export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: nu
 	opt.font_weight ??= "20px";
 	opt.text_color ??= "white";
 	opt.shadow_color ??= "black";
-	opt.shadow_blur ??= 1;
+	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
 
 	opt.ctx.save();
@@ -22,7 +22,7 @@ export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: nu
 	opt.ctx.fillStyle = opt.shadow_color;
 	opt.ctx.fillText(opt.text, opt.x, opt.y);
 	opt.ctx.fillStyle = opt.text_color;
-	opt.ctx.fillText(opt.text, opt.x + opt.shadow_blur, opt.y + opt.shadow_blur);
+	opt.ctx.fillText(opt.text, opt.x - opt.shadow_blur, opt.y - opt.shadow_blur);
 
 	opt.ctx.restore();
 };

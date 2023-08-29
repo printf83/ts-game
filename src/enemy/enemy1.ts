@@ -1,7 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 const imgEnemy1 = new Image();
-imgEnemy1.src = "./res/enemy1.png";
+imgEnemy1.src = "./res/enemy/enemy1.png";
 
 export class enemy1 extends baseEnemy {
 	life_index: number;

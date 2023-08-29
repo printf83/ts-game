@@ -1,7 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 const imgEnemy6 = new Image();
-imgEnemy6.src = "./res/enemy6.png";
+imgEnemy6.src = "./res/enemy/enemy6.png";
 
 export class enemy6 extends baseEnemy {
 	speed: number;

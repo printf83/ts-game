@@ -1,7 +1,7 @@
 import { baseEnemy } from "./base.js";
 
 const imgEnemy5 = new Image();
-imgEnemy5.src = "./res/enemy5.png";
+imgEnemy5.src = "./res/enemy/enemy5.png";
 
 export class enemy5 extends baseEnemy {
 	direction_x: number;

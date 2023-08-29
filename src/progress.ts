@@ -22,7 +22,7 @@ export class progress {
 
 	constructor(opt: { x: number; y: number; min?: number; max?: number; width: number; height?: number; value?: number; bg_color?: string; bar_color?: string; shadow_color?: string; shadow_blur?: number }) {
 		opt.shadow_color ??= "grey";
-		opt.shadow_blur ??= 1;
+		opt.shadow_blur ??= 2;
 		opt.bg_color ??= "white";
 		opt.bar_color ??= "red";
 		opt.min ??= 0;
@@ -77,7 +77,7 @@ export class progress {
 
 		if (this.shadow_color && this.shadow_blur) {
 			ctx.fillStyle = this.shadow_color;
-			ctx.fillRect(this.x - this.shadow_blur, this.y - this.shadow_blur, this.width, this.height);
+			ctx.fillRect(this.x + this.shadow_blur, this.y + this.shadow_blur, this.width, this.height);
 		}
 
 		ctx.fillStyle = this.bg_color;
