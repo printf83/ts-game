@@ -67,6 +67,7 @@ export class state {
 	}
 
 	enter() {
+		this.player.frame = 0;
 		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
 	}

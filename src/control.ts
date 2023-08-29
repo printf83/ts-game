@@ -9,6 +9,7 @@ import { enemy5 } from "./enemy/enemy5.js";
 import { enemy6 } from "./enemy/enemy6.js";
 import { enemy7 } from "./enemy/enemy7.js";
 import { enemy8 } from "./enemy/enemy8.js";
+import { enemy9 } from "./enemy/enemy9.js";
 import { explosion } from "./explosion.js";
 import { particle } from "./particle.js";
 import { player } from "./player.js";
@@ -25,8 +26,10 @@ const enemyDB = {
 	enemy6: enemy6,
 	enemy7: enemy7,
 	enemy8: enemy8,
+	enemy9: enemy9,
 };
 export type enemyDBType = keyof typeof enemyDB;
+const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
 
 interface control_option {
 	ctx: CanvasRenderingContext2D;
@@ -92,7 +95,6 @@ export const control = (opt: control_option) => {
 		});
 	};
 
-	const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8"];
 	let enemy_list: baseEnemy[] = [];
 	let explosion_list: explosion[] = [];
 	let particle_list: particle[] = [];
@@ -247,7 +249,7 @@ export const control = (opt: control_option) => {
 			x: 20,
 			y: 50,
 			text: `🎮 ${score}`,
-			font_weight: "30px",
+			font_weight: 30,
 		});
 
 		draw_text({
@@ -298,7 +300,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 - 20,
 				text: `Game over!`,
-				font_weight: "50px",
+				font_weight: 50,
 				text_align: "center",
 				text_color: "red",
 			});
@@ -307,7 +309,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 + 20,
 				text: `Press SPACEBAR to try again.`,
-				font_weight: "30px",
+				font_weight: 30,
 				text_align: "center",
 				text_color: "red",
 			});
@@ -319,7 +321,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 - 20,
 				text: `Level ${game_level} complete!`,
-				font_weight: "50px",
+				font_weight: 50,
 				text_align: "center",
 				text_color: "green",
 			});
@@ -328,7 +330,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 + 20,
 				text: `Press SPACEBAR to continue.`,
-				font_weight: "30px",
+				font_weight: 30,
 				text_align: "center",
 				text_color: "green",
 			});
@@ -340,7 +342,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 - 20,
 				text: `Game pause!`,
-				font_weight: "50px",
+				font_weight: 50,
 				text_align: "center",
 			});
 			draw_text({
@@ -348,7 +350,7 @@ export const control = (opt: control_option) => {
 				x: opt.canvas_width * 0.5,
 				y: base_height * 0.5 + 20,
 				text: `Press ENTER to continue.`,
-				font_weight: "30px",
+				font_weight: 30,
 				text_align: "center",
 			});
 		}

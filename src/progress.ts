@@ -18,11 +18,16 @@ export class progress {
 	bar_width: number;
 	bar_height: number;
 
+	shadow_x: number;
+	shadow_y: number;
+	shadow_width: number;
+	shadow_height: number;
+
 	padding: number;
 
 	constructor(opt: { x: number; y: number; min?: number; max?: number; width: number; height?: number; value?: number; bg_color?: string; bar_color?: string; shadow_color?: string; shadow_blur?: number }) {
-		opt.shadow_color ??= "grey";
-		opt.shadow_blur ??= 2;
+		opt.shadow_color ??= "black";
+		opt.shadow_blur ??= 1;
 		opt.bg_color ??= "white";
 		opt.bar_color ??= "red";
 		opt.min ??= 0;
@@ -50,6 +55,11 @@ export class progress {
 		this.bar_color = opt.bar_color;
 		this.shadow_color = opt.shadow_color;
 		this.shadow_blur = opt.shadow_blur;
+
+		this.shadow_x = this.x - this.shadow_blur;
+		this.shadow_y = this.y - this.shadow_blur;
+		this.shadow_width = this.width + this.shadow_blur * 2;
+		this.shadow_height = this.height + this.shadow_blur * 2;
 	}
 	update(value: number, min?: number, max?: number) {
 		this.min = min ?? this.min;
@@ -64,20 +74,9 @@ export class progress {
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
 
-		// if (this.shadow_color) ctx.shadowColor = this.shadow_color;
-		// if (this.shadow_blur) ctx.shadowBlur = this.shadow_blur;
-
-		// ctx.fillStyle = this.bg_color;
-		// ctx.fillRect(this.x, this.y, this.width, this.height);
-
-		// if (this.shadow_blur) ctx.shadowBlur = 0;
-
-		// ctx.fillStyle = this.bar_color;
-		// ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
-
 		if (this.shadow_color && this.shadow_blur) {
 			ctx.fillStyle = this.shadow_color;
-			ctx.fillRect(this.x + this.shadow_blur, this.y + this.shadow_blur, this.width, this.height);
+			ctx.fillRect(this.shadow_x, this.shadow_y, this.shadow_width, this.shadow_height);
 		}
 
 		ctx.fillStyle = this.bg_color;

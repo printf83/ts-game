@@ -22,11 +22,11 @@ export class bg1 {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
-		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-1.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.2 }));
+		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-1.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0 }));
 
-		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-2.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.4 }));
+		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-2.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.2 }));
 
-		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-3.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.6 }));
+		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-3.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.4 }));
 
 		this.bg_list.push(new layer({ img: this.img_setup("./res/bg1/layer-4.png"), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: 0.8 }));
 

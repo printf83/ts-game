@@ -10,6 +10,9 @@ export class particle {
 	mark_delete: boolean;
 	radius: number;
 	max_radius: number;
+	alpha: number;
+
+	MathPI2 = Math.PI * 2;
 
 	constructor(opt: { x: number; y: number; size: number; color: string }) {
 		this.x = opt.x;
@@ -23,6 +26,7 @@ export class particle {
 		this.mark_delete = false;
 		this.radius = (Math.random() * this.size) / 10;
 		this.max_radius = Math.random() * 15 + 30;
+		this.alpha = 1 - this.radius / this.max_radius;
 	}
 
 	update(delta_time: number) {
@@ -31,15 +35,18 @@ export class particle {
 			this.timestamp = 0;
 
 			if (this.radius > this.max_radius - 5) this.mark_delete = true;
-			else this.radius += 0.5;
+			else {
+				this.radius += 0.5;
+				this.alpha = 1 - this.radius / this.max_radius;
+			}
 		}
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
-		ctx.globalAlpha = 1 - this.radius / this.max_radius;
+		ctx.globalAlpha = this.alpha;
 		ctx.beginPath();
 		ctx.fillStyle = this.color;
-		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+		ctx.arc(this.x, this.y, this.radius, 0, this.MathPI2);
 		ctx.fill();
 		ctx.restore();
 	}

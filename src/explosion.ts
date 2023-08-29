@@ -10,6 +10,10 @@ export class explosion extends baseAnimation {
 	sound?: string;
 	angle: number;
 
+	dx: number;
+	dy: number;
+	sx: number;
+
 	constructor(opt: { x: number; y: number; scale: number; play_sound?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 200;
@@ -41,6 +45,9 @@ export class explosion extends baseAnimation {
 		}
 
 		this.angle = Math.random() * 180;
+		this.dx = 0 - this.width * 0.5;
+		this.dy = 0 - this.height * 0.5;
+		this.sx = 0;
 	}
 
 	update(timestamp: number) {
@@ -57,6 +64,7 @@ export class explosion extends baseAnimation {
 				this.mark_delete = true;
 			} else {
 				this.frame++;
+				this.sx = this.sprite_width * this.frame;
 			}
 		}
 	}
@@ -65,7 +73,7 @@ export class explosion extends baseAnimation {
 
 		ctx.translate(this.x, this.y);
 		ctx.rotate(this.angle);
-		ctx.drawImage(this.img, this.sprite_width * this.frame, 0, this.sprite_width, this.sprite_width, 0 - this.width * 0.5, 0 - this.height * 0.5, this.width, this.height);
+		ctx.drawImage(this.img, this.sx, 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
 
 		ctx.restore();
 	}
