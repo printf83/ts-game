@@ -33,8 +33,8 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10"];
-const enemy_type = ["enemy9", "enemy10", "enemy11"];
+const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+// const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 interface control_option {
 	ctx: CanvasRenderingContext2D;
@@ -94,6 +94,21 @@ export const control = (opt: control_option) => {
 						} else {
 							game_over = true;
 						}
+					}
+
+					if (!game_over) {
+						i.explode_out = false;
+
+						explosion_list.push(
+							new explosion({
+								x: i.x + i.width * 0.5,
+								y: i.y + i.height * 0.5,
+								scale: i.width * 0.008,
+								play_sound: true,
+							})
+						);
+
+						i.mark_delete = true;
 					}
 				}
 			}

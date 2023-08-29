@@ -342,7 +342,7 @@ export class state_gethit extends state {
 	}
 	enter(): void {
 		super.enter();
-		this.interval = 50;
+		this.interval = 15;
 		this.player.invulnerable_max = this.interval;
 		this.player.invulnerable = this.interval;
 		this.player.speed = 0;

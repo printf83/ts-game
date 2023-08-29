@@ -24,7 +24,7 @@ export class enemy8 extends baseEnemy {
 			img: imgEnemy8,
 
 			x: Math.random() * (opt.canvas_width - width) + opt.canvas_width,
-			y: Math.random() * (opt.canvas_height - height),
+			y: 0 - height,
 			width,
 			height,
 
@@ -44,6 +44,9 @@ export class enemy8 extends baseEnemy {
 
 	update(delta_time: number, onframechange?: () => void) {
 		this.y += this.speed;
+		this.string_y = this.y + 10;
+		this.string_x = this.x + this.width * 0.5;
+
 		if (this.y > this.destination_y) {
 			this.speed *= -1;
 		}
