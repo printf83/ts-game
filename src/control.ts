@@ -33,8 +33,6 @@ interface control_option {
 	canvas_height: number;
 }
 
-const keys = ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " "];
-
 export const control = (opt: control_option) => {
 	let base_height = opt.canvas_height - 118;
 	const obj_input = new input();

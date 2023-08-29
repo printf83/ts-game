@@ -24,7 +24,7 @@ class layer {
 		this.ratio = this.width / this.height;
 		this.canvas_width = this.canvas_height * this.ratio;
 
-		// 		console.log(`Width: ${this.width}
+		// console.log(`Width: ${this.width}
 		// Height: ${this.height}
 		// Ratio (W/H): ${this.ratio}
 		// Canvas Height: ${opt.canvas_height}
@@ -94,43 +94,3 @@ export class bg {
 		});
 	};
 }
-
-export const animate_bg = (opt: { ctx: CanvasRenderingContext2D; ctl: HTMLInputElement; lbl: HTMLSpanElement; canvas_width: number; canvas_height: number }) => {
-	const obj_bg = new bg({
-		game_speed: 5,
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-	});
-
-	opt.ctl.addEventListener("change", (event) => {
-		const target = event.currentTarget as HTMLInputElement;
-		const value = target.value;
-		if (value && obj_bg) {
-			opt.lbl.innerText = `[${value}]`;
-			obj_bg.set_game_speed(parseInt(value));
-		}
-	});
-
-	bg_animate({
-		ctx: opt.ctx,
-		bg: obj_bg,
-		canvas_width: opt.canvas_width,
-		canvas_height: opt.canvas_height,
-		game_frame: 0,
-	});
-
-	opt.ctl.dispatchEvent(new Event("change"));
-};
-
-const bg_animate = (opt: { ctx: CanvasRenderingContext2D; bg: bg; canvas_width: number; canvas_height: number; game_frame: number }) => {
-	opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-
-	if (opt.bg) {
-		opt.bg.update(opt.bg.game_speed);
-		opt.bg.draw(opt.ctx);
-	}
-
-	requestAnimationFrame(() => {
-		bg_animate(opt);
-	});
-};
