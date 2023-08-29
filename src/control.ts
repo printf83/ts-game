@@ -29,7 +29,8 @@ const enemyDB = {
 	enemy9: enemy9,
 };
 export type enemyDBType = keyof typeof enemyDB;
-const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
+// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
+const enemy_type = ["enemy9"];
 
 interface control_option {
 	ctx: CanvasRenderingContext2D;
