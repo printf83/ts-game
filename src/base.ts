@@ -5,6 +5,7 @@ export class baseAnimation {
 	frame_interval: number;
 
 	frame_y: number;
+	frame_x: number;
 
 	mark_delete: boolean;
 
@@ -36,12 +37,13 @@ export class baseAnimation {
 		fps?: number;
 		animation_repeat?: boolean;
 	}) {
-		this.fps = opt.fps ? opt.fps : 60;
+		this.fps = opt.fps ? opt.fps : 20;
 		this.frame = 0;
 		this.frame_timer = 0;
 		this.frame_interval = 1000 / this.fps;
 
 		this.frame_y = 0;
+		this.frame_x = 0;
 
 		this.mark_delete = false;
 
@@ -68,6 +70,7 @@ export class baseAnimation {
 				else this.mark_delete = true;
 			} else {
 				this.frame++;
+				this.frame_x = this.frame * this.sprite_width;
 			}
 
 			if (onframechange) {
@@ -79,17 +82,7 @@ export class baseAnimation {
 	}
 
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(
-			this.img,
-			this.frame * this.sprite_width,
-			this.frame_y,
-			this.sprite_width,
-			this.sprite_height,
-			this.x,
-			this.y,
-			this.width,
-			this.height
-		);
+		ctx.drawImage(this.img, this.frame_x, this.frame_y, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 	}
 
 	set_position(game_speed: number) {

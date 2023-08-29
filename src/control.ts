@@ -16,6 +16,8 @@ import { player } from "./player.js";
 import { progress } from "./progress.js";
 import { draw_text } from "./util.js";
 import { input } from "./input.js";
+import { enemy10 } from "./enemy/enemy10.js";
+import { enemy11 } from "./enemy/enemy11.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -27,10 +29,12 @@ const enemyDB = {
 	enemy7: enemy7,
 	enemy8: enemy8,
 	enemy9: enemy9,
+	enemy10: enemy10,
+	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
-// const enemy_type = ["enemy9"];
+// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10"];
+const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 interface control_option {
 	ctx: CanvasRenderingContext2D;
@@ -101,30 +105,32 @@ export const control = (opt: control_option) => {
 	let particle_list: particle[] = [];
 
 	const handle_enemy = (delta_time: number) => {
-		if (enemy_timer > enemy_interval + enemy_random_interval) {
-			const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
+		if (obj_player.speed > 0) {
+			if (enemy_timer > enemy_interval + enemy_random_interval) {
+				const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
 
-			let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
-			const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: base_height });
+				let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
+				const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: base_height });
 
-			if (new_enemy.explode_in) {
-				explosion_list.push(
-					new explosion({
-						x: new_enemy.x + new_enemy.width / 2,
-						y: new_enemy.y + new_enemy.height / 2,
-						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
-						play_sound: false,
-					})
-				);
+				if (new_enemy.explode_in) {
+					explosion_list.push(
+						new explosion({
+							x: new_enemy.x + new_enemy.width / 2,
+							y: new_enemy.y + new_enemy.height / 2,
+							scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+							play_sound: false,
+						})
+					);
+				}
+
+				enemy_list.push(new_enemy);
+				enemy_list.sort((a, b) => a.width - b.width);
+
+				enemy_random_interval = Math.random() * enemy_interval + 500;
+				enemy_timer = 0;
+			} else {
+				enemy_timer += delta_time;
 			}
-
-			enemy_list.push(new_enemy);
-			enemy_list.sort((a, b) => a.width - b.width);
-
-			enemy_random_interval = Math.random() * enemy_interval + 500;
-			enemy_timer = 0;
-		} else {
-			enemy_timer += delta_time;
 		}
 
 		[...particle_list, ...explosion_list].forEach((i) => {

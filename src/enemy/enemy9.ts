@@ -30,8 +30,6 @@ export class enemy9 extends baseEnemy {
 			sprite_height,
 			sprite_length,
 
-			fps: 15,
-
 			have_particle: true,
 
 			point: 3,
