@@ -51,8 +51,8 @@ export class enemy5 extends baseEnemy {
 		super.update(delta_time, onframechange);
 	}
 
-	draw(ctx: CanvasRenderingContext2D, ctx_collision: CanvasRenderingContext2D) {
-		super.draw(ctx, ctx_collision);
+	draw(ctx: CanvasRenderingContext2D) {
+		super.draw(ctx);
 	}
 
 	set_position(game_speed: number): void {

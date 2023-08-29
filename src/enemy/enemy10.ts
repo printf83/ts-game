@@ -26,7 +26,7 @@ export class enemy10 extends baseEnemy {
 			sprite_height,
 			sprite_length,
 
-			fps: 2,
+			fps: 5,
 
 			point: 1,
 		});

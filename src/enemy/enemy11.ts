@@ -7,6 +7,9 @@ export class enemy11 extends baseEnemy {
 	destination_y: number;
 	speed: number;
 
+	string_x: number;
+	string_y: number;
+
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const sprite_length = 5;
 		const sprite_width = 120;
@@ -21,7 +24,7 @@ export class enemy11 extends baseEnemy {
 			img: imgEnemy11,
 
 			x: Math.random() * (opt.canvas_width - width) + opt.canvas_width,
-			y: 0 - height,
+			y: Math.random() * (opt.canvas_height - height),
 			width,
 			height,
 
@@ -34,10 +37,15 @@ export class enemy11 extends baseEnemy {
 
 		this.destination_y = Math.random() * (opt.canvas_height * 0.8);
 		this.speed = Math.random() * 2 + 2;
+
+		this.string_x = this.x + this.width * 0.5;
+		this.string_y = this.y + 10;
 	}
 
 	update(delta_time: number, onframechange?: () => void) {
 		this.y += this.speed;
+		this.string_y = this.y + 10;
+
 		if (this.y > this.destination_y) {
 			this.speed *= -1;
 		}
@@ -51,8 +59,8 @@ export class enemy11 extends baseEnemy {
 
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.beginPath();
-		ctx.moveTo(this.x + this.width * 0.5, 0);
-		ctx.lineTo(this.x + this.width * 0.5, this.y + 10);
+		ctx.moveTo(this.string_x, 0);
+		ctx.lineTo(this.string_x, this.string_y);
 		ctx.stroke();
 		super.draw(ctx);
 	}
