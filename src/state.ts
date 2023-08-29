@@ -38,6 +38,10 @@ export const state_list = {
 		frame_y: 6,
 		sprite_length: 7,
 	},
+	power_fall: {
+		frame_y: 6,
+		sprite_length: 7,
+	},
 	bite: {
 		frame_y: 7,
 		sprite_length: 7,
@@ -121,8 +125,31 @@ export class state_fall extends state {
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS right" && this.player.power > 0) this.player.set_state("fall_roll");
+		if (input.last_key === "PRESS down" && this.player.power > 0) this.player.set_state("fall_roll");
 	}
 }
+export class state_power_fall extends state {
+	constructor(player: player) {
+		super("power_fall", player);
+	}
+	enter(): void {
+		super.enter();
+	}
+	update() {
+		super.update();
+		if (this.player.is_ground()) {
+			if (this.player.power > 0) this.player.set_state("roll");
+			else this.player.set_state("run");
+		} else {
+			if (this.player.power <= 0) this.player.set_state("fall");
+		}
+	}
+	handle_input(input: input) {
+		if (input.last_key === "PRESS right" && this.player.power > 0) this.player.set_state("fall_roll");
+		if (input.last_key === "PRESS down" && this.player.power > 0) this.player.set_state("fall_roll");
+	}
+}
+
 export class state_run extends state {
 	constructor(player: player) {
 		super("run", player);

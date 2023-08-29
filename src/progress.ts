@@ -10,6 +10,8 @@ export class progress {
 
 	bg_color: string;
 	bar_color: string;
+	shadow_color?: string;
+	shadow_blur?: number;
 
 	bar_x: number;
 	bar_y: number;
@@ -28,14 +30,25 @@ export class progress {
 		value?: number;
 		bg_color?: string;
 		bar_color?: string;
+		shadow_color?: string;
+		shadow_blur?: number;
 	}) {
+		opt.shadow_color ??= "grey";
+		opt.shadow_blur ??= 1;
+		opt.bg_color ??= "white";
+		opt.bar_color ??= "red";
+		opt.min ??= 0;
+		opt.max ??= 1000;
+		opt.height ??= 20;
+		opt.value ??= 0;
+
 		this.x = opt.x;
 		this.y = opt.y;
-		this.min = opt.min ? opt.min : 0;
-		this.max = opt.max ? opt.max : 100;
+		this.min = opt.min;
+		this.max = opt.max;
 		this.width = opt.width;
-		this.height = opt.height ? opt.height : 20;
-		this.value = opt.value ? opt.value : 0;
+		this.height = opt.height;
+		this.value = opt.value;
 		this.percent = this.value / this.max;
 
 		this.padding = 2;
@@ -45,8 +58,10 @@ export class progress {
 		this.bar_height = this.height - this.padding * 2;
 		this.bar_width = (this.width - this.padding * 2) * this.percent;
 
-		this.bg_color = opt.bg_color ? opt.bg_color : "white";
-		this.bar_color = opt.bar_color ? opt.bar_color : "red";
+		this.bg_color = opt.bg_color;
+		this.bar_color = opt.bar_color;
+		this.shadow_color = opt.shadow_color;
+		this.shadow_blur = opt.shadow_blur;
 	}
 	update(value: number, min?: number, max?: number) {
 		this.min = min ?? this.min;
@@ -60,10 +75,29 @@ export class progress {
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.save();
+
+		if (this.shadow_color) ctx.shadowColor = this.shadow_color;
+		if (this.shadow_blur) ctx.shadowBlur = this.shadow_blur;
+
 		ctx.fillStyle = this.bg_color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
+
+		if (this.shadow_blur) ctx.shadowBlur = 0;
+
 		ctx.fillStyle = this.bar_color;
 		ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
+
+		// if (this.shadow_color && this.shadow_blur) {
+		// 	ctx.fillStyle = this.shadow_color;
+		// 	ctx.fillRect(this.x - this.shadow_blur, this.y - this.shadow_blur, this.width, this.height);
+		// }
+
+		// ctx.fillStyle = this.bg_color;
+		// ctx.fillRect(this.x, this.y, this.width, this.height);
+
+		// ctx.fillStyle = this.bar_color;
+		// ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
+
 		ctx.restore();
 	}
 }

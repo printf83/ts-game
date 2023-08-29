@@ -158,8 +158,9 @@ export const control = (opt: control_option) => {
 	};
 
 	let game_up = false;
-	let game_level = 1;
 	let game_over = false;
+	let game_pause = false;
+	let game_level = 1;
 	let score = 0;
 
 	const restart_game = () => {
@@ -194,6 +195,11 @@ export const control = (opt: control_option) => {
 		animate(0);
 	};
 
+	const continue_game = () => {
+		game_pause = false;
+		animate(0);
+	};
+
 	//progress
 	let player_progress = 0;
 	let player_progress_max = 1000;
@@ -212,6 +218,7 @@ export const control = (opt: control_option) => {
 		y: 30,
 		width: 100,
 		value: obj_player.life,
+		max: 100,
 	});
 
 	//player_pwr
@@ -220,6 +227,7 @@ export const control = (opt: control_option) => {
 		y: 60,
 		width: 100,
 		value: obj_player.power,
+		max: 100,
 	});
 	//player_
 	const progess_invulnerable = new progress({
@@ -227,6 +235,7 @@ export const control = (opt: control_option) => {
 		y: 90,
 		width: 100,
 		value: obj_player.invulnerable,
+		max: obj_player.invulnerable_max,
 	});
 
 	const progress_list = [progess_level, progess_life, progess_power];
@@ -286,9 +295,18 @@ export const control = (opt: control_option) => {
 			draw_text({
 				ctx,
 				x: opt.canvas_width * 0.5,
-				y: base_height * 0.5,
-				text: `Game over! Try again.`,
+				y: base_height * 0.5 - 20,
+				text: `Game over!`,
 				font_weight: "50px",
+				text_align: "center",
+				text_color: "red",
+			});
+			draw_text({
+				ctx,
+				x: opt.canvas_width * 0.5,
+				y: base_height * 0.5 + 20,
+				text: `Press SPACEBAR to try again.`,
+				font_weight: "30px",
 				text_align: "center",
 				text_color: "red",
 			});
@@ -298,11 +316,39 @@ export const control = (opt: control_option) => {
 			draw_text({
 				ctx,
 				x: opt.canvas_width * 0.5,
-				y: base_height * 0.5,
+				y: base_height * 0.5 - 20,
 				text: `Level ${game_level} complete!`,
 				font_weight: "50px",
 				text_align: "center",
 				text_color: "green",
+			});
+			draw_text({
+				ctx,
+				x: opt.canvas_width * 0.5,
+				y: base_height * 0.5 + 20,
+				text: `Press SPACEBAR to continue.`,
+				font_weight: "30px",
+				text_align: "center",
+				text_color: "green",
+			});
+		}
+
+		if (game_pause) {
+			draw_text({
+				ctx,
+				x: opt.canvas_width * 0.5,
+				y: base_height * 0.5 - 20,
+				text: `Game pause!`,
+				font_weight: "50px",
+				text_align: "center",
+			});
+			draw_text({
+				ctx,
+				x: opt.canvas_width * 0.5,
+				y: base_height * 0.5 + 20,
+				text: `Press ENTER to continue.`,
+				font_weight: "30px",
+				text_align: "center",
 			});
 		}
 	};
@@ -337,18 +383,28 @@ export const control = (opt: control_option) => {
 
 		display_status(opt.ctx);
 
-		if (!game_over && !game_up) {
+		if (!game_over && !game_up && !game_pause) {
 			requestAnimationFrame(animate);
 		}
 	};
 
 	window.addEventListener("keyup", (e) => {
 		if (e.key === " ") {
-			e.preventDefault();
-			e.stopPropagation();
+			if (game_up || game_over) {
+				e.preventDefault();
+				e.stopPropagation();
 
-			if (game_over) restart_game();
-			if (game_up) level_up_game();
+				if (game_over) restart_game();
+				if (game_up) level_up_game();
+			}
+		} else if (e.key === "Enter") {
+			if (!game_up && !game_over) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				if (!game_pause) game_pause = true;
+				else if (game_pause) continue_game();
+			}
 		}
 	});
 
