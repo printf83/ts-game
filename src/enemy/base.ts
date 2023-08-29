@@ -36,6 +36,7 @@ export class baseEnemy extends baseAnimation {
 		explode_out?: boolean;
 
 		have_particle?: boolean;
+		fps?: number;
 
 		point?: number;
 	}) {

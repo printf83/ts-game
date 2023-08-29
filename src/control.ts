@@ -29,8 +29,8 @@ const enemyDB = {
 	enemy9: enemy9,
 };
 export type enemyDBType = keyof typeof enemyDB;
-// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
-const enemy_type = ["enemy9"];
+const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9"];
+// const enemy_type = ["enemy9"];
 
 interface control_option {
 	ctx: CanvasRenderingContext2D;
@@ -62,9 +62,9 @@ export const control = (opt: control_option) => {
 
 					explosion_list.push(
 						new explosion({
-							x: i.x + i.width / 2,
-							y: i.y + i.height / 2,
-							scale: (i.width / i.sprite_width) * 1.5,
+							x: i.x + i.width * 0.5,
+							y: i.y + i.height * 0.5,
+							scale: i.width * 0.008,
 							play_sound: true,
 						})
 					);
@@ -141,14 +141,12 @@ export const control = (opt: control_option) => {
 
 			if (i.have_particle) {
 				particle_list.push(
-					new particle(
-						new particle({
-							x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
-							y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
-							size: i.width * 0.5,
-							color: i.uid_text,
-						})
-					)
+					new particle({
+						x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
+						y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
+						size: i.width * 0.5,
+						color: i.uid_text,
+					})
 				);
 			}
 

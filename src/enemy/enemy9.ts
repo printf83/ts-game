@@ -13,7 +13,7 @@ export class enemy9 extends baseEnemy {
 		const sprite_length = 5;
 		const sprite_width = 60;
 		const sprite_height = 44;
-		const size_modifier = Math.random() * 0.1 + 0.3;
+		const size_modifier = Math.random() * 0.8 + 1.1;
 		const width = sprite_width * size_modifier;
 		const height = sprite_height * size_modifier;
 
@@ -29,6 +29,8 @@ export class enemy9 extends baseEnemy {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			fps: 15,
 
 			have_particle: true,
 
