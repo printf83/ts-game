@@ -408,8 +408,6 @@ export const control = (opt: control_option) => {
 
 		enemy_update(delta_time);
 		collision_detection(obj_player, enemy_list);
-
-		requestAnimationFrame(animate);
 	};
 	const do_draw = () => {
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
@@ -418,21 +416,25 @@ export const control = (opt: control_option) => {
 		obj_player.draw(opt.ctx);
 		enemy_draw(opt.ctx);
 		display_status(opt.ctx);
+	};
+
+	// let animate_index = 0;
+
+	const animate = (timestamp: number) => {
+		do_update(timestamp);
+		do_draw();
 
 		if (!game_over && !game_up && !game_pause) {
 			requestAnimationFrame(animate);
 		}
-	};
 
-	let animate_index = 0;
+		// animate_index++;
+		// if (animate_index % 2 === 0) {
+		// 	do_draw();
+		// } else {
+		// 	do_update(timestamp);
+		// }
 
-	const animate = (timestamp: number) => {
-		animate_index++;
-		if (animate_index % 2 === 0) {
-			do_draw();
-		} else {
-			do_update(timestamp);
-		}
 		// const delta_time = timestamp - lastTime;
 		// lastTime = timestamp;
 
