@@ -32,8 +32,6 @@ export class enemy9 extends baseEnemy {
 
 			have_particle: true,
 
-			fps: 10,
-
 			point: 3,
 		});
 

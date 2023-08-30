@@ -99,7 +99,7 @@ export class baseEnemy extends baseAnimation {
 		//draw sprite
 		super.draw(ctx);
 
-		//draw collision area
+		// //draw collision area
 		// ctx.save();
 
 		// ctx.strokeStyle = "white";

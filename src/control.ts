@@ -108,7 +108,7 @@ export const control = (opt: control_option) => {
 	let explosion_list: explosion[] = [];
 	let particle_list: particle[] = [];
 
-	const handle_enemy = (delta_time: number) => {
+	const enemy_update = (delta_time: number) => {
 		// if (obj_player.speed > 0) {
 		if (enemy_timer > enemy_interval + enemy_random_interval) {
 			const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
@@ -140,7 +140,6 @@ export const control = (opt: control_option) => {
 		[...particle_list, ...explosion_list].forEach((i) => {
 			i.update(delta_time);
 			i.set_position(obj_player.speed);
-			i.draw(opt.ctx);
 		});
 
 		enemy_list.forEach((i) => {
@@ -159,13 +158,16 @@ export const control = (opt: control_option) => {
 					})
 				);
 			}
-
-			i.draw(opt.ctx);
 		});
 
 		enemy_list = enemy_list.filter((i) => !i.mark_delete);
 		particle_list = particle_list.filter((i) => !i.mark_delete);
 		explosion_list = explosion_list.filter((i) => !i.mark_delete);
+	};
+	const enemy_draw = (ctx: CanvasRenderingContext2D) => {
+		[...particle_list, ...explosion_list, ...enemy_list].forEach((i) => {
+			i.draw(ctx);
+		});
 	};
 
 	let game_up = false;
@@ -301,10 +303,10 @@ export const control = (opt: control_option) => {
 				shadow_blur: 1,
 			});
 			progess_invulnerable.update(obj_player.invulnerable, 0, obj_player.invulnerable_max);
-			progess_invulnerable.draw(opt.ctx);
+			progess_invulnerable.draw(ctx);
 		}
 
-		progress_list.forEach((i) => i.draw(opt.ctx));
+		progress_list.forEach((i) => i.draw(ctx));
 
 		if (game_over) {
 			draw_text({
@@ -373,7 +375,7 @@ export const control = (opt: control_option) => {
 	let enemy_interval = 1000;
 	let enemy_random_interval = Math.random() * enemy_interval + 500;
 
-	const animate = (timestamp: number) => {
+	const do_update = (timestamp: number) => {
 		const delta_time = timestamp - lastTime;
 		lastTime = timestamp;
 
@@ -385,10 +387,7 @@ export const control = (opt: control_option) => {
 		obj_player.power += 0.1;
 		if (obj_player.power > 100) obj_player.power = 100;
 
-		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-
 		obj_bg.update(obj_player.speed);
-		obj_bg.draw(opt.ctx);
 		obj_player.update_input(obj_input);
 		obj_player.update(delta_time);
 
@@ -407,16 +406,76 @@ export const control = (opt: control_option) => {
 				});
 		}
 
-		obj_player.draw(opt.ctx);
-
-		handle_enemy(delta_time);
+		enemy_update(delta_time);
 		collision_detection(obj_player, enemy_list);
 
+		requestAnimationFrame(animate);
+	};
+	const do_draw = () => {
+		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
+
+		obj_bg.draw(opt.ctx);
+		obj_player.draw(opt.ctx);
+		enemy_draw(opt.ctx);
 		display_status(opt.ctx);
 
 		if (!game_over && !game_up && !game_pause) {
 			requestAnimationFrame(animate);
 		}
+	};
+
+	let animate_index = 0;
+
+	const animate = (timestamp: number) => {
+		animate_index++;
+		if (animate_index % 2 === 0) {
+			do_draw();
+		} else {
+			do_update(timestamp);
+		}
+		// const delta_time = timestamp - lastTime;
+		// lastTime = timestamp;
+
+		// player_progress += obj_player.speed * 0.1;
+		// if (player_progress >= player_progress_max) {
+		// 	game_up = true;
+		// }
+
+		// obj_player.power += 0.1;
+		// if (obj_player.power > 100) obj_player.power = 100;
+
+		// opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
+
+		// obj_bg.update(obj_player.speed);
+		// obj_bg.draw(opt.ctx);
+		// obj_player.update_input(obj_input);
+		// obj_player.update(delta_time);
+
+		// if (obj_player.speed === obj_player.max_speed) {
+		// 	Array(5)
+		// 		.fill("")
+		// 		.forEach((_i) => {
+		// 			particle_list.push(
+		// 				new particle({
+		// 					x: obj_player.x + obj_player.width * 0.35,
+		// 					y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
+		// 					size: obj_player.width * 0.5,
+		// 					color: "white",
+		// 				})
+		// 			);
+		// 		});
+		// }
+
+		// obj_player.draw(opt.ctx);
+
+		// enemy_update(delta_time);
+		// collision_detection(obj_player, enemy_list);
+
+		// display_status(opt.ctx);
+
+		// if (!game_over && !game_up && !game_pause) {
+		// 	requestAnimationFrame(animate);
+		// }
 	};
 
 	window.addEventListener("keyup", (e) => {
