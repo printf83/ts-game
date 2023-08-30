@@ -37,7 +37,10 @@ export class baseAnimation {
 		fps?: number;
 		animation_repeat?: boolean;
 	}) {
-		this.fps = opt.fps ? opt.fps : 20;
+		opt.fps ??= 60;
+		opt.animation_repeat ??= true;
+
+		this.fps = opt.fps;
 		this.frame = 0;
 		this.frame_timer = 0;
 		this.frame_interval = 1000 / this.fps;
@@ -58,7 +61,7 @@ export class baseAnimation {
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
 
-		this.animation_repeat = opt.animation_repeat ? opt.animation_repeat : true;
+		this.animation_repeat = opt.animation_repeat;
 	}
 
 	update(delta_time: number, onframechange?: () => void) {

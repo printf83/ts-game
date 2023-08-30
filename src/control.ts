@@ -33,8 +33,8 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
-const enemy_type = ["enemy8", "enemy11"];
+const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+// const enemy_type = ["enemy8", "enemy11"];
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 interface control_option {
@@ -56,12 +56,7 @@ export const control = (opt: control_option) => {
 
 	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
 		enemy_list.forEach((i) => {
-			const dx = i.x + i.width * 0.5 - (player.x + player.width * 0.5);
-			const dy = i.y + i.height * 0.5 - (player.y + player.height * 0.5);
-
-			const distance = Math.sqrt(dx * dx + dy * dy);
-
-			if (distance < i.width * 0.25 + player.width * 0.25) {
+			if (i.is_collide(player)) {
 				if (player.is_powered()) {
 					i.explode_out = false;
 
@@ -74,13 +69,6 @@ export const control = (opt: control_option) => {
 						})
 					);
 
-					// console.log(`Score before: ${score}
-					// Point: ${i.point}
-					// Y: ${i.y}
-					// {H}eight: ${i.height}
-					// {C}anvas {H}eight: ${i.canvas_height}
-					// CH - H: ${i.canvas_height - i.height}
-					// Y - CH - H: ${Math.floor(i.y - i.canvas_height - i.height + 118)}`);
 					score += i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
 
 					i.mark_delete = true;

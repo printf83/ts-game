@@ -1,6 +1,22 @@
 import { baseAnimation } from "./base.js";
 import { input } from "./input.js";
-import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
+import {
+	state,
+	state_bite,
+	state_dizzy,
+	state_fall,
+	state_fall_roll,
+	state_gethit,
+	state_idle,
+	state_jump,
+	state_jump_roll,
+	state_ko,
+	state_power_fall,
+	state_roll,
+	state_run,
+	state_sit,
+	state_type,
+} from "./state.js";
 
 export class player extends baseAnimation {
 	state_list: { [key: string]: state } = {};
@@ -18,6 +34,13 @@ export class player extends baseAnimation {
 	max_speed: number;
 	velocity_y: number;
 	weight: number;
+
+	MathPI2 = Math.PI * 2;
+	collision_scale = 0.5;
+	collision_adjust_x = 0;
+	collision_adjust_y = 0;
+	collision_x: number;
+	collision_y: number;
 
 	constructor(opt: { canvas_width: number; canvas_height: number }) {
 		const img = new Image();
@@ -45,6 +68,9 @@ export class player extends baseAnimation {
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
+
+		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
+		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 
 		this.velocity_y = 0;
 		this.weight = 1;
@@ -99,5 +125,22 @@ export class player extends baseAnimation {
 
 		this.current_state?.update();
 		super.update(delta_time, onframechange);
+
+		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
+		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
+	}
+	draw(ctx: CanvasRenderingContext2D): void {
+		//draw sprite
+		super.draw(ctx);
+
+		//draw collision area
+		// ctx.save();
+
+		// ctx.strokeStyle = "white";
+		// ctx.beginPath();
+		// ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, this.MathPI2);
+		// ctx.stroke();
+
+		// ctx.restore();
 	}
 }
