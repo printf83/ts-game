@@ -24,7 +24,7 @@ export class enemy11 extends baseEnemy {
 			img: imgEnemy11,
 
 			x: Math.random() * (opt.canvas_width - width) + opt.canvas_width,
-			y: 0 - height,
+			y: Math.random() > 0.3 ? Math.random() * (opt.canvas_height - height) : 0 - height,
 			width,
 			height,
 
@@ -35,19 +35,22 @@ export class enemy11 extends baseEnemy {
 			point: 3,
 		});
 
-		this.destination_y = Math.random() * opt.canvas_height;
-		this.speed = Math.random() * 2 + 2;
+		this.destination_y = Math.random() * ((opt.canvas_height - this.height) * 0.8);
+		this.speed = Math.random() * 2 - 4;
+		if (this.y < this.destination_y) {
+			this.speed *= -1;
+		}
 
 		this.string_x = this.x + this.width * 0.5;
-		this.string_y = this.y + 10;
+		this.string_y = this.y + 50;
 	}
 
 	update(delta_time: number, onframechange?: () => void) {
 		this.y += this.speed;
-		this.string_y = this.y + 10;
+		this.string_y = this.y + 50;
 		this.string_x = this.x + this.width * 0.5;
 
-		if (this.y > this.destination_y) {
+		if (this.y > this.destination_y && this.speed > 0) {
 			this.speed *= -1;
 		}
 

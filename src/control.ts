@@ -33,7 +33,8 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+const enemy_type = ["enemy8", "enemy11"];
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 interface control_option {
@@ -120,33 +121,33 @@ export const control = (opt: control_option) => {
 	let particle_list: particle[] = [];
 
 	const handle_enemy = (delta_time: number) => {
-		if (obj_player.speed > 0) {
-			if (enemy_timer > enemy_interval + enemy_random_interval) {
-				const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
+		// if (obj_player.speed > 0) {
+		if (enemy_timer > enemy_interval + enemy_random_interval) {
+			const rndEnemyIndex = enemy_type[Math.floor(Math.random() * enemy_type.length)];
 
-				let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
-				const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: base_height });
+			let enemyObject = enemyDB[rndEnemyIndex as enemyDBType];
+			const new_enemy = new enemyObject({ canvas_width: opt.canvas_width, canvas_height: base_height });
 
-				if (new_enemy.explode_in) {
-					explosion_list.push(
-						new explosion({
-							x: new_enemy.x + new_enemy.width / 2,
-							y: new_enemy.y + new_enemy.height / 2,
-							scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
-							play_sound: false,
-						})
-					);
-				}
-
-				enemy_list.push(new_enemy);
-				enemy_list.sort((a, b) => a.width - b.width);
-
-				enemy_random_interval = Math.random() * enemy_interval + 500;
-				enemy_timer = 0;
-			} else {
-				enemy_timer += delta_time;
+			if (new_enemy.explode_in) {
+				explosion_list.push(
+					new explosion({
+						x: new_enemy.x + new_enemy.width / 2,
+						y: new_enemy.y + new_enemy.height / 2,
+						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+						play_sound: false,
+					})
+				);
 			}
+
+			enemy_list.push(new_enemy);
+			enemy_list.sort((a, b) => a.width - b.width);
+
+			enemy_random_interval = Math.random() * enemy_interval + 500;
+			enemy_timer = 0;
+		} else {
+			enemy_timer += delta_time;
 		}
+		// }
 
 		[...particle_list, ...explosion_list].forEach((i) => {
 			i.update(delta_time);
@@ -288,6 +289,7 @@ export const control = (opt: control_option) => {
 			y: 45,
 			text: `🧡`,
 			text_align: "end",
+			shadow_blur: 1,
 		});
 		progess_life.update(obj_player.life);
 
@@ -297,6 +299,7 @@ export const control = (opt: control_option) => {
 			y: 75,
 			text: `🚀`,
 			text_align: "end",
+			shadow_blur: 1,
 		});
 		progess_power.update(obj_player.power);
 
@@ -307,6 +310,7 @@ export const control = (opt: control_option) => {
 				y: 105,
 				text: `🔒`,
 				text_align: "end",
+				shadow_blur: 1,
 			});
 			progess_invulnerable.update(obj_player.invulnerable, 0, obj_player.invulnerable_max);
 			progess_invulnerable.draw(opt.ctx);
