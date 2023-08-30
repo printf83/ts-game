@@ -1,5 +1,16 @@
-export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) => {
-	opt.font_family ??= "Helvetica";
+export const draw_text = (opt: {
+	ctx: CanvasRenderingContext2D;
+	x: number;
+	y: number;
+	text: string;
+	text_align?: CanvasTextAlign;
+	font_weight?: number;
+	font_family?: string;
+	text_color?: string | CanvasGradient | CanvasPattern;
+	shadow_color?: string;
+	shadow_blur?: number;
+}) => {
+	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
 	opt.text_color ??= "white";
 	opt.shadow_color ??= "black";
