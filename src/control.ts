@@ -1,4 +1,4 @@
-import { bg1 } from "./bg1.js";
+// import { bg1 } from "./bg1.js";
 import { bg2 } from "./bg2.js";
 import { baseEnemy } from "./enemy/base.js";
 import { enemy1 } from "./enemy/enemy1.js";
@@ -418,66 +418,23 @@ export const control = (opt: control_option) => {
 		display_status(opt.ctx);
 	};
 
-	// let animate_index = 0;
-
 	const animate = (timestamp: number) => {
-		do_update(timestamp);
-		do_draw();
-
-		if (!game_over && !game_up && !game_pause) {
-			requestAnimationFrame(animate);
-		}
-
 		// animate_index++;
 		// if (animate_index % 2 === 0) {
 		// 	do_draw();
+		// 	if (!game_over && !game_up && !game_pause) {
+		// 		requestAnimationFrame(animate);
+		// 	}
 		// } else {
 		// 	do_update(timestamp);
-		// }
-
-		// const delta_time = timestamp - lastTime;
-		// lastTime = timestamp;
-
-		// player_progress += obj_player.speed * 0.1;
-		// if (player_progress >= player_progress_max) {
-		// 	game_up = true;
-		// }
-
-		// obj_player.power += 0.1;
-		// if (obj_player.power > 100) obj_player.power = 100;
-
-		// opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
-
-		// obj_bg.update(obj_player.speed);
-		// obj_bg.draw(opt.ctx);
-		// obj_player.update_input(obj_input);
-		// obj_player.update(delta_time);
-
-		// if (obj_player.speed === obj_player.max_speed) {
-		// 	Array(5)
-		// 		.fill("")
-		// 		.forEach((_i) => {
-		// 			particle_list.push(
-		// 				new particle({
-		// 					x: obj_player.x + obj_player.width * 0.35,
-		// 					y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
-		// 					size: obj_player.width * 0.5,
-		// 					color: "white",
-		// 				})
-		// 			);
-		// 		});
-		// }
-
-		// obj_player.draw(opt.ctx);
-
-		// enemy_update(delta_time);
-		// collision_detection(obj_player, enemy_list);
-
-		// display_status(opt.ctx);
-
-		// if (!game_over && !game_up && !game_pause) {
 		// 	requestAnimationFrame(animate);
 		// }
+
+		do_update(timestamp);
+		do_draw();
+		if (!game_over && !game_up && !game_pause) {
+			requestAnimationFrame(animate);
+		}
 	};
 
 	window.addEventListener("keyup", (e) => {
