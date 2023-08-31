@@ -30,7 +30,7 @@ export class particle2 {
 		this.mark_delete = false;
 		this.radius = Math.random() * this.size;
 
-		this.alpha = 1 - this.radius;
+		this.alpha = 1;
 	}
 
 	update(opt: { delta_time: number }) {
@@ -41,7 +41,7 @@ export class particle2 {
 			if (this.radius < 0) this.mark_delete = true;
 			else {
 				this.radius -= 0.5;
-				this.alpha = 1 - this.radius;
+				this.alpha -= 0.01;
 			}
 		}
 	}

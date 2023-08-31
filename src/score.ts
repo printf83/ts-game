@@ -2,6 +2,7 @@ import { draw_text } from "./util.js";
 
 export class score {
 	text: string;
+	value: number;
 	x: number;
 	y: number;
 	destination_x: number;
@@ -10,8 +11,9 @@ export class score {
 	speed_y: number;
 	mark_delete: boolean;
 	timer: number;
-	constructor(opt: { text: string; x: number; y: number; destination_x: number; destination_y: number }) {
+	constructor(opt: { text: string; value: number; x: number; y: number; destination_x: number; destination_y: number }) {
 		this.text = opt.text;
+		this.value = opt.value;
 		this.x = opt.x;
 		this.y = opt.y;
 		this.destination_x = opt.destination_x;
@@ -19,14 +21,9 @@ export class score {
 		this.speed_x = (this.destination_x - this.x) * 0.01;
 		this.speed_y = (this.destination_y - this.y) * 0.01;
 		this.mark_delete = false;
-		this.timer = 1000;
+		this.timer = 100;
 	}
 	update() {
-		// if (this.x > this.destination_x) this.x -= this.speed_x;
-		// if (this.x < this.destination_x) this.x += this.speed_x;
-		// if (this.y > this.destination_y) this.y -= this.speed_y;
-		// if (this.y < this.destination_y) this.y += this.speed_y;
-
 		this.x += this.speed_x;
 		this.y += this.speed_y;
 
@@ -35,6 +32,7 @@ export class score {
 	}
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
 		draw_text({
+			text_color: this.value <= 0 ? "red" : "white",
 			ctx: opt.ctx,
 			x: this.x,
 			y: this.y,

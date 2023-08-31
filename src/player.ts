@@ -9,10 +9,9 @@ export class player extends baseAnimation {
 	canvas_width: number;
 	canvas_height: number;
 
-	invulnerable_max: number;
-	invulnerable: number;
+	invulnerable: boolean;
+	powered: boolean;
 	power: number;
-	powered: number;
 	speed: number;
 	life: number;
 	max_speed: number;
@@ -62,9 +61,8 @@ export class player extends baseAnimation {
 		this.life = 100;
 		this.max_speed = 14;
 		this.power = 100;
-		this.powered = 0;
-		this.invulnerable = 0;
-		this.invulnerable_max = 0;
+		this.powered = false;
+		this.invulnerable = false;
 
 		this.state_list = {
 			idle: new state_idle(this),
@@ -90,7 +88,7 @@ export class player extends baseAnimation {
 		return this.y >= this.canvas_height - this.height;
 	}
 	is_powered() {
-		return this.powered > 0 || this.speed === this.max_speed;
+		return this.powered || this.speed === this.max_speed;
 	}
 	set_state = (state: state_type) => {
 		this.current_state = this.state_list[state];
@@ -109,7 +107,12 @@ export class player extends baseAnimation {
 		if (this.power < 0) this.power = 0;
 
 		this.current_state?.update();
-		super.update(opt);
+		super.update({
+			delta_time: opt.delta_time,
+			onframecomplete: () => {
+				this.current_state?.animation_end(this);
+			},
+		});
 
 		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;

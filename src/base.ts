@@ -69,11 +69,9 @@ export class baseAnimation {
 			this.frame_timer = 0;
 
 			if (this.frame >= this.sprite_length) {
-				if (this.animation_repeat) {
-					this.frame = 0;
-					if (!this.animation_repeat && opt.onframecomplete) {
-						opt.onframecomplete();
-					}
+				if (this.animation_repeat) this.frame = 0;
+				else if (!this.animation_repeat && opt.onframecomplete) {
+					opt.onframecomplete();
 				} else this.mark_delete = true;
 			} else {
 				this.frame++;

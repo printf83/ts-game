@@ -72,21 +72,20 @@ export const control = (opt: control_option) => {
 					);
 
 					const point = i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
-					score_value += point;
-					score_text = score_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 					score_list.push(
 						new score({
 							text: `${point > 0 ? "+" : ""}${point}`,
+							value: point,
 							x: i.x + i.width * 0.5,
 							y: i.y + i.height * 0.5,
-							destination_x: 25,
+							destination_x: 55,
 							destination_y: 55,
 						})
 					);
 
 					i.mark_delete = true;
 				} else {
-					if (player.invulnerable <= 0) {
+					if (!player.invulnerable) {
 						if (player.life > 30) {
 							player.life -= 10;
 							player.set_state("gethit");
@@ -94,7 +93,10 @@ export const control = (opt: control_option) => {
 							player.life -= 10;
 							player.set_state("dizzy");
 						} else {
-							game_over = true;
+							player.set_state("ko");
+							setTimeout(() => {
+								game_over = true;
+							}, 300);
 						}
 					}
 
@@ -107,6 +109,18 @@ export const control = (opt: control_option) => {
 								y: i.y + i.height * 0.5,
 								scale: i.width * 0.008,
 								play_sound: true,
+							})
+						);
+
+						const point = i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
+						score_list.push(
+							new score({
+								text: `${point > 0 ? "-" : ""}${point}`,
+								value: point > 0 ? -point : point,
+								x: i.x + i.width * 0.5,
+								y: i.y + i.height * 0.5,
+								destination_x: 55,
+								destination_y: 55,
 							})
 						);
 
@@ -159,6 +173,10 @@ export const control = (opt: control_option) => {
 
 		score_list.forEach((i) => {
 			i.update();
+			if (i.mark_delete) {
+				score_value += i.value;
+				score_text = score_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			}
 		});
 
 		enemy_list.forEach((i) => {
@@ -203,6 +221,10 @@ export const control = (opt: control_option) => {
 		obj_player.life = 100;
 		obj_player.power = 0;
 		obj_player.max_speed = 14;
+		obj_player.set_state("idle");
+		obj_player.y = base_height - obj_player.height;
+		obj_player.speed = 0;
+
 		game_level = 1;
 		enemy_interval = 1000;
 		enemy_random_interval = Math.random() * enemy_interval + 500;
@@ -222,6 +244,10 @@ export const control = (opt: control_option) => {
 		obj_player.life += 10;
 		if (obj_player.life > 100) obj_player.life = 100;
 
+		obj_player.set_state("idle");
+		obj_player.y = base_height - obj_player.height;
+		obj_player.speed = 0;
+
 		game_level++;
 		obj_player.max_speed = 14 + game_level * 2;
 		enemy_interval = 1000 - game_level * 50;
@@ -240,6 +266,7 @@ export const control = (opt: control_option) => {
 	};
 
 	//progress
+
 	let player_progress = 0;
 	let player_progress_max = 1000;
 	const progess_level = new progress({
@@ -249,6 +276,7 @@ export const control = (opt: control_option) => {
 		max: player_progress_max,
 		width: opt.canvas_width * 0.4,
 		value: player_progress,
+		bar_color: ["red", "green"],
 	});
 
 	//player_life
@@ -258,6 +286,7 @@ export const control = (opt: control_option) => {
 		width: 100,
 		value: obj_player.life,
 		max: 100,
+		bar_color: ["red", "green"],
 	});
 
 	//player_power
@@ -267,15 +296,7 @@ export const control = (opt: control_option) => {
 		width: 100,
 		value: obj_player.power,
 		max: 100,
-	});
-
-	//player_invulnerable
-	const progess_invulnerable = new progress({
-		x: opt.canvas_width - 130,
-		y: 90,
-		width: 100,
-		value: obj_player.invulnerable,
-		max: obj_player.invulnerable_max,
+		bar_color: ["red", "green"],
 	});
 
 	const progress_list = [progess_level, progess_life, progess_power];
@@ -286,6 +307,7 @@ export const control = (opt: control_option) => {
 			x: 20,
 			y: 50,
 			text: `🎮 ${score_text}`,
+			text_color: score_value < 0 ? "red" : "white",
 			font_weight: 30,
 		});
 
@@ -318,19 +340,6 @@ export const control = (opt: control_option) => {
 			shadow_blur: 1,
 		});
 		progess_power.update(obj_player.power);
-
-		if (obj_player.invulnerable > 0) {
-			draw_text({
-				ctx,
-				x: opt.canvas_width - 150,
-				y: 105,
-				text: `🔒`,
-				text_align: "end",
-				shadow_blur: 1,
-			});
-			progess_invulnerable.update(obj_player.invulnerable, 0, obj_player.invulnerable_max);
-			progess_invulnerable.draw(ctx);
-		}
 
 		progress_list.forEach((i) => i.draw(ctx));
 

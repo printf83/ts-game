@@ -5,54 +5,67 @@ export const state_list = {
 	idle: {
 		frame_y: 0,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	jump: {
 		frame_y: 1,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	fall: {
 		frame_y: 2,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	run: {
 		frame_y: 3,
 		sprite_length: 8,
+		animation_repeat: true,
 	},
 	dizzy: {
 		frame_y: 4,
 		sprite_length: 11,
+		animation_repeat: false,
 	},
 	sit: {
 		frame_y: 5,
 		sprite_length: 5,
+		animation_repeat: true,
 	},
 	roll: {
 		frame_y: 6,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	jump_roll: {
 		frame_y: 6,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	fall_roll: {
 		frame_y: 6,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	power_fall: {
 		frame_y: 6,
 		sprite_length: 7,
+		animation_repeat: true,
 	},
 	bite: {
 		frame_y: 7,
 		sprite_length: 7,
+		animation_repeat: false,
 	},
 	ko: {
 		frame_y: 8,
 		sprite_length: 12,
+		animation_repeat: false,
 	},
 	gethit: {
 		frame_y: 9,
 		sprite_length: 4,
+		animation_repeat: false,
 	},
 };
 
@@ -70,9 +83,11 @@ export class state {
 		this.player.frame = 0;
 		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
+		this.player.animation_repeat = state_list[this.current_state].animation_repeat;
 	}
 	update() {}
 	handle_input(_input: input) {}
+	animation_end(_player: player) {}
 }
 
 export class state_idle extends state {
@@ -182,26 +197,21 @@ export class state_run extends state {
 	}
 }
 export class state_dizzy extends state {
-	interval: number;
-
 	constructor(player: player) {
 		super("dizzy", player);
-		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
 		this.player.speed = 0;
-		this.interval = 150;
-		this.player.invulnerable_max = this.interval;
-		this.player.invulnerable = this.interval;
+		this.player.invulnerable = true;
 	}
-	update(): void {
-		super.update();
-		this.interval--;
-		this.player.invulnerable = this.interval;
-		if (this.interval === 0) this.player.set_state("idle");
+	animation_end(player: player) {
+		setTimeout(() => {
+			player.invulnerable = false;
+		}, 100);
+
+		player.set_state("idle");
 	}
-	handle_input(_input: input) {}
 }
 export class state_sit extends state {
 	constructor(player: player) {
@@ -209,6 +219,7 @@ export class state_sit extends state {
 	}
 	enter(): void {
 		super.enter();
+		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
 	update(): void {
@@ -216,7 +227,10 @@ export class state_sit extends state {
 		this.player.power += 0.5;
 	}
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE down") this.player.set_state("idle");
+		if (input.last_key === "RELEASE down") {
+			this.player.invulnerable = false;
+			this.player.set_state("idle");
+		}
 	}
 }
 export class state_roll extends state {
@@ -312,25 +326,22 @@ export class state_fall_roll extends state {
 	}
 }
 export class state_bite extends state {
-	interval: number;
 	constructor(player: player) {
 		super("bite", player);
-		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
-		this.interval = 25;
-		this.player.powered = this.interval;
-		this.player.invulnerable_max = this.interval;
-		this.player.invulnerable = this.interval;
+		this.player.powered = true;
+		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
-	update(): void {
-		super.update();
-		this.interval--;
-		this.player.powered = this.interval;
-		this.player.invulnerable = this.interval;
-		if (this.interval <= 0) this.player.set_state("idle");
+	animation_end(player: player) {
+		setTimeout(() => {
+			player.powered = false;
+			player.invulnerable = false;
+		}, 100);
+
+		player.set_state("idle");
 	}
 }
 export class state_ko extends state {
@@ -339,26 +350,26 @@ export class state_ko extends state {
 	}
 	enter(): void {
 		super.enter();
+		this.player.invulnerable = true;
 		this.player.speed = 0;
+	}
+	animation_end(player: player) {
+		player.invulnerable = false;
 	}
 }
 export class state_gethit extends state {
-	interval: number;
 	constructor(player: player) {
 		super("gethit", player);
-		this.interval = 0;
 	}
 	enter(): void {
 		super.enter();
-		this.interval = 15;
-		this.player.invulnerable_max = this.interval;
-		this.player.invulnerable = this.interval;
+		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
-	update(): void {
-		super.update();
-		this.interval--;
-		this.player.invulnerable = this.interval;
-		if (this.interval <= 0) this.player.set_state("idle");
+	animation_end(player: player) {
+		setTimeout(() => {
+			player.invulnerable = false;
+		}, 100);
+		player.set_state("idle");
 	}
 }
