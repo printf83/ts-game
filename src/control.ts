@@ -18,6 +18,8 @@ import { draw_text } from "./util.js";
 import { input } from "./input.js";
 import { enemy10 } from "./enemy/enemy10.js";
 import { enemy11 } from "./enemy/enemy11.js";
+import { particle2 } from "./particle2.js";
+import { score } from "./score.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -69,7 +71,18 @@ export const control = (opt: control_option) => {
 						})
 					);
 
-					score += i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
+					const point = i.point - Math.floor(i.y - i.canvas_height - i.height + 118);
+					score_value += point;
+					score_text = score_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					score_list.push(
+						new score({
+							text: `${point > 0 ? "+" : ""}${point}`,
+							x: i.x + i.width * 0.5,
+							y: i.y + i.height * 0.5,
+							destination_x: 25,
+							destination_y: 55,
+						})
+					);
 
 					i.mark_delete = true;
 				} else {
@@ -107,6 +120,8 @@ export const control = (opt: control_option) => {
 	let enemy_list: baseEnemy[] = [];
 	let explosion_list: explosion[] = [];
 	let particle_list: particle[] = [];
+	let particle2_list: particle2[] = [];
+	let score_list: score[] = [];
 
 	const enemy_update = (delta_time: number) => {
 		// if (obj_player.speed > 0) {
@@ -137,9 +152,13 @@ export const control = (opt: control_option) => {
 		}
 		// }
 
-		[...particle_list, ...explosion_list].forEach((i) => {
+		[...particle2_list, ...particle_list, ...explosion_list].forEach((i) => {
 			i.update({ delta_time });
 			i.set_position(obj_player.speed);
+		});
+
+		score_list.forEach((i) => {
+			i.update();
 		});
 
 		enemy_list.forEach((i) => {
@@ -160,12 +179,14 @@ export const control = (opt: control_option) => {
 			}
 		});
 
+		score_list = score_list.filter((i) => !i.mark_delete);
 		enemy_list = enemy_list.filter((i) => !i.mark_delete);
 		particle_list = particle_list.filter((i) => !i.mark_delete);
+		particle2_list = particle2_list.filter((i) => !i.mark_delete);
 		explosion_list = explosion_list.filter((i) => !i.mark_delete);
 	};
 	const enemy_draw = (ctx: CanvasRenderingContext2D) => {
-		[...particle_list, ...explosion_list, ...enemy_list].forEach((i) => {
+		[...score_list, ...particle2_list, ...particle_list, ...explosion_list, ...enemy_list].forEach((i) => {
 			i.draw({ ctx });
 		});
 	};
@@ -174,7 +195,8 @@ export const control = (opt: control_option) => {
 	let game_over = false;
 	let game_pause = false;
 	let game_level = 1;
-	let score = 0;
+	let score_value = 0;
+	let score_text = "0";
 
 	const restart_game = () => {
 		player_progress = 0;
@@ -186,8 +208,11 @@ export const control = (opt: control_option) => {
 		enemy_random_interval = Math.random() * enemy_interval + 500;
 		enemy_list = [];
 		particle_list = [];
+		particle2_list = [];
 		explosion_list = [];
-		score = 0;
+		score_list = [];
+		score_value = 0;
+		score_text = "0";
 		game_over = false;
 		requestAnimationFrame(animate);
 	};
@@ -203,6 +228,7 @@ export const control = (opt: control_option) => {
 		enemy_random_interval = Math.random() * enemy_interval + 500;
 		enemy_list = [];
 		particle_list = [];
+		particle2_list = [];
 		explosion_list = [];
 		game_up = false;
 		requestAnimationFrame(animate);
@@ -259,7 +285,7 @@ export const control = (opt: control_option) => {
 			ctx,
 			x: 20,
 			y: 50,
-			text: `🎮 ${score}`,
+			text: `🎮 ${score_text}`,
 			font_weight: 30,
 		});
 
@@ -395,12 +421,11 @@ export const control = (opt: control_option) => {
 			Array(5)
 				.fill("")
 				.forEach((_i) => {
-					particle_list.push(
-						new particle({
-							x: obj_player.x + obj_player.width * 0.35,
-							y: obj_player.y + obj_player.height * 0.8 + Math.random() * 30 - 25,
-							size: obj_player.width * 0.5,
-							color: "white",
+					particle2_list.push(
+						new particle2({
+							x: obj_player.x - 50,
+							y: obj_player.y + obj_player.height * 0.05 + Math.random() * 30 - 15,
+							size: obj_player.width,
 						})
 					);
 				});
