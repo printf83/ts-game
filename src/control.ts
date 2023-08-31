@@ -143,10 +143,10 @@ export const control = (opt: control_option) => {
 		});
 
 		enemy_list.forEach((i) => {
+			i.update(delta_time);
+
 			i.set_position(obj_player.speed);
 			if (i.x < 0 - i.width) i.mark_delete = true;
-
-			i.update(delta_time);
 
 			if (i.have_particle) {
 				particle_list.push(
