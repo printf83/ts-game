@@ -30,14 +30,6 @@ export class enemy10 extends baseEnemy {
 		});
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
-		super.update(delta_time, onframechange);
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
-	}
-
 	set_position(game_speed: number): void {
 		this.x -= game_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;

@@ -38,24 +38,20 @@ export class enemy6 extends baseEnemy {
 		this.curve = Math.random() * 3;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.x -= this.speed;
 		this.y += Math.sin(this.angle) * this.curve;
 		this.angle += 0.04;
 
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
-		super.update(delta_time, onframechange);
+		super.update(opt);
 	}
 
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.save();
-		ctx.globalAlpha = 0.5;
-		super.draw(ctx);
-		ctx.restore();
-	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
+	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }): void {
+		opt.ctx.save();
+		opt.ctx.globalAlpha = 0.5;
+		super.draw(opt);
+		opt.ctx.restore();
 	}
 }

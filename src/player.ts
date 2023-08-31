@@ -1,22 +1,6 @@
 import { baseAnimation } from "./base.js";
 import { input } from "./input.js";
-import {
-	state,
-	state_bite,
-	state_dizzy,
-	state_fall,
-	state_fall_roll,
-	state_gethit,
-	state_idle,
-	state_jump,
-	state_jump_roll,
-	state_ko,
-	state_power_fall,
-	state_roll,
-	state_run,
-	state_sit,
-	state_type,
-} from "./state.js";
+import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
 
 export class player extends baseAnimation {
 	state_list: { [key: string]: state } = {};
@@ -112,7 +96,8 @@ export class player extends baseAnimation {
 		this.current_state = this.state_list[state];
 		this.current_state?.enter();
 	};
-	update(delta_time: number, onframechange?: (() => void) | undefined): void {
+
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.y += this.velocity_y;
 		if (!this.is_ground()) this.velocity_y += this.weight;
 		else this.velocity_y = 0;
@@ -124,14 +109,14 @@ export class player extends baseAnimation {
 		if (this.power < 0) this.power = 0;
 
 		this.current_state?.update();
-		super.update(delta_time, onframechange);
+		super.update(opt);
 
 		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 	}
-	draw(ctx: CanvasRenderingContext2D): void {
+	draw(opt: { ctx: CanvasRenderingContext2D }): void {
 		//draw sprite
-		super.draw(ctx);
+		super.draw(opt);
 
 		// //draw collision area
 		// ctx.save();

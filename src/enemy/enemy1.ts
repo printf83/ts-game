@@ -38,21 +38,13 @@ export class enemy1 extends baseEnemy {
 		this.life_length = Math.random() * 5000 + 5000;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.x += Math.random() * 7 - 3.5;
 		this.y += Math.random() * 7 - 3.5;
 
-		this.life_index += delta_time;
+		this.life_index += opt.delta_time;
 		if (this.life_index > this.life_length) this.mark_delete = true;
 
-		super.update(delta_time, onframechange);
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
-	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
+		super.update(opt);
 	}
 }

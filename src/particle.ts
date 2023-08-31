@@ -29,8 +29,8 @@ export class particle {
 		this.alpha = 1 - this.radius / this.max_radius;
 	}
 
-	update(delta_time: number) {
-		this.timestamp += delta_time;
+	update(opt: { delta_time: number }) {
+		this.timestamp += opt.delta_time;
 		if (this.timestamp >= this.animation_speed) {
 			this.timestamp = 0;
 
@@ -41,14 +41,14 @@ export class particle {
 			}
 		}
 	}
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.save();
-		ctx.globalAlpha = this.alpha;
-		ctx.beginPath();
-		ctx.fillStyle = this.color;
-		ctx.arc(this.x, this.y, this.radius, 0, this.MathPI2);
-		ctx.fill();
-		ctx.restore();
+	draw(opt: { ctx: CanvasRenderingContext2D }) {
+		opt.ctx.save();
+		opt.ctx.globalAlpha = this.alpha;
+		opt.ctx.beginPath();
+		opt.ctx.fillStyle = this.color;
+		opt.ctx.arc(this.x, this.y, this.radius, 0, this.MathPI2);
+		opt.ctx.fill();
+		opt.ctx.restore();
 	}
 	set_position(game_speed: number) {
 		this.x -= game_speed;

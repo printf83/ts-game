@@ -50,31 +50,26 @@ export class explosion extends baseAnimation {
 		this.sx = 0;
 	}
 
-	update(timestamp: number) {
+	update(opt: { delta_time: number }) {
 		if (this.sound && !this.sound_played) {
 			this.sound_played = true;
 			new Audio(this.sound).play();
 		}
 
-		this.frame_timer += timestamp;
-		if (this.frame_timer >= this.frame_interval) {
-			this.frame_timer = 0;
-
-			if (this.frame >= this.sprite_length) {
-				this.mark_delete = true;
-			} else {
-				this.frame++;
+		super.update({
+			delta_time: opt.delta_time,
+			onframechange: () => {
 				this.sx = this.sprite_width * this.frame;
-			}
-		}
+			},
+		});
 	}
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.save();
+	draw(opt: { ctx: CanvasRenderingContext2D }) {
+		opt.ctx.save();
 
-		ctx.translate(this.x, this.y);
-		ctx.rotate(this.angle);
-		ctx.drawImage(this.img, this.sx, 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
+		opt.ctx.translate(this.x, this.y);
+		opt.ctx.rotate(this.angle);
+		opt.ctx.drawImage(this.img, this.sx, 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
 
-		ctx.restore();
+		opt.ctx.restore();
 	}
 }

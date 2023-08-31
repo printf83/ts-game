@@ -64,28 +64,32 @@ export class baseAnimation {
 		this.animation_repeat = opt.animation_repeat;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		if (this.frame_timer >= this.frame_interval) {
 			this.frame_timer = 0;
 
 			if (this.frame >= this.sprite_length) {
-				if (this.animation_repeat) this.frame = 0;
-				else this.mark_delete = true;
+				if (this.animation_repeat) {
+					this.frame = 0;
+					if (!this.animation_repeat && opt.onframecomplete) {
+						opt.onframecomplete();
+					}
+				} else this.mark_delete = true;
 			} else {
 				this.frame++;
 				this.frame_x = this.frame * this.sprite_width;
-			}
 
-			if (onframechange) {
-				onframechange();
+				if (opt.onframechange) {
+					opt.onframechange();
+				}
 			}
 		} else {
-			this.frame_timer += delta_time;
+			this.frame_timer += opt.delta_time;
 		}
 	}
 
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.frame_x, this.frame_y, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+	draw(opt: { ctx: CanvasRenderingContext2D }) {
+		opt.ctx.drawImage(this.img, this.frame_x, this.frame_y, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
 	}
 
 	set_position(game_speed: number) {

@@ -83,21 +83,21 @@ export class baseEnemy extends baseAnimation {
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
-		super.update(delta_time, onframechange);
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
+		super.update(opt);
 
 		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 	}
 
-	draw(ctx: CanvasRenderingContext2D, ctx_collision?: CanvasRenderingContext2D) {
-		if (ctx_collision) {
-			ctx_collision.fillStyle = this.uid_text;
-			ctx_collision.fillRect(this.x, this.y, this.width, this.height);
+	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }) {
+		if (opt.ctx_collision) {
+			opt.ctx_collision.fillStyle = this.uid_text;
+			opt.ctx_collision.fillRect(this.x, this.y, this.width, this.height);
 		}
 
 		//draw sprite
-		super.draw(ctx);
+		super.draw(opt);
 
 		// //draw collision area
 		// ctx.save();
@@ -110,11 +110,11 @@ export class baseEnemy extends baseAnimation {
 		// ctx.restore();
 	}
 
-	is_collide(player: player) {
-		const dx = this.collision_x - player.collision_x;
-		const dy = this.collision_y - player.collision_y;
+	is_collide(opt: { player: player }) {
+		const dx = this.collision_x - opt.player.collision_x;
+		const dy = this.collision_y - opt.player.collision_y;
 
 		const distance = Math.sqrt(dx * dx + dy * dy);
-		return distance < this.width * this.collision_scale + player.width * player.collision_scale;
+		return distance < this.width * this.collision_scale + opt.player.width * opt.player.collision_scale;
 	}
 }

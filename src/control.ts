@@ -56,7 +56,7 @@ export const control = (opt: control_option) => {
 
 	const collision_detection = (player: player, enemy_list: baseEnemy[]) => {
 		enemy_list.forEach((i) => {
-			if (i.is_collide(player)) {
+			if (i.is_collide({ player })) {
 				if (player.is_powered()) {
 					i.explode_out = false;
 
@@ -119,8 +119,8 @@ export const control = (opt: control_option) => {
 			if (new_enemy.explode_in) {
 				explosion_list.push(
 					new explosion({
-						x: new_enemy.x + new_enemy.width / 2,
-						y: new_enemy.y + new_enemy.height / 2,
+						x: new_enemy.x + new_enemy.width * 0.5,
+						y: new_enemy.y + new_enemy.height * 0.5,
 						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
 						play_sound: false,
 					})
@@ -138,12 +138,12 @@ export const control = (opt: control_option) => {
 		// }
 
 		[...particle_list, ...explosion_list].forEach((i) => {
-			i.update(delta_time);
+			i.update({ delta_time });
 			i.set_position(obj_player.speed);
 		});
 
 		enemy_list.forEach((i) => {
-			i.update(delta_time);
+			i.update({ delta_time });
 
 			i.set_position(obj_player.speed);
 			if (i.x < 0 - i.width) i.mark_delete = true;
@@ -166,7 +166,7 @@ export const control = (opt: control_option) => {
 	};
 	const enemy_draw = (ctx: CanvasRenderingContext2D) => {
 		[...particle_list, ...explosion_list, ...enemy_list].forEach((i) => {
-			i.draw(ctx);
+			i.draw({ ctx });
 		});
 	};
 
@@ -189,7 +189,7 @@ export const control = (opt: control_option) => {
 		explosion_list = [];
 		score = 0;
 		game_over = false;
-		animate(0);
+		requestAnimationFrame(animate);
 	};
 
 	const level_up_game = () => {
@@ -205,12 +205,12 @@ export const control = (opt: control_option) => {
 		particle_list = [];
 		explosion_list = [];
 		game_up = false;
-		animate(0);
+		requestAnimationFrame(animate);
 	};
 
 	const continue_game = () => {
 		game_pause = false;
-		animate(0);
+		requestAnimationFrame(animate);
 	};
 
 	//progress
@@ -389,7 +389,7 @@ export const control = (opt: control_option) => {
 
 		obj_bg.update(obj_player.speed);
 		obj_player.update_input(obj_input);
-		obj_player.update(delta_time);
+		obj_player.update({ delta_time });
 
 		if (obj_player.speed === obj_player.max_speed) {
 			Array(5)
@@ -413,23 +413,12 @@ export const control = (opt: control_option) => {
 		opt.ctx.clearRect(0, 0, opt.canvas_width, opt.canvas_height);
 
 		obj_bg.draw(opt.ctx);
-		obj_player.draw(opt.ctx);
+		obj_player.draw({ ctx: opt.ctx });
 		enemy_draw(opt.ctx);
 		display_status(opt.ctx);
 	};
 
 	const animate = (timestamp: number) => {
-		// animate_index++;
-		// if (animate_index % 2 === 0) {
-		// 	do_draw();
-		// 	if (!game_over && !game_up && !game_pause) {
-		// 		requestAnimationFrame(animate);
-		// 	}
-		// } else {
-		// 	do_update(timestamp);
-		// 	requestAnimationFrame(animate);
-		// }
-
 		do_update(timestamp);
 		do_draw();
 		if (!game_over && !game_up && !game_pause) {
@@ -457,5 +446,5 @@ export const control = (opt: control_option) => {
 		}
 	});
 
-	animate(0);
+	requestAnimationFrame(animate);
 };

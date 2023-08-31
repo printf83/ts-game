@@ -45,7 +45,7 @@ export class enemy8 extends baseEnemy {
 		this.string_y = this.y + 10;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.y += this.speed;
 		this.string_y = this.y + 10;
 		this.string_x = this.x + this.width * 0.5;
@@ -58,18 +58,14 @@ export class enemy8 extends baseEnemy {
 			this.mark_delete = true;
 		}
 
-		super.update(delta_time, onframechange);
+		super.update(opt);
 	}
 
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.beginPath();
-		ctx.moveTo(this.string_x, 0);
-		ctx.lineTo(this.string_x, this.string_y);
-		ctx.stroke();
-		super.draw(ctx);
-	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
+	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }): void {
+		opt.ctx.beginPath();
+		opt.ctx.moveTo(this.string_x, 0);
+		opt.ctx.lineTo(this.string_x, this.string_y);
+		opt.ctx.stroke();
+		super.draw(opt);
 	}
 }

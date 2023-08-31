@@ -51,7 +51,7 @@ export class enemy4 extends baseEnemy {
 		this.life_length = Math.random() * 5000 + 5000;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		if (this.last_move % this.interval === 0) {
 			this.last_move = 0;
 			this.new_x = Math.random() * (this.canvas_width - this.width);
@@ -66,14 +66,10 @@ export class enemy4 extends baseEnemy {
 		this.x -= dx / 20;
 		this.y -= dy / 20;
 
-		this.life_index += delta_time;
+		this.life_index += opt.delta_time;
 		if (this.life_index > this.life_length) this.mark_delete = true;
 
-		super.update(delta_time, onframechange);
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
+		super.update(opt);
 	}
 
 	set_position(game_speed: number): void {

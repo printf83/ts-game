@@ -34,18 +34,10 @@ export class enemy7 extends baseEnemy {
 		this.move_speed = Math.random() * 10 + 5;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.x -= Math.random() * this.move_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
 
-		super.update(delta_time, onframechange);
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
-	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
+		super.update(opt);
 	}
 }

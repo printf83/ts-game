@@ -45,7 +45,7 @@ export class enemy3 extends baseEnemy {
 		this.life_length = Math.random() * 5000 + 5000;
 	}
 
-	update(delta_time: number, onframechange?: () => void) {
+	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
 
 		if (this.x + this.width < 0) this.x = this.canvas_width;
@@ -56,17 +56,9 @@ export class enemy3 extends baseEnemy {
 
 		this.angle += this.angle_speed;
 
-		this.life_index += delta_time;
+		this.life_index += opt.delta_time;
 		if (this.life_index > this.life_length) this.mark_delete = true;
 
-		super.update(delta_time, onframechange);
-	}
-
-	draw(ctx: CanvasRenderingContext2D) {
-		super.draw(ctx);
-	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
+		super.update(opt);
 	}
 }
