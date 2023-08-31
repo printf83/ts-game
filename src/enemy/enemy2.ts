@@ -1,4 +1,4 @@
-import { baseEnemy } from "./base.js";
+import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy2 = new Image();
 imgEnemy2.src = "./res/enemy/enemy2.png";

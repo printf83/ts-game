@@ -1,4 +1,4 @@
-import { baseAnimation } from "../base.js";
+import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
 
 const genUID = () => {

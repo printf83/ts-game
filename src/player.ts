@@ -1,4 +1,4 @@
-import { baseAnimation } from "./base.js";
+import { baseAnimation } from "./baseAnimation.js";
 import { input } from "./input.js";
 import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
 

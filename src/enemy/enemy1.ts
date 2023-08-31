@@ -1,4 +1,4 @@
-import { baseEnemy } from "./base.js";
+import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy1 = new Image();
 imgEnemy1.src = "./res/enemy/enemy1.png";
@@ -19,7 +19,8 @@ export class enemy1 extends baseEnemy {
 			...opt,
 			img: imgEnemy1,
 
-			x: Math.random() * (opt.canvas_width - width),
+			// x: Math.random() * (opt.canvas_width - width),
+			x: Math.random() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
 			y: Math.random() * (opt.canvas_height - height),
 			width,
 			height,
@@ -31,7 +32,7 @@ export class enemy1 extends baseEnemy {
 			explode_in: true,
 			explode_out: true,
 
-			point: 3,
+			point: 4,
 		});
 
 		this.life_index = 0;

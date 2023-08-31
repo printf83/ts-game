@@ -208,7 +208,7 @@ export class state_dizzy extends state {
 	animation_end(player: player) {
 		setTimeout(() => {
 			player.invulnerable = false;
-		}, 100);
+		}, 300);
 
 		player.set_state("idle");
 	}
@@ -339,7 +339,7 @@ export class state_bite extends state {
 		setTimeout(() => {
 			player.powered = false;
 			player.invulnerable = false;
-		}, 100);
+		}, 300);
 
 		player.set_state("idle");
 	}
@@ -369,7 +369,7 @@ export class state_gethit extends state {
 	animation_end(player: player) {
 		setTimeout(() => {
 			player.invulnerable = false;
-		}, 100);
+		}, 300);
 		player.set_state("idle");
 	}
 }

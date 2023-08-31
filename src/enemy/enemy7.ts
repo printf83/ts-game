@@ -1,4 +1,4 @@
-import { baseEnemy } from "./base.js";
+import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy7 = new Image();
 imgEnemy7.src = "./res/enemy/enemy7.png";
@@ -28,7 +28,7 @@ export class enemy7 extends baseEnemy {
 			sprite_height,
 			sprite_length,
 
-			point: 1,
+			point: 2,
 		});
 
 		this.move_speed = Math.random() * 10 + 5;

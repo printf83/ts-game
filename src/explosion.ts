@@ -1,4 +1,4 @@
-import { baseAnimation } from "./base.js";
+import { baseAnimation } from "./baseAnimation.js";
 
 const imgExplosion = new Image();
 imgExplosion.src = "./res/boom.png";
