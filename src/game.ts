@@ -14,13 +14,13 @@ import { enemy9 } from "./enemy/enemy9.js";
 import { enemy10 } from "./enemy/enemy10.js";
 import { enemy11 } from "./enemy/enemy11.js";
 import { explosion } from "./explosion.js";
-import { particle } from "./particle.js";
-import { particle2 } from "./particle2.js";
+import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
 import { draw_text } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
+import { dust } from "./dust.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -56,10 +56,13 @@ export class game {
 
 	enemy_list: baseEnemy[] = [];
 	explosion_list: explosion[] = [];
-	particle_list: particle[] = [];
-	particle2_list: particle2[] = [];
+	dust_list: dust[] = [];
+	fire_list: fire[] = [];
 	score_list: score[] = [];
 	progress_list: progress[] = [];
+
+	dust_max: number = 50;
+	fire_max: number = 50;
 
 	game_up: boolean = false;
 	game_over: boolean = false;
@@ -123,8 +126,8 @@ export class game {
 
 		this.enemy_list = [];
 		this.explosion_list = [];
-		this.particle_list = [];
-		this.particle2_list = [];
+		this.dust_list = [];
+		this.fire_list = [];
 		this.score_list = [];
 
 		this.player.set_state("idle");
@@ -159,8 +162,8 @@ export class game {
 
 		this.enemy_list = [];
 		this.explosion_list = [];
-		this.particle_list = [];
-		this.particle2_list = [];
+		this.dust_list = [];
+		this.fire_list = [];
 
 		this.player.set_state("idle");
 		this.player.life += 10;
@@ -199,24 +202,6 @@ export class game {
 
 	add_floating_score(enemy: baseEnemy, deduction: boolean) {
 		let point = Math.floor((100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) * 0.1 * enemy.point);
-
-		// const Y = enemy.y;
-		// const H = enemy.canvas_height - enemy.height + this.base_height;
-		// const Y_H = Y / H;
-		// const YH_percent = Y_H * 100;
-		// const negYHPercent = 100 - YH_percent;
-		// const nYHP10 = Math.floor(negYHPercent * 0.1);
-		// const one_line = Math.floor((100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) * 0.1);
-
-		// console.log(`Y:${Y}
-		// H:${H}
-		// Y/H:${Y_H}
-		// Y/H percent:${YH_percent}
-		// -YHP: ${negYHPercent}
-		// nYHP10:${nYHP10}
-		// one_line:${one_line}
-		// `);
-		//+100 - Math.floor(enemy.y / enemy.canvas_height - enemy.height - this.base_height);
 
 		if (deduction && point > 0) point *= -1;
 		if (!deduction && point < 0) point *= -1;
@@ -410,11 +395,10 @@ export class game {
 			Array(3)
 				.fill("")
 				.forEach((_i) => {
-					this.particle2_list.push(
-						new particle2({
-							x: this.player.x - 50,
-							y: this.player.y + this.player.height * 0.05 + Math.random() * 30 - 15,
-							size: this.player.width,
+					this.fire_list.unshift(
+						new fire({
+							x: this.player.x, //+ this.player.width * 0.5,
+							y: this.player.y, // + this.player.height * 0.05,
 						})
 					);
 				});
@@ -453,8 +437,8 @@ export class game {
 			this.enemy_index = 0;
 		} else this.enemy_index += delta_time;
 
-		//particle and explosion
-		[...this.particle2_list, ...this.particle_list, ...this.explosion_list].forEach((i) => {
+		//fire, particle and explosion
+		[...this.fire_list, ...this.dust_list, ...this.explosion_list].forEach((i) => {
 			//update location
 			i.update({ delta_time });
 
@@ -487,12 +471,11 @@ export class game {
 
 			//add particle
 			if (i.have_particle) {
-				this.particle_list.push(
-					new particle({
+				this.dust_list.unshift(
+					new dust({
 						x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
 						y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
-						size: i.width * 0.5,
-						color: i.uid_text,
+						color: `rgba(${i.uid_number},0.2)`,
 					})
 				);
 			}
@@ -504,13 +487,17 @@ export class game {
 		//remove mark delete
 		this.score_list = this.score_list.filter((i) => !i.mark_delete);
 		this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
-		this.particle_list = this.particle_list.filter((i) => !i.mark_delete);
-		this.particle2_list = this.particle2_list.filter((i) => !i.mark_delete);
+		this.dust_list = this.dust_list.filter((i) => !i.mark_delete);
+		this.fire_list = this.fire_list.filter((i) => !i.mark_delete);
 		this.explosion_list = this.explosion_list.filter((i) => !i.mark_delete);
+
+		//remove overflow particle
+		if (this.dust_list.length > this.dust_max) this.dust_list = this.dust_list.slice(0, this.dust_max);
+		if (this.fire_list.length > this.fire_max) this.fire_list = this.fire_list.slice(0, this.fire_max);
 	}
 
 	draw() {
-		[this.bg, this.player, ...this.score_list, ...this.particle2_list, ...this.particle_list, ...this.explosion_list, ...this.enemy_list].forEach((i) => {
+		[this.bg, this.player, ...this.score_list, ...this.fire_list, ...this.dust_list, ...this.explosion_list, ...this.enemy_list].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
 	}

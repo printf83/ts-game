@@ -10,6 +10,7 @@ export class baseEnemy extends baseAnimation {
 
 	uid: number[];
 	uid_text: string;
+	uid_number: string;
 
 	canvas_width: number;
 	canvas_height: number;
@@ -64,7 +65,8 @@ export class baseEnemy extends baseAnimation {
 		opt.collision_y ??= 0;
 
 		this.uid = genUID();
-		this.uid_text = `rgba(${this.uid[0]},${this.uid[1]},${this.uid[2]})`;
+		this.uid_number = `${this.uid[0]},${this.uid[1]},${this.uid[2]}`;
+		this.uid_text = `rgb(${this.uid[0]},${this.uid[1]},${this.uid[2]})`;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;

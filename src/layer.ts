@@ -38,7 +38,7 @@ export class layer {
 	update(game_speed: number) {
 		this.x -= game_speed * this.speed_modifier;
 		if (this.x < 0 - this.width) this.x = 0;
-		this.x2 = this.x + this.width - game_speed - 2;
+		this.x2 = this.x + this.width - game_speed - 1;
 	}
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
