@@ -29,9 +29,4 @@ export class enemy10 extends baseEnemy {
 			point: 1,
 		});
 	}
-
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
-		if (this.x < 0 - this.width) this.mark_delete = true;
-	}
 }

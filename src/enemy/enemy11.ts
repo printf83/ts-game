@@ -68,4 +68,9 @@ export class enemy11 extends baseEnemy {
 		opt.ctx.stroke();
 		super.draw(opt);
 	}
+	set_position(game_speed: number) {
+		this.x -= game_speed;
+		this.string_x = this.x + this.width * 0.5;
+		if (this.x < 0 - this.width) this.mark_delete = true;
+	}
 }
