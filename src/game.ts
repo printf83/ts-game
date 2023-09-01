@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 // import { bg1 } from "./bg1.js";
 import { baseBg } from "./baseBg.js";
