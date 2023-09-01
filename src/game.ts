@@ -36,13 +36,14 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
-const enemy_type = ["enemy4"];
+const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+// const enemy_type = ["enemy4"];
 // const enemy_type = ["enemy8", "enemy11"];
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 export class game {
 	ctx: CanvasRenderingContext2D;
+
 	canvas_width: number;
 	canvas_height: number;
 	base_height: number;
@@ -76,11 +77,19 @@ export class game {
 	progress_index: number = 0;
 	progress_max: number = 1000;
 	game_level: number = 1;
-	enemy_index: number = 0;
-	enemy_interval: number = 3000;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) {
+	enemy_index: number = 0;
+	enemy_interval: number = 0;
+	enemy_interval_max: number = 1000;
+
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+
+		canvas_width: number;
+		canvas_height: number;
+	}) {
 		this.ctx = opt.ctx;
+
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
@@ -96,7 +105,7 @@ export class game {
 			max: this.progress_max,
 			width: this.canvas_width * 0.4,
 			value: this.progress_index,
-			bar_color: ["red", "green"],
+			bar_color: ["red", "yellow", "green"],
 		});
 		this.prg_life = new progress({
 			x: this.canvas_width - 130,
@@ -104,7 +113,7 @@ export class game {
 			width: 100,
 			value: this.player.life,
 			max: 100,
-			bar_color: ["red", "green"],
+			bar_color: ["red", "yellow", "green"],
 		});
 		this.prg_power = new progress({
 			x: this.canvas_width - 130,
@@ -112,10 +121,12 @@ export class game {
 			width: 100,
 			value: this.player.power,
 			max: 100,
-			bar_color: ["red", "green"],
+			bar_color: ["red", "yellow", "green"],
 		});
+	}
 
-		window.addEventListener("keydown", this.game_stop_listener);
+	gen_enemy_interval() {
+		return this.enemy_interval_max - this.game_level * 100;
 	}
 
 	game_start() {
@@ -124,14 +135,14 @@ export class game {
 		this.progress_index = 0;
 		this.progress_max = 1000;
 		this.enemy_index = 0;
-		let tmp_enemy_interval = 3000 - this.game_level * 10;
+		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list = [];
-		this.explosion_list = [];
-		this.dust_list = [];
-		this.fire_list = [];
-		this.score_list = [];
+		this.enemy_list.length = 0; // = [];
+		this.explosion_list.length = 0; // = [];
+		this.dust_list.length = 0; // = [];
+		this.fire_list.length = 0; // = [];
+		this.score_list.length = 0; // = [];
 
 		this.player.set_state("idle");
 		this.player.life = 100;
@@ -147,6 +158,9 @@ export class game {
 		this.score_value = 0;
 		this.score_text = "0";
 
+		window.removeEventListener("keydown", this.game_stop_listener);
+		window.addEventListener("keydown", this.game_pause_listener);
+
 		this.game_over = false;
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
@@ -160,13 +174,13 @@ export class game {
 		this.progress_max = 1000 + this.game_level * 100;
 		this.enemy_index = 0;
 
-		let tmp_enemy_interval = 3000 - this.game_level * 10;
+		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list = [];
-		this.explosion_list = [];
-		this.dust_list = [];
-		this.fire_list = [];
+		this.enemy_list.length = 0; //= [];
+		this.explosion_list.length = 0; // = [];
+		this.dust_list.length = 0; // = [];
+		this.fire_list.length = 0; // = [];
 
 		this.player.set_state("idle");
 		this.player.life += 10;
@@ -178,6 +192,9 @@ export class game {
 		this.player.y = this.base_height - this.player.height;
 		this.player.powered = false;
 		this.player.invulnerable = false;
+
+		window.removeEventListener("keydown", this.game_stop_listener);
+		window.addEventListener("keydown", this.game_pause_listener);
 
 		this.game_up = false;
 		requestAnimationFrame((timestamp) => {
@@ -192,13 +209,13 @@ export class game {
 		});
 	}
 
-	add_explosion(enemy: baseEnemy) {
+	add_explosion(enemy: baseEnemy, play_sound: boolean) {
 		this.explosion_list.push(
 			new explosion({
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
 				scale: enemy.width * 0.008,
-				play_sound: true,
+				play_sound: play_sound,
 			})
 		);
 	}
@@ -215,7 +232,7 @@ export class game {
 				value: point,
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
-				destination_x: 80,
+				destination_x: 90,
 				destination_y: 60,
 			})
 		);
@@ -229,7 +246,7 @@ export class game {
 					if (this.player.is_powered()) {
 						i.explode_out = false;
 
-						this.add_explosion(i);
+						this.add_explosion(i, true);
 						this.add_floating_score(i, false);
 
 						i.mark_delete = true;
@@ -245,6 +262,8 @@ export class game {
 								this.player.set_state("ko");
 								setTimeout(() => {
 									this.game_over = true;
+									window.removeEventListener("keydown", this.game_pause_listener);
+									window.addEventListener("keydown", this.game_stop_listener);
 								}, 500);
 							}
 						}
@@ -252,7 +271,7 @@ export class game {
 						if (!this.game_over) {
 							i.explode_out = false;
 
-							this.add_explosion(i);
+							this.add_explosion(i, false);
 							this.add_floating_score(i, true);
 
 							i.mark_delete = true;
@@ -269,7 +288,15 @@ export class game {
 			ctx: this.ctx,
 			x: 20,
 			y: 60,
-			text: `🎮 ${this.score_text}`,
+			text: `🎮`,
+			shadow_blur: 0,
+			font_weight: 40,
+		});
+		draw_text({
+			ctx: this.ctx,
+			x: 90,
+			y: 60,
+			text: `${this.score_text}`,
 			text_color: this.score_value < 0 ? "red" : "white",
 			font_weight: 40,
 		});
@@ -380,7 +407,11 @@ export class game {
 
 		//update game progress
 		this.progress_index += this.player.speed * 0.1;
-		if (this.progress_index >= this.progress_max) this.game_up = true;
+		if (this.progress_index >= this.progress_max) {
+			this.game_up = true;
+			window.removeEventListener("keydown", this.game_pause_listener);
+			window.addEventListener("keydown", this.game_stop_listener);
+		}
 
 		//update player power
 		this.player.power += 0.1;
@@ -437,7 +468,7 @@ export class game {
 			this.enemy_list.sort((a, b) => a.width - b.width);
 
 			//reset timer
-			let tmp_enemy_interval = 3000 - this.game_level * 10;
+			let tmp_enemy_interval = this.gen_enemy_interval();
 			this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 			this.enemy_index = 0;
 		} else this.enemy_index += delta_time;
@@ -473,6 +504,9 @@ export class game {
 
 			//mark delete of out of screen
 			if (i.x < 0 - i.width) i.mark_delete = true;
+			else {
+				if (i.mark_delete && i.explode_out) this.add_explosion(i, false);
+			}
 
 			//add particle
 			if (i.have_particle) {
@@ -491,10 +525,10 @@ export class game {
 
 		//remove mark delete
 		this.score_list = this.score_list.filter((i) => !i.mark_delete);
-		this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
 		this.dust_list = this.dust_list.filter((i) => !i.mark_delete);
 		this.fire_list = this.fire_list.filter((i) => !i.mark_delete);
 		this.explosion_list = this.explosion_list.filter((i) => !i.mark_delete);
+		this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
 
 		//remove overflow particle
 		if (this.dust_list.length > this.dust_max) this.dust_list = this.dust_list.slice(0, this.dust_max);
@@ -504,12 +538,12 @@ export class game {
 	draw() {
 		[
 			this.bg,
-			this.player,
-			...this.score_list,
 			...this.fire_list,
 			...this.dust_list,
-			...this.explosion_list,
+			...this.score_list,
 			...this.enemy_list,
+			this.player,
+			...this.explosion_list,
 		].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
@@ -524,7 +558,11 @@ export class game {
 				if (this.game_over) this.game_start();
 				if (this.game_up) this.game_level_up();
 			}
-		} else if (event.key === "Enter") {
+		}
+	};
+
+	game_pause_listener = (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
 			if (!this.game_up && !this.game_over) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -596,6 +634,16 @@ export class game {
 			text_color: "yellow",
 		});
 
+		//explosion_list
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Explosion : ${this.explosion_list.length}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+
 		//read_random_index
 		draw_text({
 			ctx: this.ctx,
@@ -621,7 +669,7 @@ export class game {
 		this.draw_status();
 
 		//count fps
-		// this.debug(timestamp);
+		this.debug(timestamp);
 
 		if (!this.game_over && !this.game_pause && !this.game_up) {
 			requestAnimationFrame((timestamp) => {
