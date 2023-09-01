@@ -72,6 +72,7 @@ export class game {
 
 	game_up: boolean = false;
 	game_over: boolean = false;
+	game_timeout: boolean = false;
 	game_pause: boolean = false;
 	game_fps: number = 0;
 	game_fps_list: number[] = [];
@@ -80,6 +81,8 @@ export class game {
 	score_text: string = "0";
 	progress_index: number = 0;
 	progress_max: number = 1000;
+	progress_timer: number = 0;
+	progress_timer_index: number = 0;
 	game_level: number = 1;
 
 	enemy_index: number = 0;
@@ -138,6 +141,9 @@ export class game {
 
 		this.progress_index = 0;
 		this.progress_max = 1000;
+		this.progress_timer = performance.now() + 60000;
+		this.progress_timer_index = 60;
+
 		this.enemy_index = 0;
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
@@ -166,6 +172,7 @@ export class game {
 		window.addEventListener("keyup", this.game_pause_listener);
 
 		this.game_over = false;
+		this.game_timeout = false;
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -176,6 +183,9 @@ export class game {
 
 		this.progress_index = 0;
 		this.progress_max = 1000 + this.game_level * 100;
+		this.progress_timer = performance.now() + 60000;
+		this.progress_timer_index = 60;
+
 		this.enemy_index = 0;
 
 		let tmp_enemy_interval = this.gen_enemy_interval();
@@ -207,6 +217,7 @@ export class game {
 	}
 
 	game_continue() {
+		this.progress_timer = performance.now() + this.progress_timer_index * 1000;
 		this.game_pause = false;
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
@@ -272,7 +283,7 @@ export class game {
 							}
 						}
 
-						if (!this.game_over) {
+						if (!this.game_over && !this.game_timeout) {
 							i.explode_out = false;
 
 							this.add_explosion(i, false);
@@ -305,14 +316,26 @@ export class game {
 			font_weight: 40,
 		});
 
-		//progress
+		//level
 		draw_text({
 			ctx: this.ctx,
-			x: this.canvas_width * 0.5,
+			x: (this.canvas_width - this.prg_game.width) * 0.5,
 			y: 35,
 			text: `Level ${this.game_level}`,
-			text_align: "center",
+			text_align: "start",
 		});
+
+		//timer
+		draw_text({
+			ctx: this.ctx,
+			x: (this.canvas_width + this.prg_game.width) * 0.5,
+			y: 35,
+			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
+			text_align: "end",
+			text_color: this.progress_timer_index < 20 ? "red" : "white",
+		});
+
+		//progress
 		this.prg_game.update(this.progress_index, 0, this.progress_max);
 
 		//life
@@ -347,6 +370,28 @@ export class game {
 				x: this.canvas_width * 0.5,
 				y: this.base_height * 0.5 - 20,
 				text: `Game over!`,
+				font_weight: 50,
+				text_align: "center",
+				text_color: "red",
+			});
+			draw_text({
+				ctx: this.ctx,
+				x: this.canvas_width * 0.5,
+				y: this.base_height * 0.5 + 20,
+				text: `Press SPACEBAR to try again.`,
+				font_weight: 30,
+				text_align: "center",
+				text_color: "red",
+			});
+		}
+
+		//game timeout message
+		if (this.game_timeout) {
+			draw_text({
+				ctx: this.ctx,
+				x: this.canvas_width * 0.5,
+				y: this.base_height * 0.5 - 20,
+				text: `Timeout!`,
 				font_weight: 50,
 				text_align: "center",
 				text_color: "red",
@@ -413,6 +458,14 @@ export class game {
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
 			this.game_up = true;
+			window.removeEventListener("keyup", this.game_pause_listener);
+			window.addEventListener("keyup", this.game_stop_listener);
+		}
+
+		//update game timeout
+		this.progress_timer_index = MathFloor((this.progress_timer - timestamp) * 0.001);
+		if (this.progress_timer_index <= 0) {
+			this.game_timeout = true;
 			window.removeEventListener("keyup", this.game_pause_listener);
 			window.addEventListener("keyup", this.game_stop_listener);
 		}
@@ -540,26 +593,18 @@ export class game {
 	}
 
 	draw() {
-		[
-			this.bg,
-			...this.fire_list,
-			...this.dust_list,
-			...this.score_list,
-			...this.enemy_list,
-			this.player,
-			...this.explosion_list,
-		].forEach((i) => {
+		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
 	}
 
 	game_stop_listener = (event: KeyboardEvent) => {
 		if (event.key === " ") {
-			if (this.game_up || this.game_over) {
+			if (this.game_up || this.game_over || this.game_timeout) {
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (this.game_over) this.game_start();
+				if (this.game_over || this.game_timeout) this.game_start();
 				if (this.game_up) this.game_level_up();
 			}
 		}
@@ -567,12 +612,13 @@ export class game {
 
 	game_pause_listener = (event: KeyboardEvent) => {
 		if (event.key === "Enter") {
-			if (!this.game_up && !this.game_over) {
+			if (!this.game_up && !this.game_over && !this.game_timeout) {
 				event.preventDefault();
 				event.stopPropagation();
 
-				if (!this.game_pause) this.game_pause = true;
-				else if (this.game_pause) this.game_continue();
+				if (!this.game_pause) {
+					this.game_pause = true;
+				} else if (this.game_pause) this.game_continue();
 			}
 		}
 	};
@@ -632,7 +678,7 @@ export class game {
 		//count fps
 		if (this.debug) this.debug_info();
 
-		if (!this.game_over && !this.game_pause && !this.game_up) {
+		if (!this.game_over && !this.game_timeout && !this.game_pause && !this.game_up) {
 			requestAnimationFrame((timestamp) => {
 				this.animate(timestamp);
 			});
