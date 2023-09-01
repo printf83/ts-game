@@ -1,3 +1,4 @@
+import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy5 = new Image();
@@ -12,7 +13,7 @@ export class enemy5 extends baseEnemy {
 		const sprite_width = 271;
 		const sprite_height = 194;
 
-		const size_modifier = Math.random() * 0.1 + 0.3;
+		const size_modifier = MathRandom() * 0.1 + 0.3;
 		const width = sprite_width * size_modifier;
 		const height = sprite_height * size_modifier;
 
@@ -22,7 +23,7 @@ export class enemy5 extends baseEnemy {
 			img: imgEnemy5,
 
 			x: opt.canvas_width,
-			y: Math.random() * (opt.canvas_height - height),
+			y: MathRandom() * (opt.canvas_height - height),
 			width,
 			height,
 
@@ -35,8 +36,8 @@ export class enemy5 extends baseEnemy {
 			point: 3,
 		});
 
-		this.direction_x = Math.random() * 3 + 1.5;
-		this.direction_y = Math.random() * 5 - 2.5;
+		this.direction_x = MathRandom() * 3 + 1.5;
+		this.direction_y = MathRandom() * 5 - 2.5;
 	}
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {

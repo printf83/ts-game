@@ -1,3 +1,5 @@
+import { MathFloor } from "./util.js";
+
 export class layer {
 	img: HTMLImageElement;
 
@@ -41,7 +43,7 @@ export class layer {
 		this.x2 = this.x + this.width - game_speed - 1;
 	}
 	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-		ctx.drawImage(this.img, this.x2, this.y, this.width, this.height);
+		ctx.drawImage(this.img, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		ctx.drawImage(this.img, MathFloor(this.x2), MathFloor(this.y), this.width, this.height);
 	}
 }

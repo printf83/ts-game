@@ -1,6 +1,22 @@
 import { baseAnimation } from "./baseAnimation.js";
 import { input } from "./input.js";
-import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
+import {
+	state,
+	state_bite,
+	state_dizzy,
+	state_fall,
+	state_fall_roll,
+	state_gethit,
+	state_idle,
+	state_jump,
+	state_jump_roll,
+	state_ko,
+	state_power_fall,
+	state_roll,
+	state_run,
+	state_sit,
+	state_type,
+} from "./state.js";
 
 export class player extends baseAnimation {
 	state_list: { [key: string]: state } = {};
@@ -18,7 +34,6 @@ export class player extends baseAnimation {
 	velocity_y: number;
 	weight: number;
 
-	MathPI2 = Math.PI * 2;
 	collision_scale = 0.5;
 	collision_adjust_x = 0;
 	collision_adjust_y = 0;
@@ -45,8 +60,6 @@ export class player extends baseAnimation {
 			sprite_width,
 			sprite_height,
 			sprite_length: 0,
-
-			fps: 20,
 		});
 
 		this.canvas_width = opt.canvas_width;

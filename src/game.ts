@@ -17,7 +17,7 @@ import { explosion } from "./explosion.js";
 import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
-import { draw_text } from "./util.js";
+import { MathFloor, MathRandom, draw_text } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
@@ -67,6 +67,8 @@ export class game {
 	game_up: boolean = false;
 	game_over: boolean = false;
 	game_pause: boolean = false;
+	game_fps: number = 0;
+	game_fps_list: number[] = [];
 
 	score_value: number = 0;
 	score_text: string = "0";
@@ -88,12 +90,12 @@ export class game {
 
 		this.prg_game = new progress({
 			x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5,
-			y: 30,
+			y: 45,
 			min: 0,
 			max: this.progress_max,
 			width: this.canvas_width * 0.4,
 			value: this.progress_index,
-			bar_color: ["red", "green"],
+			// bar_color: ["red", "green"],
 		});
 		this.prg_life = new progress({
 			x: this.canvas_width - 130,
@@ -101,7 +103,7 @@ export class game {
 			width: 100,
 			value: this.player.life,
 			max: 100,
-			bar_color: ["red", "green"],
+			// bar_color: ["red", "green"],
 		});
 		this.prg_power = new progress({
 			x: this.canvas_width - 130,
@@ -109,7 +111,7 @@ export class game {
 			width: 100,
 			value: this.player.power,
 			max: 100,
-			bar_color: ["red", "green"],
+			// bar_color: ["red", "green"],
 		});
 
 		window.addEventListener("keydown", this.game_stop_listener);
@@ -122,7 +124,7 @@ export class game {
 		this.progress_max = 1000;
 		this.enemy_index = 0;
 		let tmp_enemy_interval = 3000 - this.game_level * 10;
-		this.enemy_interval = Math.random() * tmp_enemy_interval + tmp_enemy_interval;
+		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
 		this.enemy_list = [];
 		this.explosion_list = [];
@@ -158,7 +160,7 @@ export class game {
 		this.enemy_index = 0;
 
 		let tmp_enemy_interval = 3000 - this.game_level * 10;
-		this.enemy_interval = Math.random() * tmp_enemy_interval + tmp_enemy_interval;
+		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
 		this.enemy_list = [];
 		this.explosion_list = [];
@@ -201,7 +203,7 @@ export class game {
 	}
 
 	add_floating_score(enemy: baseEnemy, deduction: boolean) {
-		let point = Math.floor((100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) * 0.1 * enemy.point);
+		let point = MathFloor((100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) * 0.1 * enemy.point);
 
 		if (deduction && point > 0) point *= -1;
 		if (!deduction && point < 0) point *= -1;
@@ -271,11 +273,21 @@ export class game {
 			font_weight: 30,
 		});
 
+		//fps
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: 90,
+			text: `FPS : ${this.game_fps}`,
+			text_color: this.game_fps < 30 ? "red" : "white",
+			font_weight: 30,
+		});
+
 		//progress
 		draw_text({
 			ctx: this.ctx,
 			x: this.canvas_width * 0.5,
-			y: 20,
+			y: 35,
 			text: `Level ${this.game_level}`,
 			text_align: "center",
 		});
@@ -288,6 +300,7 @@ export class game {
 			y: 45,
 			text: `🧡`,
 			text_align: "end",
+			shadow_blur: 0,
 		});
 		this.prg_life.update(this.player.life);
 
@@ -298,6 +311,7 @@ export class game {
 			y: 75,
 			text: `🚀`,
 			text_align: "end",
+			shadow_blur: 0,
 		});
 		this.prg_power.update(this.player.power);
 
@@ -397,8 +411,8 @@ export class game {
 				.forEach((_i) => {
 					this.fire_list.unshift(
 						new fire({
-							x: this.player.x - 40 + Math.random() * 10 - 10,
-							y: this.player.y + 25 + Math.random() * 10 - 10,
+							x: this.player.x - 40 + MathRandom() * 10 - 10,
+							y: this.player.y + 25 + MathRandom() * 10 - 10,
 						})
 					);
 				});
@@ -407,7 +421,7 @@ export class game {
 		//add enemy
 		if (this.enemy_index >= this.enemy_interval) {
 			//choose enemy
-			const random_enemy_index = enemy_type[Math.floor(Math.random() * enemy_type.length)];
+			const random_enemy_index = enemy_type[MathFloor(MathRandom() * enemy_type.length)];
 
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
@@ -433,7 +447,7 @@ export class game {
 
 			//reset timer
 			let tmp_enemy_interval = 3000 - this.game_level * 10;
-			this.enemy_interval = Math.random() * tmp_enemy_interval + tmp_enemy_interval;
+			this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 			this.enemy_index = 0;
 		} else this.enemy_index += delta_time;
 
@@ -473,9 +487,9 @@ export class game {
 			if (i.have_particle) {
 				this.dust_list.unshift(
 					new dust({
-						x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
-						y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
-						color: `rgba(${i.uid_number},0.3)`,
+						x: i.x + i.width * 0.5 + MathRandom() * 50 - 25,
+						y: i.y + i.height * 0.5 + MathRandom() * 30 - 15,
+						color: `rgba(${i.uid_number},0.2)`,
 					})
 				);
 			}
@@ -497,7 +511,15 @@ export class game {
 	}
 
 	draw() {
-		[this.bg, this.player, ...this.score_list, ...this.fire_list, ...this.dust_list, ...this.explosion_list, ...this.enemy_list].forEach((i) => {
+		[
+			this.bg,
+			this.player,
+			...this.score_list,
+			...this.fire_list,
+			...this.dust_list,
+			...this.explosion_list,
+			...this.enemy_list,
+		].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
 	}
@@ -523,11 +545,24 @@ export class game {
 	};
 
 	animate(timestamp: number) {
-		this.update(timestamp);
+		//count fps
+		const now = performance.now();
+		while (this.game_fps_list.length > 0 && this.game_fps_list[0]! <= now - 1000) {
+			this.game_fps_list.shift();
+		}
+		this.game_fps_list.push(now);
+		this.game_fps = this.game_fps_list.length;
 
+		//clear canvas
 		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
+		//update object
+		this.update(timestamp);
+
+		//draw object
 		this.draw();
+
+		//draw status
 		this.draw_status();
 
 		if (!this.game_over && !this.game_pause && !this.game_up) {

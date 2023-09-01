@@ -1,3 +1,5 @@
+import { MathFloor } from "./util.js";
+
 export class baseAnimation {
 	fps: number;
 	frame: number;
@@ -37,7 +39,7 @@ export class baseAnimation {
 		fps?: number;
 		animation_repeat?: boolean;
 	}) {
-		opt.fps ??= 120;
+		opt.fps ??= 30;
 		opt.animation_repeat ??= true;
 
 		this.fps = opt.fps;
@@ -87,7 +89,17 @@ export class baseAnimation {
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.drawImage(this.img, this.frame_x, this.frame_y, this.sprite_width, this.sprite_height, this.x, this.y, this.width, this.height);
+		opt.ctx.drawImage(
+			this.img,
+			this.frame_x,
+			this.frame_y,
+			this.sprite_width,
+			this.sprite_height,
+			MathFloor(this.x),
+			MathFloor(this.y),
+			this.width,
+			this.height
+		);
 	}
 
 	set_position(game_speed: number) {

@@ -1,3 +1,4 @@
+import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy10 = new Image();
@@ -8,7 +9,7 @@ export class enemy10 extends baseEnemy {
 		const sprite_length = 5;
 		const sprite_width = 60;
 		const sprite_height = 87;
-		const size_modifier = Math.random() * 0.75 + 0.95;
+		const size_modifier = MathRandom() * 0.75 + 0.95;
 		const width = sprite_width * size_modifier;
 		const height = sprite_height * size_modifier;
 

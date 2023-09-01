@@ -1,3 +1,4 @@
+import { MathFloor, MathRandom, Modulus } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy4 = new Image();
@@ -16,7 +17,7 @@ export class enemy4 extends baseEnemy {
 		const sprite_length = 8;
 		const sprite_width = 213;
 		const sprite_height = 213;
-		const size_modifier = Math.random() * 0.1 + 0.3;
+		const size_modifier = MathRandom() * 0.1 + 0.3;
 		const width = sprite_width * size_modifier;
 		const height = sprite_height * size_modifier;
 
@@ -25,9 +26,9 @@ export class enemy4 extends baseEnemy {
 
 			img: imgEnemy4,
 
-			// x: Math.random() * (opt.canvas_width - width),
-			x: Math.random() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
-			y: Math.random() * (opt.canvas_height - height),
+			// x: MathRandom() * (opt.canvas_width - width),
+			x: MathRandom() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
+			y: MathRandom() * (opt.canvas_height - height),
 			width,
 			height,
 
@@ -43,20 +44,21 @@ export class enemy4 extends baseEnemy {
 			point: 5,
 		});
 
-		this.new_x = Math.random() * (opt.canvas_width - width);
-		this.new_y = Math.random() * (opt.canvas_height - height);
+		this.new_x = MathRandom() * (opt.canvas_width - width);
+		this.new_y = MathRandom() * (opt.canvas_height - height);
 		this.last_move = 0;
-		this.interval = Math.floor(Math.random() * 200 + 50);
+		this.interval = MathFloor(MathRandom() * 200 + 50);
 
 		this.life_index = 0;
-		this.life_length = Math.random() * 5000 + 5000;
+		this.life_length = MathRandom() * 5000 + 5000;
 	}
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
-		if (this.last_move % this.interval === 0) {
+		// if (this.last_move % this.interval === 0) {
+		if (Modulus(this.last_move, this.interval) === 0) {
 			this.last_move = 0;
-			this.new_x = Math.random() * (this.canvas_width - this.width);
-			this.new_y = Math.random() * (this.canvas_height - this.height);
+			this.new_x = MathRandom() * (this.canvas_width - this.width);
+			this.new_y = MathRandom() * (this.canvas_height - this.height);
 		}
 
 		this.last_move++;

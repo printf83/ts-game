@@ -1,4 +1,5 @@
 import { baseAnimation } from "./baseAnimation.js";
+import { MathFloor, MathRandom } from "./util.js";
 
 const imgExplosion = new Image();
 imgExplosion.src = "./res/boom.png";
@@ -44,7 +45,7 @@ export class explosion extends baseAnimation {
 			this.sound = soundExplosion;
 		}
 
-		this.angle = Math.random() * 180;
+		this.angle = MathRandom() * 180;
 		this.dx = 0 - this.width * 0.5;
 		this.dy = 0 - this.height * 0.5;
 		this.sx = 0;
@@ -68,7 +69,7 @@ export class explosion extends baseAnimation {
 
 		opt.ctx.translate(this.x, this.y);
 		opt.ctx.rotate(this.angle);
-		opt.ctx.drawImage(this.img, this.sx, 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
+		opt.ctx.drawImage(this.img, MathFloor(this.sx), 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
 
 		opt.ctx.restore();
 	}

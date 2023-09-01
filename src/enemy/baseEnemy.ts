@@ -1,13 +1,14 @@
+import { MathFloor, MathRandom } from "../util.js";
 import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
 
 const genUID = () => {
-	return [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)];
+	return Array(3)
+		.fill("")
+		.map((_i) => MathFloor(MathRandom() * 255));
 };
 
 export class baseEnemy extends baseAnimation {
-	MathPI2 = Math.PI * 2;
-
 	uid: number[];
 	uid_text: string;
 	uid_number: string;

@@ -1,3 +1,16 @@
+export const MathPI = Math.PI;
+export const MathPI2 = MathPI * 2;
+export const MathFloor = (n: number) => (n + (n < 0 ? -1 : 0)) >> 0;
+export const MathFloorPosifive = (n: number) => n >> 0;
+export const Modulus = (n: number, divisor: number) => n & (divisor - 1);
+
+let random_index = 0;
+const random_table = Array(1e6)
+	.fill(0)
+	.map((_i) => Math.random());
+
+export const MathRandom = (): number => (++random_index >= 1e6 ? random_table[(random_index = 0)]! : random_table[random_index]!);
+
 export const draw_text = (opt: {
 	ctx: CanvasRenderingContext2D;
 	x: number;
@@ -23,11 +36,11 @@ export const draw_text = (opt: {
 	opt.ctx.font = `${opt.font_weight}px ${opt.font_family}`;
 
 	opt.ctx.fillStyle = opt.shadow_color;
-	opt.ctx.fillText(opt.text, opt.x + opt.shadow_blur, opt.y + opt.shadow_blur);
+	opt.ctx.fillText(opt.text, MathFloor(opt.x + opt.shadow_blur), MathFloor(opt.y + opt.shadow_blur));
 
 	//text
 	opt.ctx.fillStyle = opt.text_color;
-	opt.ctx.fillText(opt.text, opt.x, opt.y);
+	opt.ctx.fillText(opt.text, MathFloor(opt.x), MathFloor(opt.y));
 
 	opt.ctx.restore();
 };

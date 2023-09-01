@@ -27,12 +27,26 @@ export class progress {
 	radius: number;
 	padding: number;
 
-	constructor(opt: { x: number; y: number; min?: number; max?: number; width: number; height?: number; value?: number; bg_color?: string; bar_color?: string | string[]; shadow_color?: string; shadow_blur?: number; radius?: number; padding?: number }) {
-		opt.shadow_color ??= "black";
+	constructor(opt: {
+		x: number;
+		y: number;
+		min?: number;
+		max?: number;
+		width: number;
+		height?: number;
+		value?: number;
+		bg_color?: string;
+		bar_color?: string | string[];
+		shadow_color?: string;
+		shadow_blur?: number;
+		radius?: number;
+		padding?: number;
+	}) {
+		opt.shadow_color ??= "#555555";
 		opt.shadow_blur ??= 1;
-		opt.bg_color ??= "white";
-		opt.bar_color ??= "red";
-		opt.radius ??= 7;
+		opt.bg_color ??= "#FFFFFF";
+		opt.bar_color ??= "#555555";
+		opt.radius ??= 0;
 		opt.padding ??= 2;
 		opt.min ??= 0;
 		opt.max ??= 1000;
@@ -94,21 +108,33 @@ export class progress {
 		// ctx.restore();
 
 		ctx.save();
-		if (this.shadow_color && this.shadow_blur) {
-			ctx.beginPath();
-			ctx.fillStyle = this.shadow_color;
-			ctx.roundRect(this.shadow_x, this.shadow_y, this.shadow_width, this.shadow_height, [this.radius]);
-			ctx.fill();
-		}
-		ctx.beginPath();
-		ctx.fillStyle = this.bg_color;
-		ctx.roundRect(this.x, this.y, this.width, this.height, [this.radius]);
-		ctx.fill();
 
-		ctx.beginPath();
-		ctx.fillStyle = this.gradient_bar_color(this.bar_color, ctx, this.bar_x, this.bar_max_width);
-		ctx.roundRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height, [this.radius]);
-		ctx.fill();
+		if (this.radius) {
+			if (this.shadow_color && this.shadow_blur) {
+				ctx.beginPath();
+				ctx.fillStyle = this.shadow_color;
+				ctx.roundRect(this.shadow_x, this.shadow_y, this.shadow_width, this.shadow_height, [this.radius]);
+				ctx.fill();
+			}
+			ctx.beginPath();
+			ctx.fillStyle = this.bg_color;
+			ctx.roundRect(this.x, this.y, this.width, this.height, [this.radius]);
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.fillStyle = this.gradient_bar_color(this.bar_color, ctx, this.bar_x, this.bar_max_width);
+			ctx.roundRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height, [this.radius]);
+			ctx.fill();
+		} else {
+			if (this.shadow_color && this.shadow_blur) {
+				ctx.fillStyle = this.shadow_color;
+				ctx.fillRect(this.shadow_x, this.shadow_y, this.shadow_width, this.shadow_height);
+			}
+			ctx.fillStyle = this.bg_color;
+			ctx.fillRect(this.x, this.y, this.width, this.height);
+			ctx.fillStyle = this.gradient_bar_color(this.bar_color, ctx, this.bar_x, this.bar_max_width);
+			ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
+		}
 
 		ctx.restore();
 	}
