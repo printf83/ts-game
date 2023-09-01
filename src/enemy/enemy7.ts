@@ -7,7 +7,7 @@ imgEnemy7.src = "./res/enemy/enemy7.png";
 export class enemy7 extends baseEnemy {
 	move_speed: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 229;
 		const sprite_height = 171;

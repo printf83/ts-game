@@ -17,8 +17,11 @@ import {
 	state_sit,
 	state_type,
 } from "./state.js";
+import { MathPI2 } from "./util.js";
 
 export class player extends baseAnimation {
+	debug: boolean = false;
+
 	state_list: { [key: string]: state } = {};
 	current_state?: state;
 
@@ -40,7 +43,7 @@ export class player extends baseAnimation {
 	collision_x: number;
 	collision_y: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const img = new Image();
 		img.src = "./res/player.png";
 
@@ -61,6 +64,9 @@ export class player extends baseAnimation {
 			sprite_height,
 			sprite_length: 0,
 		});
+
+		opt.debug ??= false;
+		this.debug = opt.debug;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
@@ -134,14 +140,16 @@ export class player extends baseAnimation {
 		//draw sprite
 		super.draw(opt);
 
-		// //draw collision area
-		// ctx.save();
+		//draw collision area
+		if (this.debug) {
+			opt.ctx.save();
 
-		// ctx.strokeStyle = "white";
-		// ctx.beginPath();
-		// ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, this.MathPI2);
-		// ctx.stroke();
+			opt.ctx.strokeStyle = "white";
+			opt.ctx.beginPath();
+			opt.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
+			opt.ctx.stroke();
 
-		// ctx.restore();
+			opt.ctx.restore();
+		}
 	}
 }

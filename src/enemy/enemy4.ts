@@ -13,7 +13,7 @@ export class enemy4 extends baseEnemy {
 	life_index: number;
 	life_length: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 8;
 		const sprite_width = 213;
 		const sprite_height = 213;
@@ -75,8 +75,9 @@ export class enemy4 extends baseEnemy {
 		super.update(opt);
 	}
 
-	set_position(game_speed: number): void {
-		this.x -= game_speed;
-		this.new_x -= game_speed;
+	set_position(opt: { game_speed: number }) {
+		super.set_position(opt);
+		this.new_x -= opt.game_speed;
+		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 	}
 }

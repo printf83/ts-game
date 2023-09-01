@@ -29,8 +29,8 @@ export class particle {
 		this.size *= 0.97;
 		if (this.size < 0.5) this.mark_delete = true;
 	}
-	set_position(game_speed: number) {
-		this.x -= game_speed;
+	set_position(opt: { game_speed: number }) {
+		this.x -= opt.game_speed;
 		if (this.x < 0 - this.size) this.mark_delete = true;
 	}
 }

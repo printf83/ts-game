@@ -102,8 +102,8 @@ export class baseAnimation {
 		);
 	}
 
-	set_position(game_speed: number) {
-		this.x -= game_speed;
+	set_position(opt: { game_speed: number }) {
+		this.x -= opt.game_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
 	}
 }

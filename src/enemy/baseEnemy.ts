@@ -1,4 +1,4 @@
-import { MathFloor, MathRandom } from "../util.js";
+import { MathFloor, MathPI2, MathRandom } from "../util.js";
 import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
 
@@ -9,6 +9,8 @@ const genUID = () => {
 };
 
 export class baseEnemy extends baseAnimation {
+	debug: boolean = false;
+
 	uid: number[];
 	uid_text: string;
 	uid_number: string;
@@ -54,8 +56,12 @@ export class baseEnemy extends baseAnimation {
 		collision_scale?: number;
 		collision_x?: number;
 		collision_y?: number;
+
+		debug?: boolean;
 	}) {
 		super(opt);
+
+		opt.debug ??= false;
 
 		opt.explode_in ??= false;
 		opt.explode_out ??= false;
@@ -64,6 +70,8 @@ export class baseEnemy extends baseAnimation {
 		opt.collision_scale ??= 0.5;
 		opt.collision_x ??= 0;
 		opt.collision_y ??= 0;
+
+		this.debug = opt.debug;
 
 		this.uid = genUID();
 		this.uid_number = `${this.uid[0]},${this.uid[1]},${this.uid[2]}`;
@@ -102,17 +110,22 @@ export class baseEnemy extends baseAnimation {
 		//draw sprite
 		super.draw(opt);
 
-		// //draw collision area
-		// ctx.save();
+		//draw collision area
+		if (this.debug) {
+			opt.ctx.save();
 
-		// ctx.strokeStyle = "white";
-		// ctx.beginPath();
-		// ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, this.MathPI2);
-		// ctx.stroke();
+			opt.ctx.strokeStyle = "white";
+			opt.ctx.beginPath();
+			opt.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
+			opt.ctx.stroke();
 
-		// ctx.restore();
+			opt.ctx.restore();
+		}
 	}
-
+	set_position(opt: { game_speed: number }) {
+		super.set_position(opt);
+		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
+	}
 	is_collide(opt: { player: player }) {
 		const dx = this.collision_x - opt.player.collision_x;
 		const dy = this.collision_y - opt.player.collision_y;

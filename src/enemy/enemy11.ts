@@ -11,7 +11,7 @@ export class enemy11 extends baseEnemy {
 	string_x: number;
 	string_y: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 120;
 		const sprite_height = 144;
@@ -24,7 +24,7 @@ export class enemy11 extends baseEnemy {
 
 			img: imgEnemy11,
 
-			x: MathRandom() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
+			x: opt.canvas_width + width,
 			y: MathRandom() > 0.5 ? MathRandom() * (opt.canvas_height - height) : 0 - height,
 			width,
 			height,
@@ -69,9 +69,9 @@ export class enemy11 extends baseEnemy {
 		opt.ctx.stroke();
 		super.draw(opt);
 	}
-	set_position(game_speed: number) {
-		this.x -= game_speed;
+	set_position(opt: { game_speed: number }) {
+		super.set_position(opt);
 		this.string_x = this.x + this.width * 0.5;
-		if (this.x < 0 - this.width) this.mark_delete = true;
+		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 	}
 }

@@ -1,3 +1,5 @@
+const DEBUG = true;
+
 // import { bg1 } from "./bg1.js";
 import { baseBg } from "./baseBg.js";
 import { bg2 } from "./bg2.js";
@@ -65,6 +67,8 @@ export class game {
 
 	dust_max: number = 50;
 	fire_max: number = 50;
+	fps_min: number = 30;
+	debug: boolean = DEBUG;
 
 	game_up: boolean = false;
 	game_over: boolean = false;
@@ -96,7 +100,7 @@ export class game {
 		this.input = new input();
 		this.bg = new bg2({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
-		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height });
+		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
 
 		this.prg_game = new progress({
 			x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5,
@@ -158,8 +162,8 @@ export class game {
 		this.score_value = 0;
 		this.score_text = "0";
 
-		window.removeEventListener("keydown", this.game_stop_listener);
-		window.addEventListener("keydown", this.game_pause_listener);
+		window.removeEventListener("keyup", this.game_stop_listener);
+		window.addEventListener("keyup", this.game_pause_listener);
 
 		this.game_over = false;
 		requestAnimationFrame((timestamp) => {
@@ -193,8 +197,8 @@ export class game {
 		this.player.powered = false;
 		this.player.invulnerable = false;
 
-		window.removeEventListener("keydown", this.game_stop_listener);
-		window.addEventListener("keydown", this.game_pause_listener);
+		window.removeEventListener("keyup", this.game_stop_listener);
+		window.addEventListener("keyup", this.game_pause_listener);
 
 		this.game_up = false;
 		requestAnimationFrame((timestamp) => {
@@ -262,9 +266,9 @@ export class game {
 								this.player.set_state("ko");
 								setTimeout(() => {
 									this.game_over = true;
-									window.removeEventListener("keydown", this.game_pause_listener);
-									window.addEventListener("keydown", this.game_stop_listener);
-								}, 500);
+									window.removeEventListener("keyup", this.game_pause_listener);
+									window.addEventListener("keyup", this.game_stop_listener);
+								}, 1500);
 							}
 						}
 
@@ -409,8 +413,8 @@ export class game {
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
 			this.game_up = true;
-			window.removeEventListener("keydown", this.game_pause_listener);
-			window.addEventListener("keydown", this.game_stop_listener);
+			window.removeEventListener("keyup", this.game_pause_listener);
+			window.addEventListener("keyup", this.game_stop_listener);
 		}
 
 		//update player power
@@ -447,7 +451,7 @@ export class game {
 
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
-			const new_enemy = new enemy_object({ canvas_width: this.canvas_width, canvas_height: this.base_height });
+			const new_enemy = new enemy_object({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
 
 			//add explosion if explode in
 			if (new_enemy.explode_in) {
@@ -479,7 +483,7 @@ export class game {
 			i.update({ delta_time });
 
 			//update location base on player speed
-			i.set_position(this.player.speed);
+			i.set_position({ game_speed: this.player.speed });
 		});
 
 		//floating score
@@ -500,7 +504,7 @@ export class game {
 			i.update({ delta_time });
 
 			//update location base on player speed
-			i.set_position(this.player.speed);
+			i.set_position({ game_speed: this.player.speed });
 
 			//mark delete of out of screen
 			if (i.x < 0 - i.width) i.mark_delete = true;
@@ -573,89 +577,46 @@ export class game {
 		}
 	};
 
-	debug(timestamp: number) {
-		const now = timestamp;
-		const last_second = now - 1000;
-		this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
-		this.game_fps_list.push(now);
+	is_enough_fps(timestamp: number, callback: (timestamp: number) => void) {
+		const last_second = timestamp - 1000;
+		if (this.game_fps_list.length > this.fps_min) this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
+		this.game_fps_list.push(timestamp);
 		this.game_fps = this.game_fps_list.length;
 
-		let text_y = 100;
-		let text_y_index = 0;
-		const get_text_y = () => text_y + text_y_index++ * 40;
-
-		//fps
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `FPS : ${this.game_fps}`,
-			text_color: this.game_fps < 30 ? "red" : "white",
-			font_weight: 30,
-		});
-
-		//dust_list
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Dust : ${this.dust_list.length}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
-
-		//fire_list
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Fire : ${this.fire_list.length}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
-
-		//enemy_list
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Enemy : ${this.enemy_list.length}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
-
-		//score_list
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Score : ${this.score_list.length}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
-
-		//explosion_list
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Explosion : ${this.explosion_list.length}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
-
-		//read_random_index
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: get_text_y(),
-			text: `Random : ${read_random_index()}`,
-			font_weight: 30,
-			text_color: "yellow",
-		});
+		if (this.game_fps >= this.fps_min) callback(timestamp);
+		else {
+			requestAnimationFrame((timestamp) => {
+				this.is_enough_fps(timestamp, callback);
+			});
+		}
 	}
 
-	animate(timestamp: number) {
+	debug_info() {
+		let text_y = 100;
+		let text_y_index = 0;
+		const gen_text = (text: string, text_color?: string) => {
+			draw_text({
+				ctx: this.ctx,
+				x: 20,
+				y: text_y + text_y_index++ * 20,
+				shadow_blur: 0,
+				text: text,
+				text_color: text_color ? text_color : "yellow",
+				font_family: "Arial",
+				font_weight: 15,
+			});
+		};
+
+		gen_text(`FPS : ${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
+		gen_text(`Dust : ${this.dust_list.length}`);
+		gen_text(`Fire : ${this.fire_list.length}`);
+		gen_text(`Explosion : ${this.explosion_list.length}`);
+		gen_text(`Enemy : ${this.enemy_list.length}`);
+		gen_text(`Score : ${this.score_list.length}`);
+		gen_text(`Random : ${read_random_index()}`);
+	}
+
+	do_animate = (timestamp: number) => {
 		//clear canvas
 		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
@@ -669,12 +630,17 @@ export class game {
 		this.draw_status();
 
 		//count fps
-		this.debug(timestamp);
+		if (this.debug) this.debug_info();
 
 		if (!this.game_over && !this.game_pause && !this.game_up) {
 			requestAnimationFrame((timestamp) => {
 				this.animate(timestamp);
 			});
 		}
+	};
+
+	animate(timestamp: number) {
+		if (this.debug) this.is_enough_fps(timestamp, this.do_animate);
+		else this.do_animate(timestamp);
 	}
 }

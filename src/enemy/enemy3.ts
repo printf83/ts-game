@@ -11,7 +11,7 @@ export class enemy3 extends baseEnemy {
 	life_index: 0;
 	life_length: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 218;
 		const sprite_height = 177;
