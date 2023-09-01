@@ -134,7 +134,7 @@ export class game {
 		this.player.life = 100;
 		this.player.power = 0;
 		this.player.speed = 0;
-		this.player.max_speed = 14;
+		this.player.max_speed = 14 + this.game_level;
 		this.player.weight = 1;
 		this.player.velocity_y = 0;
 		this.player.y = this.base_height - this.player.height;
@@ -397,8 +397,8 @@ export class game {
 				.forEach((_i) => {
 					this.fire_list.unshift(
 						new fire({
-							x: this.player.x, //+ this.player.width * 0.5,
-							y: this.player.y, // + this.player.height * 0.05,
+							x: this.player.x - 40 + Math.random() * 10 - 10,
+							y: this.player.y + 25 + Math.random() * 10 - 10,
 						})
 					);
 				});
@@ -475,7 +475,7 @@ export class game {
 					new dust({
 						x: i.x + i.width * 0.5 + Math.random() * 50 - 25,
 						y: i.y + i.height * 0.5 + Math.random() * 30 - 15,
-						color: `rgba(${i.uid_number},0.2)`,
+						color: `rgba(${i.uid_number},0.3)`,
 					})
 				);
 			}

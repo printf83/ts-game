@@ -13,8 +13,6 @@ export class fire extends particle {
 		super({
 			x: opt.x,
 			y: opt.y,
-			speed_x: 1,
-			speed_y: 1,
 			size: Math.random() * 100 + 50,
 		});
 
@@ -33,7 +31,7 @@ export class fire extends particle {
 		// opt.ctx.save();
 		// opt.ctx.translate(this.x, this.y);
 		// opt.ctx.rotate(this.angle);
-		opt.ctx.drawImage(this.img, this.img_size, this.img_size, this.size, this.size);
+		opt.ctx.drawImage(this.img, this.x, this.y, this.size, this.size);
 		// opt.ctx.restore();
 	}
 }
