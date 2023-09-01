@@ -2,7 +2,6 @@ export const MathPI = Math.PI;
 export const MathPI2 = MathPI * 2;
 export const MathFloor = (n: number) => (n + (n < 0 ? -1 : 0)) >> 0;
 export const MathFloorPosifive = (n: number) => n >> 0;
-export const Modulus = (n: number, divisor: number) => n & (divisor - 1);
 
 let random_index = 0;
 const random_table = Array(1e6)

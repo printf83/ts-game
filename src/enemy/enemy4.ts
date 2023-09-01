@@ -1,4 +1,4 @@
-import { MathFloor, MathRandom, Modulus } from "../util.js";
+import { MathFloor, MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy4 = new Image();
