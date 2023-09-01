@@ -17,7 +17,7 @@ import { explosion } from "./explosion.js";
 import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
-import { MathFloor, MathRandom, draw_text } from "./util.js";
+import { MathFloor, MathRandom, draw_text, read_random_index } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
@@ -36,7 +36,8 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+// const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+const enemy_type = ["enemy4"];
 // const enemy_type = ["enemy8", "enemy11"];
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
@@ -95,7 +96,7 @@ export class game {
 			max: this.progress_max,
 			width: this.canvas_width * 0.4,
 			value: this.progress_index,
-			// bar_color: ["red", "green"],
+			bar_color: ["red", "green"],
 		});
 		this.prg_life = new progress({
 			x: this.canvas_width - 130,
@@ -103,7 +104,7 @@ export class game {
 			width: 100,
 			value: this.player.life,
 			max: 100,
-			// bar_color: ["red", "green"],
+			bar_color: ["red", "green"],
 		});
 		this.prg_power = new progress({
 			x: this.canvas_width - 130,
@@ -111,7 +112,7 @@ export class game {
 			width: 100,
 			value: this.player.power,
 			max: 100,
-			// bar_color: ["red", "green"],
+			bar_color: ["red", "green"],
 		});
 
 		window.addEventListener("keydown", this.game_stop_listener);
@@ -214,8 +215,8 @@ export class game {
 				value: point,
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
-				destination_x: 55,
-				destination_y: 55,
+				destination_x: 80,
+				destination_y: 60,
 			})
 		);
 	}
@@ -267,20 +268,10 @@ export class game {
 		draw_text({
 			ctx: this.ctx,
 			x: 20,
-			y: 50,
+			y: 60,
 			text: `🎮 ${this.score_text}`,
 			text_color: this.score_value < 0 ? "red" : "white",
-			font_weight: 30,
-		});
-
-		//fps
-		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: 90,
-			text: `FPS : ${this.game_fps}`,
-			text_color: this.game_fps < 30 ? "red" : "white",
-			font_weight: 30,
+			font_weight: 40,
 		});
 
 		//progress
@@ -544,15 +535,79 @@ export class game {
 		}
 	};
 
-	animate(timestamp: number) {
-		//count fps
-		const now = performance.now();
-		while (this.game_fps_list.length > 0 && this.game_fps_list[0]! <= now - 1000) {
-			this.game_fps_list.shift();
-		}
+	debug(timestamp: number) {
+		const now = timestamp;
+		const last_second = now - 1000;
+		this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
 		this.game_fps_list.push(now);
 		this.game_fps = this.game_fps_list.length;
 
+		let text_y = 100;
+		let text_y_index = 0;
+		const get_text_y = () => text_y + text_y_index++ * 40;
+
+		//fps
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `FPS : ${this.game_fps}`,
+			text_color: this.game_fps < 30 ? "red" : "white",
+			font_weight: 30,
+		});
+
+		//dust_list
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Dust : ${this.dust_list.length}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+
+		//fire_list
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Fire : ${this.fire_list.length}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+
+		//enemy_list
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Enemy : ${this.enemy_list.length}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+
+		//score_list
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Score : ${this.score_list.length}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+
+		//read_random_index
+		draw_text({
+			ctx: this.ctx,
+			x: 20,
+			y: get_text_y(),
+			text: `Random : ${read_random_index()}`,
+			font_weight: 30,
+			text_color: "yellow",
+		});
+	}
+
+	animate(timestamp: number) {
 		//clear canvas
 		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
@@ -564,6 +619,9 @@ export class game {
 
 		//draw status
 		this.draw_status();
+
+		//count fps
+		// this.debug(timestamp);
 
 		if (!this.game_over && !this.game_pause && !this.game_up) {
 			requestAnimationFrame((timestamp) => {

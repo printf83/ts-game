@@ -96,7 +96,7 @@ export class baseEnemy extends baseAnimation {
 	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }) {
 		if (opt.ctx_collision) {
 			opt.ctx_collision.fillStyle = this.uid_text;
-			opt.ctx_collision.fillRect(this.x, this.y, this.width, this.height);
+			opt.ctx_collision.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 		}
 
 		//draw sprite

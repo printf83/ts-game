@@ -10,6 +10,7 @@ const random_table = Array(1e6)
 	.map((_i) => Math.random());
 
 export const MathRandom = (): number => (++random_index >= 1e6 ? random_table[(random_index = 0)]! : random_table[random_index]!);
+export const read_random_index = () => random_index;
 
 export const draw_text = (opt: {
 	ctx: CanvasRenderingContext2D;
