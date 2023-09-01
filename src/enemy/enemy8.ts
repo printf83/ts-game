@@ -62,10 +62,11 @@ export class enemy8 extends baseEnemy {
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }): void {
+		super.draw(opt);
 		opt.ctx.beginPath();
 		opt.ctx.moveTo(this.string_x, 0);
 		opt.ctx.lineTo(this.string_x, this.string_y);
 		opt.ctx.stroke();
-		super.draw(opt);
 	}
+	update;
 }
