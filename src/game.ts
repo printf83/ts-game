@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = true;
 
 // import { bg1 } from "./bg1.js";
 import { baseBg } from "./baseBg.js";
@@ -23,6 +23,7 @@ import { MathFloor, MathRandom, draw_text, read_random_index } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
+import { control } from "./control.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -50,6 +51,7 @@ export class game {
 	canvas_height: number;
 	base_height: number;
 
+	ctl: control;
 	bg: baseBg;
 	player: player;
 	input: input;
@@ -101,6 +103,7 @@ export class game {
 		this.canvas_height = opt.canvas_height;
 
 		this.input = new input();
+		this.ctl = new control({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.bg = new bg2({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
@@ -148,11 +151,11 @@ export class game {
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list.length = 0; // = [];
-		this.explosion_list.length = 0; // = [];
-		this.dust_list.length = 0; // = [];
-		this.fire_list.length = 0; // = [];
-		this.score_list.length = 0; // = [];
+		this.enemy_list = [];
+		this.explosion_list = [];
+		this.dust_list = [];
+		this.fire_list = [];
+		this.score_list = [];
 
 		this.player.set_state("idle");
 		this.player.life = 100;
@@ -191,10 +194,10 @@ export class game {
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list.length = 0; //= [];
-		this.explosion_list.length = 0; // = [];
-		this.dust_list.length = 0; // = [];
-		this.fire_list.length = 0; // = [];
+		this.enemy_list = [];
+		this.explosion_list = [];
+		this.dust_list = [];
+		this.fire_list = [];
 
 		this.player.set_state("idle");
 		this.player.life += 10;
@@ -275,11 +278,12 @@ export class game {
 								this.player.set_state("dizzy");
 							} else {
 								this.player.set_state("ko");
+
 								setTimeout(() => {
 									this.game_over = true;
 									window.removeEventListener("keyup", this.game_pause_listener);
 									window.addEventListener("keyup", this.game_stop_listener);
-								}, 1500);
+								}, 500);
 							}
 						}
 
@@ -294,6 +298,27 @@ export class game {
 					}
 				}
 			}
+		});
+	}
+
+	draw_message(title: string, message: string, color: string) {
+		draw_text({
+			ctx: this.ctx,
+			x: this.canvas_width * 0.5,
+			y: this.base_height * 0.5 - 20,
+			text: title,
+			font_weight: 60,
+			text_align: "center",
+			text_color: color,
+		});
+		draw_text({
+			ctx: this.ctx,
+			x: this.canvas_width * 0.5,
+			y: this.base_height * 0.5 + 20,
+			text: message,
+			font_weight: 30,
+			text_align: "center",
+			text_color: color,
 		});
 	}
 
@@ -363,90 +388,20 @@ export class game {
 		//draw progress bar
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw(this.ctx));
 
+		//draw control
+		this.ctl.draw({ ctx: this.ctx });
+
 		//game over message
-		if (this.game_over) {
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 - 20,
-				text: `Game over!`,
-				font_weight: 50,
-				text_align: "center",
-				text_color: "red",
-			});
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 + 20,
-				text: `Press SPACEBAR to try again.`,
-				font_weight: 30,
-				text_align: "center",
-				text_color: "red",
-			});
-		}
+		if (this.game_over) this.draw_message("Game over!", "Press SPACEBAR to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout) {
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 - 20,
-				text: `Timeout!`,
-				font_weight: 50,
-				text_align: "center",
-				text_color: "red",
-			});
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 + 20,
-				text: `Press SPACEBAR to try again.`,
-				font_weight: 30,
-				text_align: "center",
-				text_color: "red",
-			});
-		}
+		if (this.game_timeout) this.draw_message("Time up!", "Press SPACEBAR to try again.", "red");
 
 		//game level up
-		if (this.game_up) {
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 - 20,
-				text: `Level ${this.game_level} complete!`,
-				font_weight: 50,
-				text_align: "center",
-				text_color: "green",
-			});
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 + 20,
-				text: `Press SPACEBAR to continue.`,
-				font_weight: 30,
-				text_align: "center",
-				text_color: "green",
-			});
-		}
+		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, "Press SPACEBAR to try again.", "green");
 
-		if (this.game_pause) {
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 - 20,
-				text: `Game pause!`,
-				font_weight: 50,
-				text_align: "center",
-			});
-			draw_text({
-				ctx: this.ctx,
-				x: this.canvas_width * 0.5,
-				y: this.base_height * 0.5 + 20,
-				text: `Press ENTER to continue.`,
-				font_weight: 30,
-				text_align: "center",
-			});
-		}
+		//pause
+		if (this.game_pause) this.draw_message(`Pause!`, "Press ENTER to try again.", "white");
 	}
 
 	last_timestamp: number = 0;

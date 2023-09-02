@@ -379,11 +379,9 @@ export class state_ko extends state {
 	}
 	enter(): void {
 		super.enter();
+		this.player.weight = 20;
 		this.player.invulnerable = true;
 		this.player.speed = 0;
-	}
-	animation_end(player: player) {
-		player.invulnerable = false;
 	}
 }
 export class state_gethit extends state {
