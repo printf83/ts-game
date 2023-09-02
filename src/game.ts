@@ -141,7 +141,7 @@ export class game {
 		});
 
 		//draw control
-		// this.ctl.draw({ ctx: this.staticCtx });
+		this.ctl.draw({ ctx: this.staticCtx });
 	}
 
 	gen_enemy_interval() {
@@ -646,7 +646,7 @@ export class game {
 	}
 
 	do_animate = (timestamp: number) => {
-		this.ctl.draw({ ctx: this.staticCtx });
+		// this.ctl.draw({ ctx: this.staticCtx });
 
 		//update object
 		this.update(timestamp);
