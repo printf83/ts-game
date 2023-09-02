@@ -21,7 +21,7 @@ class button extends elem {
 	constructor(opt: { img: string; x: number; y: number; width?: number; height?: number; color?: string }) {
 		opt.width ??= BTN_SIZE;
 		opt.height ??= BTN_SIZE;
-		opt.color ??= "rgba(255,255,255,0.2)";
+		opt.color ??= "rgba(255,255,255,0.1)";
 
 		super(opt);
 
