@@ -39,7 +39,7 @@ export class baseAnimation {
 		fps?: number;
 		animation_repeat?: boolean;
 	}) {
-		opt.fps ??= 30;
+		opt.fps ??= 20;
 		opt.animation_repeat ??= true;
 
 		this.fps = opt.fps;

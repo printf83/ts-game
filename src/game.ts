@@ -1,4 +1,4 @@
-const DEBUG = true;
+const DEBUG = false;
 
 // import { bg1 } from "./bg1.js";
 import { baseBg } from "./baseBg.js";
@@ -46,6 +46,8 @@ const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", 
 
 export class game {
 	ctx: CanvasRenderingContext2D;
+	staticCtx: CanvasRenderingContext2D;
+	valueCtx: CanvasRenderingContext2D;
 
 	canvas_width: number;
 	canvas_height: number;
@@ -93,17 +95,21 @@ export class game {
 
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
+		staticCtx: CanvasRenderingContext2D;
+		valueCtx: CanvasRenderingContext2D;
 
 		canvas_width: number;
 		canvas_height: number;
 	}) {
 		this.ctx = opt.ctx;
+		this.staticCtx = opt.staticCtx;
+		this.valueCtx = opt.valueCtx;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
 		this.input = new input();
-		this.ctl = new control({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
+		this.ctl = new control({ canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
 		this.bg = new bg2({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
@@ -133,6 +139,9 @@ export class game {
 			max: 100,
 			bar_color: ["red", "yellow", "green"],
 		});
+
+		//draw control
+		this.ctl.draw({ ctx: this.staticCtx });
 	}
 
 	gen_enemy_interval() {
@@ -176,6 +185,7 @@ export class game {
 
 		this.game_over = false;
 		this.game_timeout = false;
+		this.cleanup_ctxvalue_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -214,6 +224,7 @@ export class game {
 		window.addEventListener("keyup", this.game_pause_listener);
 
 		this.game_up = false;
+		this.cleanup_ctxvalue_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -222,6 +233,7 @@ export class game {
 	game_continue() {
 		this.progress_timer = performance.now() + this.progress_timer_index * 1000;
 		this.game_pause = false;
+		this.cleanup_ctxvalue_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -303,7 +315,7 @@ export class game {
 
 	draw_message(title: string, message: string, color: string) {
 		draw_text({
-			ctx: this.ctx,
+			ctx: this.valueCtx,
 			x: this.canvas_width * 0.5,
 			y: this.base_height * 0.5 - 20,
 			text: title,
@@ -312,7 +324,7 @@ export class game {
 			text_color: color,
 		});
 		draw_text({
-			ctx: this.ctx,
+			ctx: this.valueCtx,
 			x: this.canvas_width * 0.5,
 			y: this.base_height * 0.5 + 20,
 			text: message,
@@ -322,18 +334,41 @@ export class game {
 		});
 	}
 
+	cleanup_ctxvalue_debug() {
+		this.valueCtx.clearRect(60, 85, 50, 20);
+		this.valueCtx.clearRect(63, 105, 50, 20);
+		this.valueCtx.clearRect(58, 125, 50, 20);
+		this.valueCtx.clearRect(95, 145, 50, 20);
+		this.valueCtx.clearRect(75, 165, 50, 20);
+		this.valueCtx.clearRect(70, 185, 50, 20);
+		this.valueCtx.clearRect(88, 205, 70, 20);
+	}
+
+	cleanup_ctxvalue() {
+		this.valueCtx.clearRect(80, 20, 250, 50);
+		this.valueCtx.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5 + 40, 15, 30, 25);
+		this.valueCtx.clearRect(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45, 15, 50, 25);
+		this.valueCtx.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 45, this.canvas_width * 0.4, 20);
+		this.valueCtx.clearRect(this.canvas_width - 130, 30, 100, 20);
+		this.valueCtx.clearRect(this.canvas_width - 130, 60, 100, 20);
+	}
+
+	cleanup_ctxvalue_message() {
+		this.valueCtx.clearRect(
+			(this.canvas_width - this.canvas_width * 0.5) * 0.5,
+			(this.canvas_height - this.bg.ground) * 0.5 - 70,
+			this.canvas_width * 0.5,
+			100
+		);
+	}
+
 	draw_status() {
+		//cleanup
+		this.cleanup_ctxvalue();
+
 		//score
 		draw_text({
-			ctx: this.ctx,
-			x: 20,
-			y: 60,
-			text: `🎮`,
-			shadow_blur: 0,
-			font_weight: 40,
-		});
-		draw_text({
-			ctx: this.ctx,
+			ctx: this.valueCtx,
 			x: 90,
 			y: 60,
 			text: `${this.score_text}`,
@@ -343,16 +378,16 @@ export class game {
 
 		//level
 		draw_text({
-			ctx: this.ctx,
-			x: (this.canvas_width - this.prg_game.width) * 0.5,
+			ctx: this.valueCtx,
+			x: (this.canvas_width - this.prg_game.width) * 0.5 + 45,
 			y: 35,
-			text: `Level ${this.game_level}`,
+			text: `${this.game_level}`,
 			text_align: "start",
 		});
 
 		//timer
 		draw_text({
-			ctx: this.ctx,
+			ctx: this.valueCtx,
 			x: (this.canvas_width + this.prg_game.width) * 0.5,
 			y: 35,
 			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
@@ -364,32 +399,13 @@ export class game {
 		this.prg_game.update(this.progress_index, 0, this.progress_max);
 
 		//life
-		draw_text({
-			ctx: this.ctx,
-			x: this.canvas_width - 150,
-			y: 45,
-			text: `🧡`,
-			text_align: "end",
-			shadow_blur: 0,
-		});
 		this.prg_life.update(this.player.life);
 
 		//power
-		draw_text({
-			ctx: this.ctx,
-			x: this.canvas_width - 150,
-			y: 75,
-			text: `🚀`,
-			text_align: "end",
-			shadow_blur: 0,
-		});
 		this.prg_power.update(this.player.power);
 
 		//draw progress bar
-		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw(this.ctx));
-
-		//draw control
-		this.ctl.draw({ ctx: this.ctx });
+		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw({ ctx: this.valueCtx }));
 
 		//game over message
 		if (this.game_over) this.draw_message("Game over!", "Press SPACEBAR to try again.", "red");
@@ -548,7 +564,15 @@ export class game {
 	}
 
 	draw() {
-		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
+		[
+			this.bg,
+			...this.fire_list,
+			...this.dust_list,
+			...this.score_list,
+			...this.enemy_list,
+			this.player,
+			...this.explosion_list,
+		].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
 	}
@@ -593,12 +617,16 @@ export class game {
 	}
 
 	debug_info() {
+		//cleanup
+		this.cleanup_ctxvalue_debug();
+
+		//generate function for easy populate debug info
 		let text_y = 100;
 		let text_y_index = 0;
-		const gen_text = (text: string, text_color?: string) => {
+		const gen_text = (x: number, text: string, text_color?: string) => {
 			draw_text({
-				ctx: this.ctx,
-				x: 20,
+				ctx: this.valueCtx,
+				x: x,
 				y: text_y + text_y_index++ * 20,
 				shadow_blur: 0,
 				text: text,
@@ -608,18 +636,18 @@ export class game {
 			});
 		};
 
-		gen_text(`FPS : ${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
-		gen_text(`Dust : ${this.dust_list.length}`);
-		gen_text(`Fire : ${this.fire_list.length}`);
-		gen_text(`Explosion : ${this.explosion_list.length}`);
-		gen_text(`Enemy : ${this.enemy_list.length}`);
-		gen_text(`Score : ${this.score_list.length}`);
-		gen_text(`Random : ${read_random_index()}`);
+		gen_text(63, `${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
+		gen_text(65, `${this.dust_list.length}`);
+		gen_text(60, `${this.fire_list.length}`);
+		gen_text(100, `${this.explosion_list.length}`);
+		gen_text(80, `${this.enemy_list.length}`);
+		gen_text(75, `${this.score_list.length}`);
+		gen_text(90, `${read_random_index()}`);
 	}
 
 	do_animate = (timestamp: number) => {
 		//clear canvas
-		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+		// this.valueCtx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
 		//update object
 		this.update(timestamp);
