@@ -9,7 +9,9 @@
 		"copy": "node scripts/copy.cjs",
 		"build": "npm run copy && webpack",
 		"rebuild": "npm run clean && npm run copy && webpack",
-		"debug": "npm run copy && webpack -w"
+		"debug": "npm run copy && webpack -w",
+		"predeploy": "npm run rebuild",
+		"deploy": "gh-pages -d dist"
 	},
 	"repository": {
 		"type": "git",
@@ -26,6 +28,9 @@
 	},
 	"homepage": "https://github.com/printf83/ts-game#readme",
 	"devDependencies": {
+		"compression-webpack-plugin": "^10.0.0",
+		"gh-pages": "^5.0.0",
+		"terser-webpack-plugin": "^5.3.9",
 		"ts-loader": "^9.4.4",
 		"typescript": "^5.1.6",
 		"webpack": "^5.88.2",

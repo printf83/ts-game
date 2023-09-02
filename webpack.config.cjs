@@ -1,6 +1,21 @@
 const path = require("path");
+const CompressionPlugin = require("compression-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
-	mode: "development",
+	// mode: "development",
+	mode: "production",
+	entry: "./src/index.ts",
+	plugins: [new CompressionPlugin()],
+	optimization: {
+		minimize: true,
+		minimizer: [
+			new TerserPlugin({
+				terserOptions: {
+					mangle: true,
+				},
+			}),
+		],
+	},
 	module: {
 		rules: [
 			{
