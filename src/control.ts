@@ -281,5 +281,4 @@ export class control {
 			i.draw(opt);
 		});
 	}
-	clear(_opt: { ctx: CanvasRenderingContext2D }) {}
 }
