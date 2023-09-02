@@ -141,7 +141,7 @@ export class game {
 		});
 
 		//draw control
-		this.ctl.draw({ ctx: this.staticCtx });
+		// this.ctl.draw({ ctx: this.staticCtx });
 	}
 
 	gen_enemy_interval() {
@@ -379,7 +379,7 @@ export class game {
 		//level
 		draw_text({
 			ctx: this.valueCtx,
-			x: (this.canvas_width - this.prg_game.width) * 0.5 + 45,
+			x: (this.canvas_width - this.prg_game.width) * 0.5 + 47,
 			y: 35,
 			text: `${this.game_level}`,
 			text_align: "start",
@@ -646,8 +646,7 @@ export class game {
 	}
 
 	do_animate = (timestamp: number) => {
-		//clear canvas
-		// this.valueCtx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+		this.ctl.draw({ ctx: this.staticCtx });
 
 		//update object
 		this.update(timestamp);

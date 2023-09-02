@@ -1,4 +1,4 @@
-import { draw_text } from "./util.js";
+import { MathFloor, draw_text } from "./util.js";
 
 class elem {
 	x: number;
@@ -24,7 +24,9 @@ class button extends elem {
 		this.height = opt.height;
 	}
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+		// opt.ctx.fillStyle = "white";
+		// opt.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 }
 
@@ -232,17 +234,18 @@ export class control {
 		this.progress.push(new progress({ x: this.canvas_width - 130, y: 60, width: 100 }));
 
 		//button
-		this.pause = new button({
-			img: "./res/ctl/pause.png",
-			x: this.canvas_width - 120,
-			y: 20,
+
+		this.setting = new button({
+			img: "./res/ctl/gear.png",
+			x: this.canvas_width - 80,
+			y: 100,
 			width: 30,
 			height: 30,
 		});
-		this.setting = new button({
-			img: "./res/ctl/gear.png",
-			x: this.canvas_width - 60,
-			y: 20,
+		this.pause = new button({
+			img: "./res/ctl/pause.png",
+			x: this.canvas_width - 80,
+			y: 170,
 			width: 30,
 			height: 30,
 		});
@@ -278,7 +281,7 @@ export class control {
 
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
 		[this.pause, this.setting, this.left, this.right, this.up, this.down, ...this.text, ...this.progress].forEach((i) => {
-			i.draw(opt);
+			i.draw({ ctx: opt.ctx });
 		});
 	}
 }
