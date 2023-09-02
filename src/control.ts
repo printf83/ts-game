@@ -176,11 +176,13 @@ export class control {
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
 						if (key !== "Info") {
-							console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
+							// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
 							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 						}
 					}
 				}
+			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
+				window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: " " }));
 			}
 		}
 	}
@@ -211,7 +213,6 @@ export class control {
 		const canvas_rect = opt.canvas_mark.getBoundingClientRect();
 		//attach marker click event
 		opt.canvas_mark.addEventListener("touchstart", (e: TouchEvent) => {
-			console.log("touchstart");
 			this.touch_event({
 				event_name: "keydown",
 				ctx_canvas_mark: opt.ctx_canvas_mark,
@@ -220,7 +221,6 @@ export class control {
 			});
 		});
 		opt.canvas_mark.addEventListener("touchend", (e: TouchEvent) => {
-			console.log("touchend");
 			this.touch_event({ event_name: "keyup", ctx_canvas_mark: opt.ctx_canvas_mark, canvas_rect, e });
 		});
 
