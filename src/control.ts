@@ -1,4 +1,7 @@
-import { MathFloor, draw_text } from "./util.js";
+import { MathFloor, MathPI2, draw_text } from "./util.js";
+
+const BTN_SIZE = 70;
+const BTN_PADDING = 30;
 
 class elem {
 	x: number;
@@ -16,9 +19,9 @@ class button extends elem {
 	width: number;
 	height: number;
 	constructor(opt: { img: string; x: number; y: number; width?: number; height?: number; color?: string }) {
-		opt.width ??= 40;
-		opt.height ??= 40;
-		opt.color ??= "white";
+		opt.width ??= BTN_SIZE;
+		opt.height ??= BTN_SIZE;
+		opt.color ??= "rgba(255,255,255,0.2)";
 
 		super(opt);
 
@@ -29,8 +32,11 @@ class button extends elem {
 		this.color = opt.color;
 	}
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.strokeStyle = this.color;
-		// opt.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		opt.ctx.fillStyle = this.color;
+		opt.ctx.beginPath();
+		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		opt.ctx.fill();
+
 		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 }
@@ -155,10 +161,16 @@ export class control {
 
 	pause: button;
 	info: button;
-	up: button;
-	down: button;
+
 	left: button;
+	left_action: button;
+	left_down: button;
+	left_up: button;
+
 	right: button;
+	right_action: button;
+	right_down: button;
+	right_up: button;
 
 	progress: progress[] = [];
 	text: text[] = [];
@@ -221,38 +233,60 @@ export class control {
 
 		this.info = new button({
 			img: "./res/ctl/info.svg",
-			x: this.canvas_width - 80,
-			y: 100,
+			x: this.canvas_width - BTN_SIZE - BTN_PADDING,
+			y: 110,
 		});
 		this.pause = new button({
 			img: "./res/ctl/pause.svg",
-			x: this.canvas_width - 80,
-			y: 170,
+			x: this.canvas_width - BTN_SIZE - BTN_PADDING,
+			y: this.info.y + BTN_SIZE + BTN_PADDING,
 		});
-		this.up = new button({
-			img: "./res/ctl/up.svg",
-			x: 190,
-			y: this.canvas_height - 240,
-		});
-		this.down = new button({
-			img: "./res/ctl/down.svg",
-			x: 190,
-			y: this.canvas_height - 100,
-		});
+
 		this.left = new button({
 			img: "./res/ctl/left.svg",
-			x: 60,
-			y: this.canvas_height - 120,
+			x: BTN_PADDING,
+			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
 		});
+		this.left_up = new button({
+			img: "./res/ctl/up.svg",
+			x: BTN_PADDING * 2 + BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
+		});
+		this.left_down = new button({
+			img: "./res/ctl/down.svg",
+			x: BTN_PADDING * 2 + BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+		});
+		this.left_action = new button({
+			img: "./res/ctl/action.svg",
+			x: BTN_PADDING,
+			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
+		});
+
 		this.right = new button({
 			img: "./res/ctl/right.svg",
-			x: 350,
-			y: this.canvas_height - 120,
+			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+		});
+		this.right_up = new button({
+			img: "./res/ctl/up.svg",
+			x: this.canvas_width - BTN_PADDING * 2 - BTN_SIZE * 2,
+			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
+		});
+		this.right_down = new button({
+			img: "./res/ctl/down.svg",
+			x: this.canvas_width - BTN_PADDING * 2 - BTN_SIZE * 2,
+			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+		});
+		this.right_action = new button({
+			img: "./res/ctl/action.svg",
+			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
 		});
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		[this.pause, this.info, this.left, this.right, this.up, this.down, ...this.text, ...this.progress].forEach((i) => {
+		[this.pause, this.info, this.left, this.left_up, this.left_down, this.left_action, this.right, this.right_up, this.right_down, this.right_action, ...this.text, ...this.progress].forEach((i) => {
 			i.draw({ ctx: opt.ctx });
 		});
 	}
