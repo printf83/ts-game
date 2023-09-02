@@ -1,12 +1,6 @@
-import { MathFloor, MathPI2, MathRandom } from "../util.js";
+import { MathFloor, MathPI2, genUID } from "../util.js";
 import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
-
-const genUID = () => {
-	return Array(3)
-		.fill("")
-		.map((_i) => MathFloor(MathRandom() * 255));
-};
 
 export class baseEnemy extends baseAnimation {
 	debug: boolean = false;

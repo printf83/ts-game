@@ -17,6 +17,8 @@ export class input {
 				if (e.key === "ArrowDown") this.last_key = "PRESS down";
 				if (e.key === " ") this.last_key = "PRESS space";
 				if (e.key === "Enter") this.last_key = "PRESS enter";
+
+				console.log(this.last_key);
 			}
 		});
 
@@ -30,6 +32,8 @@ export class input {
 				if (e.key === "ArrowDown") this.last_key = "RELEASE down";
 				if (e.key === " ") this.last_key = "RELEASE space";
 				if (e.key === "Enter") this.last_key = "RELEASE enter";
+
+				console.log(this.last_key);
 			}
 		});
 	}

@@ -12,6 +12,16 @@ const random_table = Array(random_max)
 export const MathRandom = (): number => (++random_index >= random_max ? random_table[(random_index = 0)]! : random_table[random_index]!);
 export const read_random_index = () => random_index;
 
+export const genUID = () => {
+	return Array(3)
+		.fill("")
+		.map((_i) => MathFloor(MathRandom() * 255));
+};
+
+export const isTouchDevice = () => {
+	return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+};
+
 export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;

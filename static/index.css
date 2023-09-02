@@ -71,7 +71,9 @@ label{
 GAME */
 #gameCanvas,
 #staticCanvas,
-#valueCanvas {
+#valueCanvas,
+#controlCanvas,
+#controlMarkerCanvas {
     max-width: 100%;
     max-height: 100%;
     position: absolute;
@@ -79,4 +81,8 @@ GAME */
     left: 50%;
     transform: translate(-50%, -50%);
     border: 3px solid white;
+}
+
+#controlMarkerCanvas{
+    opacity: 0;
 }
