@@ -24,7 +24,7 @@ class button extends elem {
 		this.height = opt.height;
 	}
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.drawImage(this.img, 0, 0, 16, 16, this.x, this.y, this.width, this.height);
+		opt.ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
 	}
 }
 
@@ -233,42 +233,42 @@ export class control {
 
 		//button
 		this.pause = new button({
-			img: "./res/ctl/pause.svg",
+			img: "./res/ctl/pause.png",
 			x: this.canvas_width - 120,
 			y: 20,
 			width: 30,
 			height: 30,
 		});
 		this.setting = new button({
-			img: "./res/ctl/gear.svg",
+			img: "./res/ctl/gear.png",
 			x: this.canvas_width - 60,
 			y: 20,
 			width: 30,
 			height: 30,
 		});
 		this.up = new button({
-			img: "./res/ctl/up.svg",
+			img: "./res/ctl/up.png",
 			x: 190,
 			y: this.canvas_height - 240,
 			width: 30,
 			height: 30,
 		});
 		this.down = new button({
-			img: "./res/ctl/down.svg",
+			img: "./res/ctl/down.png",
 			x: 190,
 			y: this.canvas_height - 100,
 			width: 30,
 			height: 30,
 		});
 		this.left = new button({
-			img: "./res/ctl/left.svg",
+			img: "./res/ctl/left.png",
 			x: 60,
 			y: this.canvas_height - 120,
 			width: 30,
 			height: 30,
 		});
 		this.right = new button({
-			img: "./res/ctl/right.svg",
+			img: "./res/ctl/right.png",
 			x: 350,
 			y: this.canvas_height - 120,
 			width: 30,
