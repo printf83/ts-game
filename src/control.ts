@@ -12,19 +12,24 @@ class elem {
 
 class button extends elem {
 	img: HTMLImageElement;
-
+	color: string;
 	width: number;
 	height: number;
-	constructor(opt: { img: string; x: number; y: number; width: number; height: number }) {
+	constructor(opt: { img: string; x: number; y: number; width?: number; height?: number; color?: string }) {
+		opt.width ??= 40;
+		opt.height ??= 40;
+		opt.color ??= "white";
+
 		super(opt);
 
 		this.img = new Image();
 		this.img.src = opt.img;
 		this.width = opt.width;
 		this.height = opt.height;
+		this.color = opt.color;
 	}
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		// opt.ctx.fillStyle = "white";
+		opt.ctx.strokeStyle = this.color;
 		// opt.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
@@ -60,16 +65,7 @@ class progress extends elem {
 
 	radius: number;
 
-	constructor(opt: {
-		x: number;
-		y: number;
-		width: number;
-		height?: number;
-		bg_color?: string;
-		shadow_color?: string;
-		shadow_blur?: number;
-		radius?: number;
-	}) {
+	constructor(opt: { x: number; y: number; width: number; height?: number; bg_color?: string; shadow_color?: string; shadow_blur?: number; radius?: number }) {
 		super({ x: opt.x, y: opt.y });
 
 		opt.height ??= 20;
@@ -125,17 +121,7 @@ class text extends elem {
 	text_color?: string | CanvasGradient | CanvasPattern;
 	shadow_color?: string;
 	shadow_blur?: number;
-	constructor(opt: {
-		x: number;
-		y: number;
-		text: string;
-		text_align?: CanvasTextAlign;
-		font_weight?: number;
-		font_family?: string;
-		text_color?: string | CanvasGradient | CanvasPattern;
-		shadow_color?: string;
-		shadow_blur?: number;
-	}) {
+	constructor(opt: { x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) {
 		super({ x: opt.x, y: opt.y });
 
 		this.text_value = opt.text;
@@ -168,7 +154,7 @@ export class control {
 	canvas_height: number;
 
 	pause: button;
-	setting: button;
+	info: button;
 	up: button;
 	down: button;
 	left: button;
@@ -223,9 +209,7 @@ export class control {
 
 		//progress
 		//game
-		this.progress.push(
-			new progress({ x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, y: 45, width: this.canvas_width * 0.4 })
-		);
+		this.progress.push(new progress({ x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, y: 45, width: this.canvas_width * 0.4 }));
 
 		//life
 		this.progress.push(new progress({ x: this.canvas_width - 130, y: 30, width: 100 }));
@@ -235,52 +219,40 @@ export class control {
 
 		//button
 
-		this.setting = new button({
-			img: "./res/ctl/gear.png",
+		this.info = new button({
+			img: "./res/ctl/info.svg",
 			x: this.canvas_width - 80,
 			y: 100,
-			width: 30,
-			height: 30,
 		});
 		this.pause = new button({
-			img: "./res/ctl/pause.png",
+			img: "./res/ctl/pause.svg",
 			x: this.canvas_width - 80,
 			y: 170,
-			width: 30,
-			height: 30,
 		});
 		this.up = new button({
-			img: "./res/ctl/up.png",
+			img: "./res/ctl/up.svg",
 			x: 190,
 			y: this.canvas_height - 240,
-			width: 30,
-			height: 30,
 		});
 		this.down = new button({
-			img: "./res/ctl/down.png",
+			img: "./res/ctl/down.svg",
 			x: 190,
 			y: this.canvas_height - 100,
-			width: 30,
-			height: 30,
 		});
 		this.left = new button({
-			img: "./res/ctl/left.png",
+			img: "./res/ctl/left.svg",
 			x: 60,
 			y: this.canvas_height - 120,
-			width: 30,
-			height: 30,
 		});
 		this.right = new button({
-			img: "./res/ctl/right.png",
+			img: "./res/ctl/right.svg",
 			x: 350,
 			y: this.canvas_height - 120,
-			width: 30,
-			height: 30,
 		});
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		[this.pause, this.setting, this.left, this.right, this.up, this.down, ...this.text, ...this.progress].forEach((i) => {
+		[this.pause, this.info, this.left, this.right, this.up, this.down, ...this.text, ...this.progress].forEach((i) => {
 			i.draw({ ctx: opt.ctx });
 		});
 	}

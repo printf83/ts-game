@@ -141,7 +141,9 @@ export class game {
 		});
 
 		//draw control
-		this.ctl.draw({ ctx: this.staticCtx });
+		setTimeout(() => {
+			this.ctl.draw({ ctx: this.staticCtx });
+		}, 100);
 	}
 
 	gen_enemy_interval() {
@@ -354,12 +356,7 @@ export class game {
 	}
 
 	cleanup_ctxvalue_message() {
-		this.valueCtx.clearRect(
-			(this.canvas_width - this.canvas_width * 0.5) * 0.5,
-			(this.canvas_height - this.bg.ground) * 0.5 - 70,
-			this.canvas_width * 0.5,
-			100
-		);
+		this.valueCtx.clearRect((this.canvas_width - this.canvas_width * 0.5) * 0.5, (this.canvas_height - this.bg.ground) * 0.5 - 70, this.canvas_width * 0.5, 100);
 	}
 
 	draw_status() {
@@ -564,15 +561,7 @@ export class game {
 	}
 
 	draw() {
-		[
-			this.bg,
-			...this.fire_list,
-			...this.dust_list,
-			...this.score_list,
-			...this.enemy_list,
-			this.player,
-			...this.explosion_list,
-		].forEach((i) => {
+		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
 			i.draw({ ctx: this.ctx });
 		});
 	}
