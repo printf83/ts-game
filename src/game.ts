@@ -177,6 +177,10 @@ export class game {
 		});
 
 		//draw control
+		this.draw_gui();
+	}
+
+	draw_gui() {
 		setTimeout(() => {
 			this.gui.draw({ ctx: this.ctx_static });
 			if (isTouchDevice()) {
@@ -637,6 +641,8 @@ export class game {
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
 				i.requestFullscreen();
 			});
+
+			this.draw_gui();
 		}
 	};
 
@@ -656,6 +662,8 @@ export class game {
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
 				i.requestFullscreen();
 			});
+
+			this.draw_gui();
 		}
 	};
 
