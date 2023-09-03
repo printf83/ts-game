@@ -434,7 +434,7 @@ export class game {
 
 	cleanup_ctxvalue() {
 		this.ctx_value.clearRect(80, 20, 250, 50);
-		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 15, 30, 25);
+		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 15, 60, 25);
 		this.ctx_value.clearRect(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45, 15, 50, 25);
 		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 45, this.canvas_width * 0.4, 20);
 		this.ctx_value.clearRect(this.canvas_width - 130, 30, 100, 20);
