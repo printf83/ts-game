@@ -104,3 +104,20 @@ GAME */
 .hide {
     opacity: 0;
 }
+
+
+#gameContainer:-webkit-full-screen > canvas {
+    width: 100% !important;
+}
+
+#gameContainer:-moz-full-screen > canvas {
+    width: 100% !important;
+}
+
+#gameContainer:-ms-fullscreen > canvas {
+    width: 100% !important;
+}
+
+#gameContainer:fullscreen > canvas {
+    width: 100% !important;
+}
