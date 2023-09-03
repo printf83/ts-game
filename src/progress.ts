@@ -1,4 +1,6 @@
 export class progress {
+	ctx: CanvasRenderingContext2D;
+
 	x: number;
 	y: number;
 	min: number;
@@ -19,21 +21,7 @@ export class progress {
 	radius: number;
 	padding: number;
 
-	constructor(opt: {
-		x: number;
-		y: number;
-		min?: number;
-		max?: number;
-		width: number;
-		height?: number;
-		value?: number;
-		bg_color?: string;
-		bar_color?: string | string[];
-		shadow_color?: string;
-		shadow_blur?: number;
-		radius?: number;
-		padding?: number;
-	}) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; min?: number; max?: number; width: number; height?: number; value?: number; bg_color?: string; bar_color?: string | string[]; shadow_color?: string; shadow_blur?: number; radius?: number; padding?: number }) {
 		opt.shadow_color ??= "#555555";
 		opt.shadow_blur ??= 1;
 		opt.bg_color ??= "#FFFFFF";
@@ -44,6 +32,8 @@ export class progress {
 		opt.max ??= 1000;
 		opt.height ??= 20;
 		opt.value ??= 0;
+
+		this.ctx = opt.ctx;
 
 		this.x = opt.x;
 		this.y = opt.y;
@@ -75,27 +65,31 @@ export class progress {
 		this.percent = this.value / this.max;
 		this.bar_width = (this.width - this.padding * 2) * this.percent;
 	}
-	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.save();
+	clean() {
+		this.ctx.clearRect(this.bar_x, this.bar_y, this.bar_max_width, this.bar_height);
+	}
+	draw() {
+		this.clean();
+		this.ctx.save();
 
 		if (this.radius) {
-			opt.ctx.beginPath();
-			opt.ctx.fillStyle = this.gradient_bar_color(this.bar_color, opt.ctx, this.bar_x, this.bar_max_width);
-			opt.ctx.roundRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height, [this.radius]);
-			opt.ctx.fill();
+			this.ctx.beginPath();
+			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, this.bar_x, this.bar_max_width);
+			this.ctx.roundRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height, [this.radius]);
+			this.ctx.fill();
 		} else {
-			opt.ctx.fillStyle = this.gradient_bar_color(this.bar_color, opt.ctx, this.bar_x, this.bar_max_width);
-			opt.ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
+			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, this.bar_x, this.bar_max_width);
+			this.ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
 		}
 
-		opt.ctx.restore();
+		this.ctx.restore();
 	}
 
-	gradient_bar_color(bar_color: string | string[], ctx: CanvasRenderingContext2D, x: number, width: number) {
+	gradient_bar_color(bar_color: string | string[], x: number, width: number) {
 		if (Array.isArray(bar_color)) {
 			if (bar_color.length >= 2) {
 				const color_step = 100 / (bar_color.length - 1) / 100;
-				let grad = ctx.createLinearGradient(x, 0, width + x, 0);
+				let grad = this.ctx.createLinearGradient(x, 0, width + x, 0);
 				bar_color.forEach((i, ix) => {
 					grad.addColorStop(ix * color_step, i);
 				});

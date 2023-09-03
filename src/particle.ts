@@ -1,6 +1,8 @@
 import { MathRandom } from "./util.js";
 
 export class particle {
+	ctx: CanvasRenderingContext2D;
+
 	x: number;
 	y: number;
 
@@ -9,11 +11,12 @@ export class particle {
 	size: number;
 	mark_delete: boolean;
 
-	constructor(opt: { x: number; y: number; speed_x?: number; speed_y?: number; size?: number }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; speed_x?: number; speed_y?: number; size?: number }) {
 		opt.speed_x ??= MathRandom();
 		opt.speed_y ??= MathRandom();
 		opt.size ??= MathRandom() * 10 + 10;
 
+		this.ctx = opt.ctx;
 		this.x = opt.x;
 		this.y = opt.y;
 

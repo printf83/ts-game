@@ -17,7 +17,7 @@ import { explosion } from "./explosion.js";
 import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
-import { MathFloor, MathRandom, draw_text, isFullscreen, isTouchDevice, read_random_index } from "./util.js";
+import { MathFloor, MathRandom, clear_text, draw_clear_text, draw_text, isFullscreen, isTouchDevice, read_random_index } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
@@ -144,14 +144,15 @@ export class game {
 			canvas_width: this.canvas_width,
 			canvas_height: this.canvas_height,
 		});
-		this.gui = new gui({ ctx_gui: this.ctx_static, canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
-		this.bg = new bg2({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
+		this.gui = new gui({ ctx: this.ctx_static, canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
+		this.bg = new bg2({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
-		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
+		this.player = new player({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
 
 		this.prg_game = new progress({
+			ctx: this.ctx_value,
 			x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5,
-			y: 45,
+			y: 60,
 			min: 0,
 			max: this.progress_max,
 			width: this.canvas_width * 0.4,
@@ -159,6 +160,7 @@ export class game {
 			bar_color: ["red", "yellow", "green"],
 		});
 		this.prg_life = new progress({
+			ctx: this.ctx_value,
 			x: this.canvas_width - 130,
 			y: 30,
 			width: 100,
@@ -167,6 +169,7 @@ export class game {
 			bar_color: ["red", "yellow", "green"],
 		});
 		this.prg_power = new progress({
+			ctx: this.ctx_value,
 			x: this.canvas_width - 130,
 			y: 60,
 			width: 100,
@@ -186,8 +189,6 @@ export class game {
 			this.ctl.draw_control();
 
 			if (isTouchDevice()) {
-				// this.ctl.draw_control();
-
 				this.ctl.attach_touch({
 					canvas_mark: this.canvas_mark,
 					marker_ctx: this.ctx_mark,
@@ -258,7 +259,7 @@ export class game {
 
 		this.game_over = false;
 		this.game_timeout = false;
-		this.cleanup_ctxvalue_message();
+		this.clean_ctx_value_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -303,7 +304,7 @@ export class game {
 		}
 
 		this.game_up = false;
-		this.cleanup_ctxvalue_message();
+		this.clean_ctx_value_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -318,7 +319,7 @@ export class game {
 		}
 
 		this.game_pause = false;
-		this.cleanup_ctxvalue_message();
+		this.clean_ctx_value_message();
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -327,6 +328,7 @@ export class game {
 	add_explosion(enemy: baseEnemy, play_sound: boolean) {
 		this.explosion_list.push(
 			new explosion({
+				ctx: this.ctx_game,
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
 				scale: enemy.width * 0.008,
@@ -341,16 +343,7 @@ export class game {
 		if (deduction && point > 0) point *= -1;
 		if (!deduction && point < 0) point *= -1;
 
-		this.score_list.push(
-			new score({
-				text: `${point > 0 ? "+" : ""}${point}`,
-				value: point,
-				x: enemy.x + enemy.width * 0.5,
-				y: enemy.y + enemy.height * 0.5,
-				destination_x: 90,
-				destination_y: 60,
-			})
-		);
+		this.score_list.push(new score({ ctx: this.ctx_game, text: `${point > 0 ? "+" : ""}${point}`, value: point, x: enemy.x + enemy.width * 0.5, y: enemy.y + enemy.height * 0.5, destination_x: 90, destination_y: 60 }));
 	}
 
 	collision_detection() {
@@ -401,7 +394,12 @@ export class game {
 		});
 	}
 
+	last_draw_message_title: string = "";
+	last_draw_message_message: string = "";
 	draw_message(title: string, message: string, color: string) {
+		this.last_draw_message_title = title;
+		this.last_draw_message_message = message;
+
 		draw_text({
 			ctx: this.ctx_value,
 			x: this.canvas_width * 0.5,
@@ -422,60 +420,62 @@ export class game {
 		});
 	}
 
-	cleanup_ctxvalue_debug() {
-		this.ctx_value.clearRect(60, 85, 50, 20);
-		this.ctx_value.clearRect(63, 105, 50, 20);
-		this.ctx_value.clearRect(58, 125, 50, 20);
-		this.ctx_value.clearRect(95, 145, 50, 20);
-		this.ctx_value.clearRect(75, 165, 50, 20);
-		this.ctx_value.clearRect(70, 185, 50, 20);
-		this.ctx_value.clearRect(88, 205, 70, 20);
+	clean_message(title: string, message: string) {
+		clear_text({
+			ctx: this.ctx_value,
+			x: this.canvas_width * 0.5,
+			y: this.base_height * 0.5 - 20,
+			text: title,
+			font_weight: 60,
+			text_align: "center",
+		});
+		clear_text({
+			ctx: this.ctx_value,
+			x: this.canvas_width * 0.5,
+			y: this.base_height * 0.5 + 20,
+			text: message,
+			font_weight: 30,
+			text_align: "center",
+		});
 	}
 
-	cleanup_ctxvalue() {
-		this.ctx_value.clearRect(80, 20, 250, 50);
-		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5), 15, 70, 25);
-		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45), 15, 50, 25);
-		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5), 45, this.canvas_width * 0.4, 20);
-		this.ctx_value.clearRect(MathFloor(this.canvas_width - 130), 30, 100, 20);
-		this.ctx_value.clearRect(MathFloor(this.canvas_width - 130), 60, 100, 20);
-	}
-
-	cleanup_ctxvalue_message() {
-		this.ctx_value.clearRect(MathFloor((this.canvas_width - this.canvas_width * 0.5) * 0.5), MathFloor((this.canvas_height - this.bg.ground) * 0.5 - 70), this.canvas_width * 0.5, 100);
+	clean_ctx_value_message() {
+		this.clean_message(this.last_draw_message_title, this.last_draw_message_message);
 	}
 
 	draw_status() {
 		//cleanup
-		this.cleanup_ctxvalue();
+		// this.cleanup_ctxvalue();
 
 		//score
-		draw_text({
+		draw_clear_text({
 			ctx: this.ctx_value,
 			x: 90,
-			y: 60,
+			y: 80,
 			text: `${this.score_text}`,
 			text_color: this.score_value < 0 ? "red" : "white",
-			font_weight: 40,
+			font_weight: 60,
 		});
 
 		//level
-		draw_text({
+		draw_clear_text({
 			ctx: this.ctx_value,
 			x: (this.canvas_width - this.prg_game.width) * 0.5,
-			y: 35,
+			y: 50,
 			text: `Level ${this.game_level}`,
 			text_align: "start",
+			font_weight: 25,
 		});
 
 		//timer
-		draw_text({
+		draw_clear_text({
 			ctx: this.ctx_value,
 			x: (this.canvas_width + this.prg_game.width) * 0.5,
-			y: 35,
+			y: 50,
 			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
 			text_align: "end",
 			text_color: this.progress_timer_index < 20 ? "red" : "white",
+			font_weight: 25,
 		});
 
 		//progress
@@ -488,7 +488,7 @@ export class game {
 		this.prg_power.update(this.player.power);
 
 		//draw progress bar
-		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw({ ctx: this.ctx_value }));
+		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
 
 		//game over message
 		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
@@ -548,12 +548,7 @@ export class game {
 			Array(3)
 				.fill("")
 				.forEach((_i) => {
-					this.fire_list.unshift(
-						new fire({
-							x: this.player.x - 40 + MathRandom() * 10 - 10,
-							y: this.player.y + 25 + MathRandom() * 10 - 10,
-						})
-					);
+					this.fire_list.unshift(new fire({ ctx: this.ctx_game, x: this.player.x - 40 + MathRandom() * 10 - 10, y: this.player.y + 25 + MathRandom() * 10 - 10 }));
 				});
 		}
 
@@ -564,18 +559,11 @@ export class game {
 
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
-			const new_enemy = new enemy_object({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
+			const new_enemy = new enemy_object({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
 
 			//add explosion if explode in
 			if (new_enemy.explode_in) {
-				this.explosion_list.push(
-					new explosion({
-						x: new_enemy.x + new_enemy.width * 0.5,
-						y: new_enemy.y + new_enemy.height * 0.5,
-						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
-						play_sound: false,
-					})
-				);
+				this.explosion_list.push(new explosion({ ctx: this.ctx_game, x: new_enemy.x + new_enemy.width * 0.5, y: new_enemy.y + new_enemy.height * 0.5, scale: (new_enemy.width / new_enemy.sprite_width) * 1.5, play_sound: false }));
 			}
 
 			//add enemy to list
@@ -627,13 +615,7 @@ export class game {
 
 			//add particle
 			if (i.have_particle) {
-				this.dust_list.unshift(
-					new dust({
-						x: i.x + i.width * 0.5 + MathRandom() * 50 - 25,
-						y: i.y + i.height * 0.5 + MathRandom() * 30 - 15,
-						color: `rgba(${i.uid_number},0.2)`,
-					})
-				);
+				this.dust_list.unshift(new dust({ ctx: this.ctx_game, x: i.x + i.width * 0.5 + MathRandom() * 50 - 25, y: i.y + i.height * 0.5 + MathRandom() * 30 - 15, color: `rgba(${i.uid_number},0.2)` }));
 			}
 		});
 
@@ -654,7 +636,7 @@ export class game {
 
 	draw() {
 		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
-			i.draw({ ctx: this.ctx_game });
+			i.draw();
 		});
 	}
 
@@ -671,9 +653,8 @@ export class game {
 			event.preventDefault();
 			event.stopPropagation();
 
-			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
-				i.requestFullscreen({ navigationUI: "hide" });
-			});
+			const container = this.canvas_game.parentElement as HTMLDivElement;
+			container.requestFullscreen({ navigationUI: "hide" });
 
 			setTimeout(() => {
 				if (isFullscreen()) this.ctl.draw_normalscreen();
@@ -698,9 +679,8 @@ export class game {
 			event.preventDefault();
 			event.stopPropagation();
 
-			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
-				i.requestFullscreen({ navigationUI: "hide" });
-			});
+			const container = this.canvas_game.parentElement as HTMLDivElement;
+			container.requestFullscreen({ navigationUI: "hide" });
 
 			setTimeout(() => {
 				if (isFullscreen()) this.ctl.draw_normalscreen();
@@ -724,37 +704,32 @@ export class game {
 	}
 
 	debug_info() {
-		//cleanup
-		this.cleanup_ctxvalue_debug();
-
 		//generate function for easy populate debug info
-		let text_y = 100;
+		let text_y = 120;
 		let text_y_index = 0;
 		const gen_text = (x: number, text: string, text_color?: string) => {
-			draw_text({
+			draw_clear_text({
 				ctx: this.ctx_value,
 				x: x,
-				y: text_y + text_y_index++ * 20,
+				y: text_y + text_y_index++ * 25,
 				shadow_blur: 0,
 				text: text,
 				text_color: text_color ? text_color : "yellow",
 				font_family: "Arial",
-				font_weight: 15,
+				font_weight: 20,
 			});
 		};
 
-		gen_text(63, `${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
-		gen_text(65, `${this.dust_list.length}`);
-		gen_text(60, `${this.fire_list.length}`);
-		gen_text(100, `${this.explosion_list.length}`);
-		gen_text(80, `${this.enemy_list.length}`);
-		gen_text(75, `${this.score_list.length}`);
-		gen_text(90, `${read_random_index()}`);
+		gen_text(78, `${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
+		gen_text(80, `${this.dust_list.length}`);
+		gen_text(73, `${this.fire_list.length}`);
+		gen_text(125, `${this.explosion_list.length}`);
+		gen_text(100, `${this.enemy_list.length}`);
+		gen_text(90, `${this.score_list.length}`);
+		gen_text(115, `${read_random_index()}`);
 	}
 
 	do_animate = (timestamp: number) => {
-		// this.ctl.draw({ ctx: this.staticCtx });
-
 		//update object
 		this.update(timestamp);
 

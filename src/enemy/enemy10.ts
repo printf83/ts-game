@@ -5,7 +5,7 @@ const imgEnemy10 = new Image();
 imgEnemy10.src = "./res/enemy/enemy10.png";
 
 export class enemy10 extends baseEnemy {
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 60;
 		const sprite_height = 87;

@@ -9,6 +9,8 @@ export class baseEnemy extends baseAnimation {
 	uid_text: string;
 	uid_number: string;
 
+	ctx_collision?: CanvasRenderingContext2D;
+
 	canvas_width: number;
 	canvas_height: number;
 
@@ -25,6 +27,9 @@ export class baseEnemy extends baseAnimation {
 	collision_scale: number;
 
 	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		ctx_collision?: CanvasRenderingContext2D;
+
 		img: HTMLImageElement;
 
 		x: number;
@@ -95,25 +100,25 @@ export class baseEnemy extends baseAnimation {
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 	}
 
-	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }) {
-		if (opt.ctx_collision) {
-			opt.ctx_collision.fillStyle = this.uid_text;
-			opt.ctx_collision.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+	draw() {
+		if (this.ctx_collision) {
+			this.ctx_collision.fillStyle = this.uid_text;
+			this.ctx_collision.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 		}
 
 		//draw sprite
-		super.draw(opt);
+		super.draw();
 
 		//draw collision area
 		if (this.debug) {
-			opt.ctx.save();
+			this.ctx.save();
 
-			opt.ctx.strokeStyle = "white";
-			opt.ctx.beginPath();
-			opt.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
-			opt.ctx.stroke();
+			this.ctx.strokeStyle = "white";
+			this.ctx.beginPath();
+			this.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
+			this.ctx.stroke();
 
-			opt.ctx.restore();
+			this.ctx.restore();
 		}
 	}
 	set_position(opt: { game_speed: number }) {

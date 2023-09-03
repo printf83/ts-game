@@ -1,7 +1,8 @@
-import { MathFloor, MathPI2, genUID } from "./util.js";
+import { MathFloor, MathPI2, DPI, genUID } from "./util.js";
 
-const BTN_SIZE = 100;
-const BTN_PADDING = 30;
+const BTN_SIZE = 35 * DPI;
+const BTN_PADDING = 10 * DPI;
+const BTN_MARGIN = 30;
 
 const BTN_IMG = {
 	full_screen: "./res/ctl/full_screen.svg",
@@ -79,7 +80,7 @@ class button {
 
 		opt.ctx.fillStyle = this.uid_text;
 		opt.ctx.beginPath();
-		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.7, 0, MathPI2);
+		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
 		opt.ctx.fill();
 	}
 }
@@ -141,52 +142,52 @@ export class control {
 		this.info = new button({
 			name: "F11",
 			img: BTN_IMG.full_screen,
-			x: this.canvas_width - BTN_SIZE - BTN_PADDING,
+			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: 110,
 		});
 		this.pause = new button({
 			name: "Enter",
 			img: BTN_IMG.pause,
-			x: this.canvas_width - BTN_SIZE - BTN_PADDING,
+			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: this.info.y + BTN_SIZE + BTN_PADDING,
 		});
 
 		this.left = new button({
 			name: "ArrowLeft",
 			img: "./res/ctl/left.svg",
-			x: BTN_PADDING,
-			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+			x: BTN_MARGIN,
+			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 		this.left_up = new button({
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
-			x: BTN_PADDING,
-			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
+			x: BTN_MARGIN,
+			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
 		this.left_down = new button({
 			name: "ArrowDown",
 			img: "./res/ctl/down.svg",
-			x: BTN_PADDING * 2 + BTN_SIZE,
-			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+			x: BTN_PADDING + BTN_MARGIN + BTN_SIZE,
+			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 
 		this.right = new button({
 			name: "ArrowRight",
 			img: "./res/ctl/right.svg",
-			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
-			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
+			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 		this.right_up = new button({
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
-			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
-			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
+			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
 		this.right_down = new button({
 			name: "ArrowDown",
 			img: "./res/ctl/down.svg",
-			x: this.canvas_width - BTN_PADDING * 2 - BTN_SIZE * 2,
-			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
+			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
+			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 
 		this.btn_gui_list = [this.pause, this.info];

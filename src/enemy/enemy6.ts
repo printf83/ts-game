@@ -9,7 +9,7 @@ export class enemy6 extends baseEnemy {
 	angle: number;
 	curve: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 261;
 		const sprite_height = 209;
@@ -49,10 +49,10 @@ export class enemy6 extends baseEnemy {
 		super.update(opt);
 	}
 
-	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }): void {
-		opt.ctx.save();
-		opt.ctx.globalAlpha = 0.5;
-		super.draw(opt);
-		opt.ctx.restore();
+	draw(): void {
+		this.ctx.save();
+		this.ctx.globalAlpha = 0.5;
+		super.draw();
+		this.ctx.restore();
 	}
 }

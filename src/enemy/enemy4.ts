@@ -13,7 +13,7 @@ export class enemy4 extends baseEnemy {
 	life_index: number;
 	life_length: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 8;
 		const sprite_width = 213;
 		const sprite_height = 213;

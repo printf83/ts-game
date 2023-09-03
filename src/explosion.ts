@@ -15,7 +15,7 @@ export class explosion extends baseAnimation {
 	dy: number;
 	sx: number;
 
-	constructor(opt: { x: number; y: number; scale: number; play_sound?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; scale: number; play_sound?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 200;
 		const sprite_height = 179;
@@ -24,6 +24,8 @@ export class explosion extends baseAnimation {
 
 		super({
 			img: imgExplosion,
+
+			ctx: opt.ctx,
 
 			x: opt.x,
 			y: opt.y,
@@ -64,13 +66,13 @@ export class explosion extends baseAnimation {
 			},
 		});
 	}
-	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.save();
+	draw() {
+		this.ctx.save();
 
-		opt.ctx.translate(this.x, this.y);
-		opt.ctx.rotate(this.angle);
-		opt.ctx.drawImage(this.img, MathFloor(this.sx), 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
+		this.ctx.translate(this.x, this.y);
+		this.ctx.rotate(this.angle);
+		this.ctx.drawImage(this.img, MathFloor(this.sx), 0, this.sprite_width, this.sprite_width, this.dx, this.dy, this.width, this.height);
 
-		opt.ctx.restore();
+		this.ctx.restore();
 	}
 }

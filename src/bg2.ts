@@ -1,8 +1,9 @@
 import { baseBg } from "./baseBg.js";
 
 export class bg2 extends baseBg {
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) {
 		super({
+			ctx: opt.ctx,
 			img: [
 				{ url: "./res/bg2/layer-1.png", speed_modifier: 0.2 },
 				{ url: "./res/bg2/layer-2.png", speed_modifier: 0.4 },

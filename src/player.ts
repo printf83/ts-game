@@ -1,22 +1,6 @@
 import { baseAnimation } from "./baseAnimation.js";
 import { input } from "./input.js";
-import {
-	state,
-	state_bite,
-	state_dizzy,
-	state_fall,
-	state_fall_roll,
-	state_gethit,
-	state_idle,
-	state_jump,
-	state_jump_roll,
-	state_ko,
-	state_power_fall,
-	state_roll,
-	state_run,
-	state_sit,
-	state_type,
-} from "./state.js";
+import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
 import { MathPI2 } from "./util.js";
 
 export class player extends baseAnimation {
@@ -43,7 +27,7 @@ export class player extends baseAnimation {
 	collision_x: number;
 	collision_y: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const img = new Image();
 		img.src = "./res/player.png";
 
@@ -55,6 +39,7 @@ export class player extends baseAnimation {
 		super({
 			img,
 
+			ctx: opt.ctx,
 			x: opt.canvas_width * 0.1,
 			y: opt.canvas_height - height,
 			width,
@@ -136,20 +121,20 @@ export class player extends baseAnimation {
 		this.collision_x = this.x + this.collision_adjust_x + this.width * this.collision_scale;
 		this.collision_y = this.y + this.collision_adjust_y + this.height * this.collision_scale;
 	}
-	draw(opt: { ctx: CanvasRenderingContext2D }): void {
+	draw(): void {
 		//draw sprite
-		super.draw(opt);
+		super.draw();
 
 		//draw collision area
 		if (this.debug) {
-			opt.ctx.save();
+			this.ctx.save();
 
-			opt.ctx.strokeStyle = "white";
-			opt.ctx.beginPath();
-			opt.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
-			opt.ctx.stroke();
+			this.ctx.strokeStyle = "white";
+			this.ctx.beginPath();
+			this.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
+			this.ctx.stroke();
 
-			opt.ctx.restore();
+			this.ctx.restore();
 		}
 	}
 }

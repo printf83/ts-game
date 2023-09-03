@@ -1,6 +1,8 @@
 import { MathFloor } from "./util.js";
 
 export class layer {
+	ctx: CanvasRenderingContext2D;
+
 	img: HTMLImageElement;
 
 	x: number;
@@ -14,8 +16,10 @@ export class layer {
 	x2: number;
 
 	speed_modifier: number;
-	constructor(opt: { img: HTMLImageElement; width: number; height: number; canvas_height: number; speed_modifier: number }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; img: HTMLImageElement; width: number; height: number; canvas_height: number; speed_modifier: number }) {
 		this.img = opt.img;
+
+		this.ctx = opt.ctx;
 
 		this.x = 0;
 		this.y = 0;
@@ -42,8 +46,8 @@ export class layer {
 		if (this.x < 0 - this.width) this.x = 0;
 		this.x2 = this.x + this.width - game_speed - 1;
 	}
-	draw(ctx: CanvasRenderingContext2D) {
-		ctx.drawImage(this.img, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
-		ctx.drawImage(this.img, MathFloor(this.x2), MathFloor(this.y), this.width, this.height);
+	draw() {
+		this.ctx.drawImage(this.img, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.drawImage(this.img, MathFloor(this.x2), MathFloor(this.y), this.width, this.height);
 	}
 }

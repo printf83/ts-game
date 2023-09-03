@@ -11,7 +11,7 @@ export class enemy8 extends baseEnemy {
 	string_x: number;
 	string_y: number;
 
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		const sprite_length = 5;
 		const sprite_width = 310;
 		const sprite_height = 175;
@@ -62,12 +62,12 @@ export class enemy8 extends baseEnemy {
 		super.update(opt);
 	}
 
-	draw(opt: { ctx: CanvasRenderingContext2D; ctx_collision?: CanvasRenderingContext2D }): void {
-		opt.ctx.beginPath();
-		opt.ctx.moveTo(this.string_x, 0);
-		opt.ctx.lineTo(this.string_x, this.string_y);
-		opt.ctx.stroke();
-		super.draw(opt);
+	draw(): void {
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.string_x, 0);
+		this.ctx.lineTo(this.string_x, this.string_y);
+		this.ctx.stroke();
+		super.draw();
 	}
 	set_position(opt: { game_speed: number }) {
 		super.set_position(opt);
