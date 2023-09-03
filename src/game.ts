@@ -446,16 +446,16 @@ export class game {
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw({ ctx: this.value_ctx }));
 
 		//game over message
-		if (this.game_over) this.draw_message("Game over!", "Press SPACEBAR to try again.", "red");
+		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout) this.draw_message("Time up!", "Press SPACEBAR to try again.", "red");
+		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game level up
-		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, "Press SPACEBAR to try again.", "green");
+		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.", "green");
 
 		//pause
-		if (this.game_pause) this.draw_message(`Pause!`, "Press ENTER to try again.", "white");
+		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
 	}
 
 	last_timestamp: number = 0;
