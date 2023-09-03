@@ -73,6 +73,7 @@ class button {
 		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 	clear_mark(opt: { ctx: CanvasRenderingContext2D }) {
+		// opt.ctx.clearRect(MathFloor(this.x - BTN_SIZE * 0.5), MathFloor(this.y - BTN_SIZE * 0.5), BTN_SIZE * 2, BTN_SIZE * 2);
 		opt.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
 	}
 	draw_mark(opt: { ctx: CanvasRenderingContext2D }) {
@@ -80,7 +81,7 @@ class button {
 
 		opt.ctx.fillStyle = this.uid_text;
 		opt.ctx.beginPath();
-		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
+		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
 		opt.ctx.fill();
 	}
 }

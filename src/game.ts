@@ -186,9 +186,10 @@ export class game {
 		setTimeout(() => {
 			this.gui.draw();
 			this.ctl.draw_gui();
-			this.ctl.draw_control();
 
 			if (isTouchDevice()) {
+				this.ctl.draw_control();
+
 				this.ctl.attach_touch({
 					canvas_mark: this.canvas_mark,
 					marker_ctx: this.ctx_mark,
