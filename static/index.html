@@ -4,9 +4,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content="Testing website" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet" />
+		<link href="/res/font/Creepster.eot" as="font" type="font/eot" crossorigin />
+		<link href="/res/font/Creepster.woff2" as="font" type="font/woff2" crossorigin />
+		<link href="/res/font/Creepster.woff" as="font" type="font/woff" crossorigin />
+		<link href="/res/font/Creepster.ttf" as="font" type="font/ttf" crossorigin />
+		<link href="/res/font/Creepster.svg" as="font" type="font/svg" crossorigin />
 		<link rel="stylesheet" href="index.css" />
 		<title>Testing website</title>
 	</head>
@@ -20,54 +22,41 @@
 			<canvas id="markerCanvas"></canvas>
 		</div>
 
-		<!--
-		<div class="container">
-			<canvas id="gameCanvas"></canvas>
-		</div>
-
-		<div class="container container-rainbow">
-			<canvas id="ravenCollisionCanvas"></canvas>
-			<canvas id="ravenCanvas"></canvas>
-		</div>
-
-		<div class="container container-dark">
-			<canvas id="explosionCanvas"></canvas>
-		</div>
-
-		<div class="container">
-			<canvas id="enemyCanvas"></canvas>
-			<div class="control">
-				<div>
-					<label for="enemyType">Choose enemy :</label>
-					<select name="enemyType" id="enemyType">
-						<option value="enemy1">Enemy 1</option>
-						<option value="enemy2">Enemy 2</option>
-						<option value="enemy3">Enemy 3</option>
-
-						<option value="enemy4" selected="selected">Enemy 4</option>
-						<option value="enemy5">Enemy 5</option>
-						<option value="enemy6">Enemy 6</option>
-						<option value="enemy7">Enemy 7</option>
-						<option value="enemy8">Enemy 8</option>
-					</select>
-				</div>
-			</div>
-		</div>
-
-		<div class="container container-dark">
-			<canvas id="bgCanvas"></canvas>
-			<div class="control">
-				<div>
-					<label for="bgSpeed">Game speed :</label>
-					<input type="range" name="bgSpeed" id="bgSpeed" min="0" max="50" value="5" />
-					<span id="bgSpeedValue">[5]</span>
-				</div>
-			</div>
-		</div> -->
-
-		<!-- <div class="container">
-			<canvas id="playerCanvas"></canvas>
-		</div> -->
+		<audio class="hide" src="res/boom.wav" id="boom_wav" />
+		<img class="hide" src="res/boom.png" id="boom_png" />
+		<img class="hide" src="res/fire.png" id="fire_png" />
+		<img class="hide" src="res/player.png" id="player_png" />
+		<img class="hide" src="res/bg1/layer-1.png" id="bg1_layer1_png" />
+		<img class="hide" src="res/bg1/layer-2.png" id="bg1_layer2_png" />
+		<img class="hide" src="res/bg1/layer-3.png" id="bg1_layer3_png" />
+		<img class="hide" src="res/bg1/layer-4.png" id="bg1_layer4_png" />
+		<img class="hide" src="res/bg1/layer-5.png" id="bg1_layer5_png" />
+		<img class="hide" src="res/bg2/layer-1.png" id="bg2_layer1_png" />
+		<img class="hide" src="res/bg2/layer-2.png" id="bg2_layer2_png" />
+		<img class="hide" src="res/bg2/layer-3.png" id="bg2_layer3_png" />
+		<img class="hide" src="res/bg2/layer-4.png" id="bg2_layer4_png" />
+		<img class="hide" src="res/bg2/layer-5.png" id="bg2_layer5_png" />
+		<img class="hide" src="res/ctl/action.svg" id="ctl_action_svg" />
+		<img class="hide" src="res/ctl/down.svg" id="ctl_down_svg" />
+		<img class="hide" src="res/ctl/full_screen.svg" id="ctl_full_screen_svg" />
+		<img class="hide" src="res/ctl/info.svg" id="ctl_info_svg" />
+		<img class="hide" src="res/ctl/left.svg" id="ctl_left_svg" />
+		<img class="hide" src="res/ctl/normal_screen.svg" id="ctl_normal_screen_svg" />
+		<img class="hide" src="res/ctl/pause.svg" id="ctl_pause_svg" />
+		<img class="hide" src="res/ctl/right.svg" id="ctl_right_svg" />
+		<img class="hide" src="res/ctl/start.svg" id="ctl_start_svg" />
+		<img class="hide" src="res/ctl/up.svg" id="ctl_up_svg" />
+		<img class="hide" src="res/enemy/enemy1.png" id="enemy_enemy1_png" />
+		<img class="hide" src="res/enemy/enemy2.png" id="enemy_enemy2_png" />
+		<img class="hide" src="res/enemy/enemy3.png" id="enemy_enemy3_png" />
+		<img class="hide" src="res/enemy/enemy4.png" id="enemy_enemy4_png" />
+		<img class="hide" src="res/enemy/enemy5.png" id="enemy_enemy5_png" />
+		<img class="hide" src="res/enemy/enemy6.png" id="enemy_enemy6_png" />
+		<img class="hide" src="res/enemy/enemy7.png" id="enemy_enemy7_png" />
+		<img class="hide" src="res/enemy/enemy8.png" id="enemy_enemy8_png" />
+		<img class="hide" src="res/enemy/enemy9.png" id="enemy_enemy9_png" />
+		<img class="hide" src="res/enemy/enemy10.png" id="enemy_enemy10_png" />
+		<img class="hide" src="res/enemy/enemy11.png" id="enemy_enemy11_png" />
 
 		<script type="module" src="./src/main.js"></script>
 	</body>

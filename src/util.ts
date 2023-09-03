@@ -18,9 +18,9 @@ export const genUID = () => {
 		.map((_i) => MathFloor(MathRandom() * 255));
 };
 
-export const isTouchDevice = () => {
-	return "ontouchstart" in window || navigator.maxTouchPoints > 0;
-};
+export const isTouchDevice = () => "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+export const isFullscreen = () => window.innerHeight === screen.height;
 
 export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) => {
 	opt.font_family ??= "Creepster";

@@ -17,7 +17,7 @@ import { explosion } from "./explosion.js";
 import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
-import { MathFloor, MathRandom, draw_text, isTouchDevice, read_random_index } from "./util.js";
+import { MathFloor, MathRandom, draw_text, isFullscreen, isTouchDevice, read_random_index } from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
@@ -101,7 +101,7 @@ export class game {
 
 	enemy_index: number = 0;
 	enemy_interval: number = 0;
-	enemy_interval_max: number = 1000;
+	enemy_interval_max: number = 3000;
 
 	constructor(opt: {
 		canvas_game: HTMLCanvasElement;
@@ -110,16 +110,6 @@ export class game {
 		canvas_control: HTMLCanvasElement;
 		canvas_pointer: HTMLCanvasElement;
 		canvas_mark: HTMLCanvasElement;
-
-		ctx_game: CanvasRenderingContext2D;
-		ctx_static: CanvasRenderingContext2D;
-		ctx_value: CanvasRenderingContext2D;
-		ctx_control: CanvasRenderingContext2D;
-		ctx_pointer: CanvasRenderingContext2D;
-		ctx_mark: CanvasRenderingContext2D;
-
-		canvas_width: number;
-		canvas_height: number;
 
 		debug?: boolean;
 	}) {
@@ -130,22 +120,31 @@ export class game {
 		this.canvas_pointer = opt.canvas_pointer;
 		this.canvas_mark = opt.canvas_mark;
 
-		this.ctx_game = opt.ctx_game;
-		this.ctx_static = opt.ctx_static;
-		this.ctx_value = opt.ctx_value;
-		this.ctx_control = opt.ctx_control;
-		this.ctx_pointer = opt.ctx_pointer;
-		this.ctx_mark = opt.ctx_mark;
+		this.ctx_game = opt.canvas_game.getContext("2d")!;
+		this.ctx_static = opt.canvas_static.getContext("2d")!;
+		this.ctx_value = opt.canvas_value.getContext("2d")!;
+		this.ctx_control = opt.canvas_control.getContext("2d")!;
+		this.ctx_pointer = opt.canvas_pointer.getContext("2d")!;
+		this.ctx_mark = opt.canvas_mark.getContext("2d")!;
 
-		this.canvas_width = opt.canvas_width;
-		this.canvas_height = opt.canvas_height;
+		this.canvas_width = opt.canvas_game.width;
+		this.canvas_height = opt.canvas_game.height;
 
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
 		this.input = new input();
-		this.ctl = new control({ canvas_mark: this.canvas_mark, canvas_width: this.canvas_width, canvas_height: this.canvas_height });
-		this.gui = new gui({ canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
+		this.ctl = new control({
+			canvas_control: this.canvas_control,
+			canvas_mark: this.canvas_mark,
+			canvas_pointer: this.canvas_pointer,
+			ctx_control: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			ctx_pointer: this.ctx_pointer,
+			canvas_width: this.canvas_width,
+			canvas_height: this.canvas_height,
+		});
+		this.gui = new gui({ ctx_gui: this.ctx_static, canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
 		this.bg = new bg2({ canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({ canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
@@ -182,13 +181,18 @@ export class game {
 
 	draw_gui() {
 		setTimeout(() => {
-			this.gui.draw({ ctx: this.ctx_static });
+			this.gui.draw();
+			this.ctl.draw_gui();
+			this.ctl.draw_control();
+
 			if (isTouchDevice()) {
-				this.ctl.draw({ ctx: this.ctx_control, ctxMark: this.ctx_mark });
+				// this.ctl.draw_control();
+
 				this.ctl.attach_touch({
 					canvas_mark: this.canvas_mark,
 					marker_ctx: this.ctx_mark,
 					pointer_ctx: this.ctx_pointer,
+					control_ctx: this.ctx_control,
 					debug: this.debug,
 				});
 			} else {
@@ -196,6 +200,7 @@ export class game {
 					canvas_mark: this.canvas_mark,
 					marker_ctx: this.ctx_mark,
 					pointer_ctx: this.ctx_pointer,
+					control_ctx: this.ctx_control,
 					debug: this.debug,
 				});
 			}
@@ -245,6 +250,12 @@ export class game {
 		window.removeEventListener("keyup", this.game_stop_listener);
 		window.addEventListener("keyup", this.game_pause_listener);
 
+		this.ctl.draw_pause();
+
+		if (isTouchDevice()) {
+			this.ctl.draw_control();
+		}
+
 		this.game_over = false;
 		this.game_timeout = false;
 		this.cleanup_ctxvalue_message();
@@ -285,6 +296,12 @@ export class game {
 		window.removeEventListener("keyup", this.game_stop_listener);
 		window.addEventListener("keyup", this.game_pause_listener);
 
+		this.ctl.draw_pause();
+
+		if (isTouchDevice()) {
+			this.ctl.draw_control();
+		}
+
 		this.game_up = false;
 		this.cleanup_ctxvalue_message();
 		requestAnimationFrame((timestamp) => {
@@ -294,6 +311,12 @@ export class game {
 
 	game_continue() {
 		this.progress_timer = performance.now() + this.progress_timer_index * 1000;
+
+		this.ctl.draw_pause();
+		if (isTouchDevice()) {
+			this.ctl.draw_control();
+		}
+
 		this.game_pause = false;
 		this.cleanup_ctxvalue_message();
 		requestAnimationFrame((timestamp) => {
@@ -354,6 +377,9 @@ export class game {
 								this.player.set_state("ko");
 
 								setTimeout(() => {
+									this.ctl.clear_control();
+									this.ctl.clear_pause();
+
 									this.game_over = true;
 									window.removeEventListener("keyup", this.game_pause_listener);
 									window.addEventListener("keyup", this.game_stop_listener);
@@ -408,7 +434,7 @@ export class game {
 
 	cleanup_ctxvalue() {
 		this.ctx_value.clearRect(80, 20, 250, 50);
-		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5 + 40, 15, 30, 25);
+		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 15, 30, 25);
 		this.ctx_value.clearRect(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45, 15, 50, 25);
 		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 45, this.canvas_width * 0.4, 20);
 		this.ctx_value.clearRect(this.canvas_width - 130, 30, 100, 20);
@@ -436,9 +462,9 @@ export class game {
 		//level
 		draw_text({
 			ctx: this.ctx_value,
-			x: (this.canvas_width - this.prg_game.width) * 0.5 + 47,
+			x: (this.canvas_width - this.prg_game.width) * 0.5,
 			y: 35,
-			text: `${this.game_level}`,
+			text: `Level ${this.game_level}`,
 			text_align: "start",
 		});
 
@@ -485,6 +511,9 @@ export class game {
 		//update game progress
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
+			this.ctl.clear_control();
+			this.ctl.clear_pause();
+
 			this.game_up = true;
 			window.removeEventListener("keyup", this.game_pause_listener);
 			window.addEventListener("keyup", this.game_stop_listener);
@@ -493,6 +522,9 @@ export class game {
 		//update game timeout
 		this.progress_timer_index = MathFloor((this.progress_timer - timestamp) * 0.001);
 		if (this.progress_timer_index <= 0) {
+			this.ctl.clear_control();
+			this.ctl.clear_pause();
+
 			this.game_timeout = true;
 			window.removeEventListener("keyup", this.game_pause_listener);
 			window.addEventListener("keyup", this.game_stop_listener);
@@ -638,11 +670,15 @@ export class game {
 		} else if (event.key === "F11") {
 			event.preventDefault();
 			event.stopPropagation();
+
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
-				i.requestFullscreen();
+				i.requestFullscreen({ navigationUI: "hide" });
 			});
 
-			this.draw_gui();
+			setTimeout(() => {
+				if (isFullscreen()) this.ctl.draw_normalscreen();
+				else this.ctl.draw_fullscreen();
+			}, 1000);
 		}
 	};
 
@@ -653,17 +689,23 @@ export class game {
 				event.stopPropagation();
 
 				if (!this.game_pause) {
+					this.ctl.clear_control();
+					this.ctl.draw_start();
 					this.game_pause = true;
 				} else if (this.game_pause) this.game_continue();
 			}
 		} else if (event.key === "F11") {
 			event.preventDefault();
 			event.stopPropagation();
+
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
-				i.requestFullscreen();
+				i.requestFullscreen({ navigationUI: "hide" });
 			});
 
-			this.draw_gui();
+			setTimeout(() => {
+				if (isFullscreen()) this.ctl.draw_normalscreen();
+				else this.ctl.draw_fullscreen();
+			}, 1000);
 		}
 	};
 

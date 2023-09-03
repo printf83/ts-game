@@ -121,6 +121,8 @@ class text {
 
 export class gui {
 	debug: boolean;
+
+	ctx_gui: CanvasRenderingContext2D;
 	canvas_width: number;
 	canvas_height: number;
 
@@ -128,9 +130,11 @@ export class gui {
 	text: text[] = [];
 	box: box[] = [];
 
-	constructor(opt: { canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: { ctx_gui: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
 		opt.debug ??= false;
 		this.debug = opt.debug;
+
+		this.ctx_gui = opt.ctx_gui;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
@@ -182,9 +186,9 @@ export class gui {
 		this.progress.push(new progress({ x: this.canvas_width - 130, y: 60, width: 100 }));
 	}
 
-	draw(opt: { ctx: CanvasRenderingContext2D }) {
+	draw() {
 		[...this.text, ...this.progress, ...this.box].forEach((i) => {
-			i.draw({ ctx: opt.ctx });
+			i.draw({ ctx: this.ctx_gui });
 		});
 	}
 }
