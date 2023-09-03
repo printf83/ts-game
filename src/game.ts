@@ -632,6 +632,8 @@ export class game {
 				if (this.game_up) this.game_level_up();
 			}
 		} else if (event.key === "F11") {
+			event.preventDefault();
+			event.stopPropagation();
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
 				i.requestFullscreen();
 			});
@@ -649,6 +651,8 @@ export class game {
 				} else if (this.game_pause) this.game_continue();
 			}
 		} else if (event.key === "F11") {
+			event.preventDefault();
+			event.stopPropagation();
 			[this.canvas_game, this.canvas_control, this.canvas_mark, this.canvas_pointer, this.canvas_static, this.canvas_value].forEach((i) => {
 				i.requestFullscreen();
 			});
