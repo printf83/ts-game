@@ -34,14 +34,19 @@ const markerCanvas = document.getElementById("markerCanvas") as HTMLCanvasElemen
 
 			if (gameCtx && guiCtx && valueCtx && controlCtx && pointerCtx && markerCtx) {
 				const d = new game({
+					canvas_game: gameCanvas,
+					canvas_static: guiCanvas,
+					canvas_value: valueCanvas,
+					canvas_control: controlCanvas,
+					canvas_pointer: pointerCanvas,
 					canvas_mark: markerCanvas,
 
-					ctx: gameCtx,
-					static_ctx: guiCtx,
-					control_ctx: controlCtx,
-					pointer_ctx: pointerCtx,
-					marker_ctx: markerCtx,
-					value_ctx: valueCtx,
+					ctx_game: gameCtx,
+					ctx_static: guiCtx,
+					ctx_control: controlCtx,
+					ctx_pointer: pointerCtx,
+					ctx_mark: markerCtx,
+					ctx_value: valueCtx,
 
 					canvas_width: gameCanvas.width,
 					canvas_height: gameCanvas.height,

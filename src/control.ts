@@ -79,7 +79,7 @@ export class control {
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
 		this.info = new button({
-			name: "Info",
+			name: "F11",
 			img: "./res/ctl/info.svg",
 			x: this.canvas_width - BTN_SIZE - BTN_PADDING,
 			y: 110,
@@ -134,7 +134,6 @@ export class control {
 
 	resize() {
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
-		console.log({ width: this.canvas_rect.width, height: this.canvas_rect.height });
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D; ctxMark: CanvasRenderingContext2D }) {
@@ -187,10 +186,8 @@ export class control {
 
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
-						if (key !== "Info") {
-							// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
-							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
-						}
+						// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
+						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 					}
 				}
 			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
@@ -269,10 +266,8 @@ export class control {
 
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
-						if (key !== "Info") {
-							// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
-							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
-						}
+						// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
+						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 					}
 				}
 			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
