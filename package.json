@@ -8,7 +8,7 @@
 		"clean": "node scripts/clean.cjs",
 		"copy": "node scripts/copy.cjs",
 		"build": "npm run copy && webpack",
-		"rebuild": "npm run clean && npm run copy && webpack",
+		"rebuild": "npm run clean && npm run copy && webpack --config ./webpack.config.prod.cjs",
 		"debug": "npm run copy && webpack -w",
 		"predeploy": "npm run rebuild",
 		"deploy": "gh-pages -d dist"
