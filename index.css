@@ -80,6 +80,20 @@ label{
 
 /*
 GAME */
+.loading{
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:white;
+    white-space: nowrap;
+    font-family: "Creepster", Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
 #gameCanvas,
 #guiCanvas,
 #valueCanvas,
