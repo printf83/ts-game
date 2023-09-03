@@ -142,9 +142,6 @@ export class gui {
 		//text
 		this.text.push(new text({ x: 20, y: 60, text: `🎮`, shadow_blur: 0, font_weight: 40 }));
 
-		//level
-		this.text.push(new text({ x: (this.canvas_width - this.canvas_width * 0.4) * 0.5, y: 35, text: "Level", text_align: "start" }));
-
 		//life
 		this.text.push(new text({ x: this.canvas_width - 150, y: 45, text: `🧡`, text_align: "end", shadow_blur: 0 }));
 

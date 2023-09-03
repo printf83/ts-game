@@ -434,15 +434,15 @@ export class game {
 
 	cleanup_ctxvalue() {
 		this.ctx_value.clearRect(80, 20, 250, 50);
-		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 15, 60, 25);
-		this.ctx_value.clearRect(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45, 15, 50, 25);
-		this.ctx_value.clearRect(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, 45, this.canvas_width * 0.4, 20);
-		this.ctx_value.clearRect(this.canvas_width - 130, 30, 100, 20);
-		this.ctx_value.clearRect(this.canvas_width - 130, 60, 100, 20);
+		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5), 15, 70, 25);
+		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 + this.canvas_width * 0.4 * 0.5 - 45), 15, 50, 25);
+		this.ctx_value.clearRect(MathFloor(this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5), 45, this.canvas_width * 0.4, 20);
+		this.ctx_value.clearRect(MathFloor(this.canvas_width - 130), 30, 100, 20);
+		this.ctx_value.clearRect(MathFloor(this.canvas_width - 130), 60, 100, 20);
 	}
 
 	cleanup_ctxvalue_message() {
-		this.ctx_value.clearRect((this.canvas_width - this.canvas_width * 0.5) * 0.5, (this.canvas_height - this.bg.ground) * 0.5 - 70, this.canvas_width * 0.5, 100);
+		this.ctx_value.clearRect(MathFloor((this.canvas_width - this.canvas_width * 0.5) * 0.5), MathFloor((this.canvas_height - this.bg.ground) * 0.5 - 70), this.canvas_width * 0.5, 100);
 	}
 
 	draw_status() {

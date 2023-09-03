@@ -1,6 +1,6 @@
 import { MathFloor, MathPI2, genUID } from "./util.js";
 
-const BTN_SIZE = 80;
+const BTN_SIZE = 100;
 const BTN_PADDING = 30;
 
 const BTN_IMG = {
