@@ -1,6 +1,6 @@
 import { MathFloor, MathPI2, genUID } from "./util.js";
 
-const BTN_SIZE = 50;
+const BTN_SIZE = 80;
 const BTN_PADDING = 30;
 
 class button {
@@ -60,20 +60,23 @@ export class control {
 	info: button;
 
 	left: button;
-	left_action: button;
 	left_down: button;
 	left_up: button;
 
 	right: button;
-	right_action: button;
 	right_down: button;
 	right_up: button;
 
 	btn_list: button[] = [];
 
-	constructor(opt: { canvas_width: number; canvas_height: number }) {
+	canvas_rect: DOMRect;
+	canvas_mark: HTMLCanvasElement;
+
+	constructor(opt: { canvas_mark: HTMLCanvasElement; canvas_width: number; canvas_height: number }) {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
+		this.canvas_mark = opt.canvas_mark;
+		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
 		this.info = new button({
 			name: "Info",
@@ -97,7 +100,7 @@ export class control {
 		this.left_up = new button({
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
-			x: BTN_PADDING * 2 + BTN_SIZE,
+			x: BTN_PADDING,
 			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
 		});
 		this.left_down = new button({
@@ -105,12 +108,6 @@ export class control {
 			img: "./res/ctl/down.svg",
 			x: BTN_PADDING * 2 + BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
-		});
-		this.left_action = new button({
-			name: " ",
-			img: "./res/ctl/action.svg",
-			x: BTN_PADDING,
-			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
 		});
 
 		this.right = new button({
@@ -122,7 +119,7 @@ export class control {
 		this.right_up = new button({
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
-			x: this.canvas_width - BTN_PADDING * 2 - BTN_SIZE * 2,
+			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
 		});
 		this.right_down = new button({
@@ -131,14 +128,13 @@ export class control {
 			x: this.canvas_width - BTN_PADDING * 2 - BTN_SIZE * 2,
 			y: this.canvas_height - BTN_PADDING - BTN_SIZE,
 		});
-		this.right_action = new button({
-			name: " ",
-			img: "./res/ctl/action.svg",
-			x: this.canvas_width - BTN_PADDING - BTN_SIZE,
-			y: this.canvas_height - BTN_PADDING * 2 - BTN_SIZE * 2,
-		});
 
-		this.btn_list = [this.pause, this.info, this.left, this.left_up, this.left_down, this.left_action, this.right, this.right_up, this.right_down, this.right_action];
+		this.btn_list = [this.pause, this.info, this.left, this.left_up, this.left_down, this.right, this.right_up, this.right_down];
+	}
+
+	resize() {
+		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
+		console.log({ width: this.canvas_rect.width, height: this.canvas_rect.height });
 	}
 
 	draw(opt: { ctx: CanvasRenderingContext2D; ctxMark: CanvasRenderingContext2D }) {
@@ -148,24 +144,40 @@ export class control {
 		});
 	}
 
-	last_touch_x: number = -1;
-	last_touch_y: number = -1;
-	private get_touch_location(e: TouchEvent) {
-		if (e.touches && e.touches.length > 0 && e.touches[0]) {
-			this.last_touch_x = e.touches[0].clientX;
-			this.last_touch_y = e.touches[0].clientY;
-		}
+	private get_mouse_location(canvas: HTMLCanvasElement, event: MouseEvent) {
+		var totalOffsetX = 0;
+		var totalOffsetY = 0;
+		var canvasX = 0;
+		var canvasY = 0;
+		var currentElement: HTMLElement | null = canvas;
 
-		return { x: this.last_touch_x, y: this.last_touch_y };
+		do {
+			totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+			totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+		} while ((currentElement = currentElement.offsetParent ? (currentElement.offsetParent as HTMLElement) : null));
+
+		canvasX = event.pageX - totalOffsetX;
+		canvasY = event.pageY - totalOffsetY;
+
+		const scale = this.canvas_width / this.canvas_rect.width;
+
+		const x = canvasX * scale + this.canvas_width * 0.5;
+		const y = canvasY * scale + this.canvas_height * 0.5;
+
+		return { x: x, y: y };
 	}
 
-	private touch_event(opt: { event_name: string; canvas_rect: DOMRect; ctx_canvas_mark: CanvasRenderingContext2D; e: TouchEvent }) {
-		let { x: eX, y: eY } = this.get_touch_location(opt.e);
+	private mouse_event(opt: { event_name: string; canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; event: MouseEvent; debug?: boolean }) {
+		let { x, y } = this.get_mouse_location(opt.canvas_mark, opt.event);
 
-		if (eX > -1 && eY > -1) {
-			const x = eX - opt.canvas_rect.left;
-			const y = eY - opt.canvas_rect.top;
-			const data = opt.ctx_canvas_mark.getImageData(x, y, 1, 1).data;
+		if (x > -1 && y > -1) {
+			if (opt.debug) {
+				opt.pointer_ctx.clearRect(x - 50, y - 50, 100, 100);
+				opt.pointer_ctx.fillStyle = "red";
+				opt.pointer_ctx.fillRect(x - 5, y - 5, 10, 10);
+			}
+
+			const data = opt.marker_ctx.getImageData(x, y, 1, 1).data;
 
 			if (data && data.length > 3 && data[0] && data[1] && data[2]) {
 				if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
@@ -186,55 +198,109 @@ export class control {
 			}
 		}
 	}
-	// private click_event(opt: { event_name: string; canvas_rect: DOMRect; ctx_canvas_mark: CanvasRenderingContext2D; e: MouseEvent }) {
-	// 	if (opt.e) {
-	// 		console.log(opt.e);
-	// 		const x = opt.e.x - opt.canvas_rect.left;
-	// 		const y = opt.e.y - opt.canvas_rect.top;
-	// 		const data = opt.ctx_canvas_mark.getImageData(x, y, 1, 1).data;
-	// 		console.log(`x: ${x}\ny: ${y}\ndata: ${data}`);
+	attach_mouse(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+		opt.canvas_mark.addEventListener("mousedown", (event: MouseEvent) => {
+			this.mouse_event({
+				event_name: "keydown",
+				canvas_mark: opt.canvas_mark,
+				marker_ctx: opt.marker_ctx,
+				pointer_ctx: opt.pointer_ctx,
+				event: event,
+				debug: opt.debug,
+			});
+		});
+		opt.canvas_mark.addEventListener("mouseup", (e: MouseEvent) => {
+			this.mouse_event({
+				event_name: "keyup",
+				canvas_mark: opt.canvas_mark,
+				marker_ctx: opt.marker_ctx,
+				pointer_ctx: opt.pointer_ctx,
+				event: e,
+				debug: opt.debug,
+			});
+		});
+	}
 
-	// 		if (data && data.length > 3 && data[0] && data[1] && data[2]) {
-	// 			if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
-	// 				const btn = this.btn_list.filter((i) => {
-	// 					return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
-	// 				});
+	private last_touch_location: { x: number; y: number } = { x: -1, y: -1 };
+	private get_touch_location(canvas: HTMLCanvasElement, event: TouchEvent) {
+		if (event.touches && event.touches.length > 0 && event.touches[0]) {
+			var totalOffsetX = 0;
+			var totalOffsetY = 0;
+			var canvasX = 0;
+			var canvasY = 0;
+			var currentElement: HTMLElement | null = canvas;
 
-	// 				if (btn && btn.length > 0 && btn[0]) {
-	// 					const key = btn[0].name;
-	// 					window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+			do {
+				totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+				totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+			} while ((currentElement = currentElement.offsetParent ? (currentElement.offsetParent as HTMLElement) : null));
 
-	attach_click(opt: { canvas_mark: HTMLCanvasElement; ctx_canvas_mark: CanvasRenderingContext2D }) {
-		const canvas_rect = opt.canvas_mark.getBoundingClientRect();
-		//attach marker click event
-		opt.canvas_mark.addEventListener("touchstart", (e: TouchEvent) => {
+			canvasX = event.touches[0].pageX - totalOffsetX;
+			canvasY = event.touches[0].pageY - totalOffsetY;
+
+			const scale = this.canvas_width / this.canvas_rect.width;
+			const x = canvasX * scale + this.canvas_width * 0.5;
+			const y = canvasY * scale + this.canvas_height * 0.5;
+
+			// console.log({ x, y, scale });
+			this.last_touch_location = { x: x, y: y };
+		}
+
+		return this.last_touch_location;
+	}
+
+	private touch_event(opt: { event_name: string; canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; event: TouchEvent; debug?: boolean }) {
+		let { x, y } = this.get_touch_location(this.canvas_mark, opt.event);
+
+		if (x > -1 && y > -1) {
+			if (opt.debug) {
+				opt.pointer_ctx.clearRect(x - 50, y - 50, 100, 100);
+				opt.pointer_ctx.fillStyle = "red";
+				opt.pointer_ctx.fillRect(x - 5, y - 5, 10, 10);
+			}
+
+			const data = opt.marker_ctx.getImageData(x, y, 1, 1).data;
+
+			if (data && data.length > 3 && data[0] && data[1] && data[2]) {
+				if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
+					const btn = this.btn_list.filter((i) => {
+						return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
+					});
+
+					if (btn && btn.length > 0 && btn[0]) {
+						const key = btn[0].name;
+						if (key !== "Info") {
+							// console.log(`x: ${x}\ny: ${y}\ndata: ${data}\nkey:${key}`);
+							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+						}
+					}
+				}
+			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
+				window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: " " }));
+			}
+		}
+	}
+
+	attach_touch(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+		opt.canvas_mark.addEventListener("touchstart", (event: TouchEvent) => {
 			this.touch_event({
 				event_name: "keydown",
-				ctx_canvas_mark: opt.ctx_canvas_mark,
-				canvas_rect,
-				e,
+				canvas_mark: opt.canvas_mark,
+				marker_ctx: opt.marker_ctx,
+				pointer_ctx: opt.pointer_ctx,
+				event: event,
+				debug: opt.debug,
 			});
 		});
 		opt.canvas_mark.addEventListener("touchend", (e: TouchEvent) => {
-			this.touch_event({ event_name: "keyup", ctx_canvas_mark: opt.ctx_canvas_mark, canvas_rect, e });
+			this.touch_event({
+				event_name: "keyup",
+				canvas_mark: opt.canvas_mark,
+				marker_ctx: opt.marker_ctx,
+				pointer_ctx: opt.pointer_ctx,
+				event: e,
+				debug: opt.debug,
+			});
 		});
-
-		// // mouse
-		// opt.canvas_mark.addEventListener("mousedown", (e: MouseEvent) => {
-		// 	this.click_event({
-		// 		event_name: "keydown",
-		// 		ctx_canvas_mark: opt.ctx_canvas_mark,
-		// 		canvas_rect,
-		// 		e,
-		// 	});
-		// });
-		// opt.canvas_mark.addEventListener("mouseup", (e: MouseEvent) => {
-		// 	this.click_event({ event_name: "keyup", ctx_canvas_mark: opt.ctx_canvas_mark, canvas_rect, e });
-		// });
 	}
 }

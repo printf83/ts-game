@@ -256,9 +256,13 @@ export class state_sit extends state {
 		this.player.power += 0.5;
 	}
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE down") {
+		if (input.last_key === "RELEASE down" || input.last_key === "PRESS up" || input.last_key === "PRESS left") {
 			this.player.invulnerable = false;
 			this.player.set_state("idle");
+		}
+		if (input.last_key === "PRESS left") {
+			this.player.invulnerable = false;
+			this.player.set_state("run");
 		}
 	}
 }
