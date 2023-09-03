@@ -1,4 +1,14 @@
 
+@font-face {
+    font-family: "Creepster";
+    src: url("./res/font/Creepster.eot");
+    src: url("./res/font/Creepster.eot?#iefix")format("embedded-opentype"),
+        url("./res/font/Creepster.woff2")format("woff2"),
+        url("./res/font/Creepster.woff")format("woff"),
+        url("./res/font/Creepster.ttf")format("truetype"),
+        url("./res/font/Creepster.svg#Creepster")format("svg");
+}
+
 *,
 ::after,
 ::before {
@@ -6,6 +16,7 @@
 }
 
 body {
+    
     margin:0;
 }
 
@@ -88,6 +99,8 @@ GAME */
 #pointerCanvas {
     opacity: 0.5;
 }
+#markerCanvas.hide,
+#pointerCanvas.hide,
 .hide {
     opacity: 0;
 }
