@@ -73,7 +73,6 @@ class button {
 		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 	clear_mark(opt: { ctx: CanvasRenderingContext2D }) {
-		// opt.ctx.clearRect(MathFloor(this.x - BTN_SIZE * 0.5), MathFloor(this.y - BTN_SIZE * 0.5), BTN_SIZE * 2, BTN_SIZE * 2);
 		opt.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
 	}
 	draw_mark(opt: { ctx: CanvasRenderingContext2D }) {
@@ -366,7 +365,6 @@ export class control {
 			const x = canvasX * scale + this.canvas_width * 0.5;
 			const y = canvasY * scale + this.canvas_height * 0.5;
 
-			// console.log({ x, y, scale });
 			this.last_touch_location = { x: x, y: y };
 		}
 

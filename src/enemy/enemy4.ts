@@ -26,7 +26,6 @@ export class enemy4 extends baseEnemy {
 
 			img: imgEnemy4,
 
-			// x: MathRandom() * (opt.canvas_width - width),
 			x: MathRandom() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
 			y: MathRandom() * (opt.canvas_height - height),
 			width,
@@ -55,7 +54,6 @@ export class enemy4 extends baseEnemy {
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		if (this.last_move % this.interval === 0) {
-			// if (Modulus(this.last_move, this.interval) === 0) {
 			this.last_move = 0;
 			this.new_x = MathRandom() * (this.canvas_width - this.width);
 			this.new_y = MathRandom() * (this.canvas_height - this.height);

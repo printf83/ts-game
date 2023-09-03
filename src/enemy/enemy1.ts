@@ -20,7 +20,6 @@ export class enemy1 extends baseEnemy {
 			...opt,
 			img: imgEnemy1,
 
-			// x: MathRandom() * (opt.canvas_width - width),
 			x: MathRandom() * (opt.canvas_width - width) + opt.canvas_width * 0.5,
 			y: MathRandom() * (opt.canvas_height - height),
 			width,

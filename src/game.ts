@@ -445,9 +445,6 @@ export class game {
 	}
 
 	draw_status() {
-		//cleanup
-		// this.cleanup_ctxvalue();
-
 		//score
 		draw_clear_text({
 			ctx: this.ctx_value,
