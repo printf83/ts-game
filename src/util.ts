@@ -24,7 +24,13 @@ export const isFullscreen = () => window.innerHeight === screen.height;
 
 export const DPI = window.devicePixelRatio;
 
-const measure_text = (opt: { ctx: CanvasRenderingContext2D; text: string; font_weight?: number; font_family?: string; text_align?: CanvasTextAlign }) => {
+const measure_text = (opt: {
+	ctx: CanvasRenderingContext2D;
+	text: string;
+	font_weight?: number;
+	font_family?: string;
+	text_align?: CanvasTextAlign;
+}) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
 	opt.text_align ??= "left";
@@ -32,23 +38,35 @@ const measure_text = (opt: { ctx: CanvasRenderingContext2D; text: string; font_w
 	opt.ctx.save();
 	opt.ctx.font = `${opt.font_weight}px ${opt.font_family}`;
 	opt.ctx.textAlign = opt.text_align;
-	const metrics = opt.ctx.measureText(opt.text);
+	const metrics = opt.ctx.measureText(` ${opt.text.toUpperCase()} `);
 	opt.ctx.restore();
 
 	return { w: metrics.width, h: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent };
 };
 
-export const clear_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; shadow_blur?: number }) => {
+export const clear_text = (opt: {
+	ctx: CanvasRenderingContext2D;
+	x: number;
+	y: number;
+	text: string;
+	text_align?: CanvasTextAlign;
+	font_weight?: number;
+	font_family?: string;
+	shadow_blur?: number;
+	debug?: boolean;
+}) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
+	opt.debug ??= false;
 
 	const metrics = measure_text({
 		ctx: opt.ctx,
 		text: opt.text,
 		font_weight: opt.font_weight,
 		font_family: opt.font_family,
+		text_align: opt.text_align,
 	});
 
 	let x: number = 0;
@@ -58,7 +76,7 @@ export const clear_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: n
 
 	if (opt.text_align === "start" || opt.text_align === "left") {
 		x = opt.x;
-		y = opt.y;
+		y = opt.y - metrics.h;
 		w = metrics.w + opt.shadow_blur;
 		h = metrics.h + opt.shadow_blur;
 	} else if (opt.text_align === "end" || opt.text_align === "right") {
@@ -73,27 +91,69 @@ export const clear_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: n
 		h = metrics.h + opt.shadow_blur;
 	}
 
-	opt.ctx.clearRect(MathFloor(x - opt.font_weight), MathFloor(y - opt.font_weight), MathFloor(w + opt.font_weight * 2), MathFloor(h + opt.font_weight * 2));
+	const TEXT_PADDING = 4;
+
+	opt.ctx.clearRect(
+		MathFloor(x - TEXT_PADDING),
+		MathFloor(y - TEXT_PADDING),
+		MathFloor(w + TEXT_PADDING * 2),
+		MathFloor(h + TEXT_PADDING * 2)
+	);
+
+	if (opt.debug) {
+		opt.ctx.strokeRect(
+			MathFloor(x - TEXT_PADDING),
+			MathFloor(y - TEXT_PADDING),
+			MathFloor(w + TEXT_PADDING * 2),
+			MathFloor(h + TEXT_PADDING * 2)
+		);
+	}
 };
 
-export const draw_clear_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) => {
+export const draw_clear_text = (opt: {
+	ctx: CanvasRenderingContext2D;
+	x: number;
+	y: number;
+	text: string;
+	text_align?: CanvasTextAlign;
+	font_weight?: number;
+	font_family?: string;
+	text_color?: string | CanvasGradient | CanvasPattern;
+	shadow_color?: string;
+	shadow_blur?: number;
+	debug?: boolean;
+}) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
 	opt.text_color ??= "white";
 	opt.shadow_color ??= "black";
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
+	opt.debug ??= false;
 
 	clear_text(opt);
 	draw_text(opt);
 };
-export const draw_text = (opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) => {
+export const draw_text = (opt: {
+	ctx: CanvasRenderingContext2D;
+	x: number;
+	y: number;
+	text: string;
+	text_align?: CanvasTextAlign;
+	font_weight?: number;
+	font_family?: string;
+	text_color?: string | CanvasGradient | CanvasPattern;
+	shadow_color?: string;
+	shadow_blur?: number;
+	debug?: boolean;
+}) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
 	opt.text_color ??= "white";
 	opt.shadow_color ??= "black";
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
+	opt.debug ??= false;
 
 	opt.ctx.save();
 

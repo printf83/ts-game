@@ -143,11 +143,17 @@ export class game {
 			ctx_pointer: this.ctx_pointer,
 			canvas_width: this.canvas_width,
 			canvas_height: this.canvas_height,
+			debug: this.debug,
 		});
 		this.gui = new gui({ ctx: this.ctx_static, canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
 		this.bg = new bg2({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
-		this.player = new player({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
+		this.player = new player({
+			ctx: this.ctx_game,
+			canvas_width: this.canvas_width,
+			canvas_height: this.base_height,
+			debug: this.debug,
+		});
 
 		this.prg_game = new progress({
 			ctx: this.ctx_value,
@@ -344,7 +350,17 @@ export class game {
 		if (deduction && point > 0) point *= -1;
 		if (!deduction && point < 0) point *= -1;
 
-		this.score_list.push(new score({ ctx: this.ctx_game, text: `${point > 0 ? "+" : ""}${point}`, value: point, x: enemy.x + enemy.width * 0.5, y: enemy.y + enemy.height * 0.5, destination_x: 90, destination_y: 60 }));
+		this.score_list.push(
+			new score({
+				ctx: this.ctx_game,
+				text: `${point > 0 ? "+" : ""}${point}`,
+				value: point,
+				x: enemy.x + enemy.width * 0.5,
+				y: enemy.y + enemy.height * 0.5,
+				destination_x: 90,
+				destination_y: 60,
+			})
+		);
 	}
 
 	collision_detection() {
@@ -400,6 +416,7 @@ export class game {
 	draw_message(title: string, message: string, color: string) {
 		this.last_draw_message_title = title;
 		this.last_draw_message_message = message;
+		if (this.debug) this.clear_message(title, message);
 
 		draw_text({
 			ctx: this.ctx_value,
@@ -409,6 +426,7 @@ export class game {
 			font_weight: 60,
 			text_align: "center",
 			text_color: color,
+			debug: this.debug,
 		});
 		draw_text({
 			ctx: this.ctx_value,
@@ -418,10 +436,11 @@ export class game {
 			font_weight: 30,
 			text_align: "center",
 			text_color: color,
+			debug: this.debug,
 		});
 	}
 
-	clean_message(title: string, message: string) {
+	clear_message(title: string, message: string) {
 		clear_text({
 			ctx: this.ctx_value,
 			x: this.canvas_width * 0.5,
@@ -429,6 +448,7 @@ export class game {
 			text: title,
 			font_weight: 60,
 			text_align: "center",
+			debug: this.debug,
 		});
 		clear_text({
 			ctx: this.ctx_value,
@@ -437,11 +457,12 @@ export class game {
 			text: message,
 			font_weight: 30,
 			text_align: "center",
+			debug: this.debug,
 		});
 	}
 
 	clean_ctx_value_message() {
-		this.clean_message(this.last_draw_message_title, this.last_draw_message_message);
+		this.clear_message(this.last_draw_message_title, this.last_draw_message_message);
 	}
 
 	draw_status() {
@@ -453,6 +474,7 @@ export class game {
 			text: `${this.score_text}`,
 			text_color: this.score_value < 0 ? "red" : "white",
 			font_weight: 60,
+			debug: this.debug,
 		});
 
 		//level
@@ -463,6 +485,7 @@ export class game {
 			text: `Level ${this.game_level}`,
 			text_align: "start",
 			font_weight: 25,
+			debug: this.debug,
 		});
 
 		//timer
@@ -474,6 +497,7 @@ export class game {
 			text_align: "end",
 			text_color: this.progress_timer_index < 20 ? "red" : "white",
 			font_weight: 25,
+			debug: this.debug,
 		});
 
 		//progress
@@ -489,16 +513,24 @@ export class game {
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
 
 		//game over message
-		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_over)
+			this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_timeout)
+			this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game level up
-		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.", "green");
+		if (this.game_up)
+			this.draw_message(
+				`Level ${this.game_level} complete!`,
+				isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.",
+				"green"
+			);
 
 		//pause
-		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
+		if (this.game_pause)
+			this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
 	}
 
 	last_timestamp: number = 0;
@@ -546,7 +578,13 @@ export class game {
 			Array(3)
 				.fill("")
 				.forEach((_i) => {
-					this.fire_list.unshift(new fire({ ctx: this.ctx_game, x: this.player.x - 40 + MathRandom() * 10 - 10, y: this.player.y + 25 + MathRandom() * 10 - 10 }));
+					this.fire_list.unshift(
+						new fire({
+							ctx: this.ctx_game,
+							x: this.player.x - 40 + MathRandom() * 10 - 10,
+							y: this.player.y + 25 + MathRandom() * 10 - 10,
+						})
+					);
 				});
 		}
 
@@ -557,11 +595,24 @@ export class game {
 
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
-			const new_enemy = new enemy_object({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.base_height, debug: this.debug });
+			const new_enemy = new enemy_object({
+				ctx: this.ctx_game,
+				canvas_width: this.canvas_width,
+				canvas_height: this.base_height,
+				debug: this.debug,
+			});
 
 			//add explosion if explode in
 			if (new_enemy.explode_in) {
-				this.explosion_list.push(new explosion({ ctx: this.ctx_game, x: new_enemy.x + new_enemy.width * 0.5, y: new_enemy.y + new_enemy.height * 0.5, scale: (new_enemy.width / new_enemy.sprite_width) * 1.5, play_sound: false }));
+				this.explosion_list.push(
+					new explosion({
+						ctx: this.ctx_game,
+						x: new_enemy.x + new_enemy.width * 0.5,
+						y: new_enemy.y + new_enemy.height * 0.5,
+						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+						play_sound: false,
+					})
+				);
 			}
 
 			//add enemy to list
@@ -613,7 +664,14 @@ export class game {
 
 			//add particle
 			if (i.have_particle) {
-				this.dust_list.unshift(new dust({ ctx: this.ctx_game, x: i.x + i.width * 0.5 + MathRandom() * 50 - 25, y: i.y + i.height * 0.5 + MathRandom() * 30 - 15, color: `rgba(${i.uid_number},0.2)` }));
+				this.dust_list.unshift(
+					new dust({
+						ctx: this.ctx_game,
+						x: i.x + i.width * 0.5 + MathRandom() * 50 - 25,
+						y: i.y + i.height * 0.5 + MathRandom() * 30 - 15,
+						color: `rgba(${i.uid_number},0.2)`,
+					})
+				);
 			}
 		});
 
@@ -633,7 +691,15 @@ export class game {
 	}
 
 	draw() {
-		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
+		[
+			this.bg,
+			...this.fire_list,
+			...this.dust_list,
+			...this.score_list,
+			...this.enemy_list,
+			this.player,
+			...this.explosion_list,
+		].forEach((i) => {
 			i.draw();
 		});
 	}
@@ -651,13 +717,19 @@ export class game {
 			event.preventDefault();
 			event.stopPropagation();
 
-			const container = this.canvas_game.parentElement as HTMLDivElement;
-			container.requestFullscreen({ navigationUI: "hide" });
+			if (isFullscreen()) {
+				document.exitFullscreen();
+				setTimeout(() => {
+					if (!isFullscreen()) this.ctl.draw_fullscreen();
+				}, 1000);
+			} else {
+				const container = this.canvas_game.parentElement as HTMLDivElement;
+				container.requestFullscreen({ navigationUI: "hide" });
 
-			setTimeout(() => {
-				if (isFullscreen()) this.ctl.draw_normalscreen();
-				else this.ctl.draw_fullscreen();
-			}, 1000);
+				setTimeout(() => {
+					if (isFullscreen()) this.ctl.draw_normalscreen();
+				}, 1000);
+			}
 		}
 	};
 
@@ -677,13 +749,19 @@ export class game {
 			event.preventDefault();
 			event.stopPropagation();
 
-			const container = this.canvas_game.parentElement as HTMLDivElement;
-			container.requestFullscreen({ navigationUI: "hide" });
+			if (isFullscreen()) {
+				document.exitFullscreen();
+				setTimeout(() => {
+					if (!isFullscreen()) this.ctl.draw_fullscreen();
+				}, 1000);
+			} else {
+				const container = this.canvas_game.parentElement as HTMLDivElement;
+				container.requestFullscreen({ navigationUI: "hide" });
 
-			setTimeout(() => {
-				if (isFullscreen()) this.ctl.draw_normalscreen();
-				else this.ctl.draw_fullscreen();
-			}, 1000);
+				setTimeout(() => {
+					if (isFullscreen()) this.ctl.draw_normalscreen();
+				}, 1000);
+			}
 		}
 	};
 
@@ -715,6 +793,7 @@ export class game {
 				text_color: text_color ? text_color : "yellow",
 				font_family: "Arial",
 				font_weight: 20,
+				debug: this.debug,
 			});
 		};
 

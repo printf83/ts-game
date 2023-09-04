@@ -1,13 +1,17 @@
-import { clear_text, draw_text } from "./util.js";
+import { MathFloor, clear_text, draw_text } from "./util.js";
 
 class box {
+	debug: boolean;
 	ctx: CanvasRenderingContext2D;
 
 	x: number;
 	y: number;
 	width: number;
 	height: number;
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height: number }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height: number; debug?: boolean }) {
+		opt.debug ??= false;
+		this.debug = opt.debug;
+
 		this.ctx = opt.ctx;
 
 		this.x = opt.x;
@@ -26,6 +30,7 @@ class box {
 }
 
 class progress {
+	debug: boolean;
 	ctx: CanvasRenderingContext2D;
 
 	x: number;
@@ -44,12 +49,26 @@ class progress {
 
 	radius: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height?: number; bg_color?: string; shadow_color?: string; shadow_blur?: number; radius?: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		width: number;
+		height?: number;
+		bg_color?: string;
+		shadow_color?: string;
+		shadow_blur?: number;
+		radius?: number;
+		debug?: boolean;
+	}) {
 		opt.height ??= 20;
 		opt.shadow_color ??= "#555555";
 		opt.shadow_blur ??= 1;
 		opt.bg_color ??= "#FFFFFF";
 		opt.radius ??= 5;
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
 
 		this.ctx = opt.ctx;
 
@@ -69,8 +88,15 @@ class progress {
 		this.shadow_height = this.height + this.shadow_blur * 2;
 	}
 	clear() {
-		if (this.shadow_color && this.shadow_blur) this.ctx.clearRect(this.shadow_x, this.shadow_y, this.shadow_width, this.shadow_height);
-		else this.ctx.clearRect(this.x, this.y, this.width, this.height);
+		if (this.shadow_color && this.shadow_blur)
+			this.ctx.clearRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height);
+		else this.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+
+		if (this.debug) {
+			if (this.shadow_color && this.shadow_blur)
+				this.ctx.strokeRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height);
+			else this.ctx.strokeRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		}
 	}
 	draw() {
 		this.clear();
@@ -101,6 +127,8 @@ class progress {
 	}
 }
 class text {
+	debug: boolean;
+
 	ctx: CanvasRenderingContext2D;
 
 	x: number;
@@ -114,13 +142,28 @@ class text {
 	shadow_color: string;
 	shadow_blur: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		text: string;
+		text_align?: CanvasTextAlign;
+		font_weight?: number;
+		font_family?: string;
+		text_color?: string | CanvasGradient | CanvasPattern;
+		shadow_color?: string;
+		shadow_blur?: number;
+		debug?: boolean;
+	}) {
 		opt.font_family ??= "Creepster";
 		opt.font_weight ??= 20;
 		opt.text_color ??= "white";
 		opt.shadow_color ??= "black";
 		opt.shadow_blur ??= 2;
 		opt.text_align ??= "left";
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
 
 		this.ctx = opt.ctx;
 
@@ -137,6 +180,8 @@ class text {
 	}
 	clear() {
 		clear_text({
+			debug: this.debug,
+
 			ctx: this.ctx,
 
 			x: this.x,
@@ -153,6 +198,8 @@ class text {
 		this.clear();
 
 		draw_text({
+			debug: this.debug,
+
 			ctx: this.ctx,
 
 			x: this.x,
@@ -190,13 +237,17 @@ export class gui {
 		this.canvas_height = opt.canvas_height;
 
 		//text
-		this.text.push(new text({ ctx: this.ctx, x: 20, y: 75, text: `🎮`, shadow_blur: 0, font_weight: 50 }));
+		this.text.push(new text({ ctx: this.ctx, x: 20, y: 75, text: `🎮`, shadow_blur: 0, font_weight: 50, debug: this.debug }));
 
 		//life
-		this.text.push(new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 47, text: `🧡`, text_align: "end", shadow_blur: 0 }));
+		this.text.push(
+			new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 47, text: `🧡`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		);
 
 		//power
-		this.text.push(new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 78, text: `🚀`, text_align: "end", shadow_blur: 0 }));
+		this.text.push(
+			new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 78, text: `🚀`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		);
 
 		if (this.debug) {
 			let text_y = 120;
@@ -211,6 +262,7 @@ export class gui {
 					text_color: "yellow",
 					font_family: "Arial",
 					font_weight: 20,
+					debug: this.debug,
 				});
 			};
 
@@ -225,13 +277,21 @@ export class gui {
 
 		//progress
 		//game
-		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5, y: 60, width: this.canvas_width * 0.4 }));
+		this.progress.push(
+			new progress({
+				ctx: this.ctx,
+				x: this.canvas_width * 0.5 - this.canvas_width * 0.4 * 0.5,
+				y: 60,
+				width: this.canvas_width * 0.4,
+				debug: this.debug,
+			})
+		);
 
 		//life
-		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 30, width: 100 }));
+		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 30, width: 100, debug: this.debug }));
 
 		//power
-		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 60, width: 100 }));
+		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 60, width: 100, debug: this.debug }));
 	}
 
 	draw() {

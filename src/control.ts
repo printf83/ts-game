@@ -24,6 +24,11 @@ const BTN_COLOR = {
 	active: "rgba(225,225,255,0.5)",
 };
 class button {
+	debug: boolean;
+
+	ctx: CanvasRenderingContext2D;
+	ctx_mark: CanvasRenderingContext2D;
+
 	name: string;
 
 	x: number;
@@ -39,10 +44,27 @@ class button {
 	color: string;
 	width: number;
 	height: number;
-	constructor(opt: { name: string; img: string; x: number; y: number; width?: number; height?: number; color?: string }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
+		name: string;
+		img: string;
+		x: number;
+		y: number;
+		width?: number;
+		height?: number;
+		color?: string;
+		debug?: boolean;
+	}) {
 		opt.width ??= BTN_SIZE;
 		opt.height ??= BTN_SIZE;
 		opt.color ??= BTN_COLOR.normal;
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
+
+		this.ctx = opt.ctx;
+		this.ctx_mark = opt.ctx_mark;
 
 		this.uid = genUID();
 		this.uid_number = `${this.uid[0]},${this.uid[1]},${this.uid[2]}`;
@@ -59,33 +81,37 @@ class button {
 		this.height = opt.height;
 		this.color = opt.color;
 	}
-	clear(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+	clear() {
+		this.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
 	}
-	draw(opt: { ctx: CanvasRenderingContext2D }) {
-		this.clear(opt);
+	draw() {
+		this.clear();
 
-		opt.ctx.fillStyle = this.color;
-		opt.ctx.beginPath();
-		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
-		opt.ctx.fill();
+		this.ctx.fillStyle = this.color;
+		this.ctx.beginPath();
+		this.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		this.ctx.fill();
 
-		opt.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
-	clear_mark(opt: { ctx: CanvasRenderingContext2D }) {
-		opt.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+	clear_mark() {
+		this.ctx_mark.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+		if (this.debug) this.ctx_mark.strokeRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
 	}
-	draw_mark(opt: { ctx: CanvasRenderingContext2D }) {
-		this.clear_mark(opt);
+	draw_mark() {
+		this.clear_mark();
 
-		opt.ctx.fillStyle = this.uid_text;
-		opt.ctx.beginPath();
-		opt.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
-		opt.ctx.fill();
+		this.ctx_mark.fillStyle = this.uid_text;
+		this.ctx_mark.beginPath();
+		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		this.ctx_mark.fill();
 	}
 }
 
 export class control {
+	debug: boolean;
+
 	canvas_width: number;
 	canvas_height: number;
 
@@ -125,7 +151,13 @@ export class control {
 
 		canvas_width: number;
 		canvas_height: number;
+
+		debug?: boolean;
 	}) {
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
+
 		this.canvas_mark = opt.canvas_mark;
 		this.canvas_control = opt.canvas_control;
 		this.canvas_pointer = opt.canvas_pointer;
@@ -140,12 +172,20 @@ export class control {
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
 		this.info = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "F11",
 			img: BTN_IMG.full_screen,
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: 110,
 		});
 		this.pause = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "Enter",
 			img: BTN_IMG.pause,
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
@@ -153,18 +193,30 @@ export class control {
 		});
 
 		this.left = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowLeft",
 			img: "./res/ctl/left.svg",
 			x: BTN_MARGIN,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 		this.left_up = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
 			x: BTN_MARGIN,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
 		this.left_down = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowDown",
 			img: "./res/ctl/down.svg",
 			x: BTN_PADDING + BTN_MARGIN + BTN_SIZE,
@@ -172,18 +224,30 @@ export class control {
 		});
 
 		this.right = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowRight",
 			img: "./res/ctl/right.svg",
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 		this.right_up = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowUp",
 			img: "./res/ctl/up.svg",
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
 		this.right_down = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
 			name: "ArrowDown",
 			img: "./res/ctl/down.svg",
 			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
@@ -201,59 +265,59 @@ export class control {
 
 	draw_gui() {
 		this.btn_gui_list.forEach((i) => {
-			i.draw({ ctx: this.ctx_control });
-			i.draw_mark({ ctx: this.ctx_mark });
+			i.draw();
+			i.draw_mark();
 		});
 	}
 
 	draw_fullscreen() {
 		this.redraw_button({ btn: this.info, img: BTN_IMG.full_screen });
-		this.info.draw_mark({ ctx: this.ctx_mark });
+		this.info.draw_mark();
 	}
 
 	draw_normalscreen() {
 		this.redraw_button({ btn: this.info, img: BTN_IMG.normal_screen });
-		this.info.draw_mark({ ctx: this.ctx_mark });
+		this.info.draw_mark();
 	}
 
 	draw_pause() {
 		this.redraw_button({ btn: this.pause, img: BTN_IMG.pause });
-		this.pause.draw_mark({ ctx: this.ctx_mark });
+		this.pause.draw_mark();
 	}
 
 	draw_start() {
 		this.redraw_button({ btn: this.pause, img: BTN_IMG.start });
-		this.pause.draw_mark({ ctx: this.ctx_mark });
+		this.pause.draw_mark();
 	}
 
 	draw_control() {
 		this.btn_control_list.forEach((i) => {
-			i.draw({ ctx: this.ctx_control });
-			i.draw_mark({ ctx: this.ctx_mark });
+			i.draw();
+			i.draw_mark();
 		});
 	}
 
 	clear_gui() {
 		this.btn_gui_list.forEach((i) => {
-			i.clear({ ctx: this.ctx_control });
-			i.clear_mark({ ctx: this.ctx_mark });
+			i.clear();
+			i.clear_mark();
 		});
 	}
 
 	clear_fullscreen() {
-		this.info.clear({ ctx: this.ctx_control });
-		this.info.clear_mark({ ctx: this.ctx_mark });
+		this.info.clear();
+		this.info.clear_mark();
 	}
 
 	clear_pause() {
-		this.pause.clear({ ctx: this.ctx_control });
-		this.pause.clear_mark({ ctx: this.ctx_mark });
+		this.pause.clear();
+		this.pause.clear_mark();
 	}
 
 	clear_control() {
 		this.btn_control_list.forEach((i) => {
-			i.clear({ ctx: this.ctx_control });
-			i.clear_mark({ ctx: this.ctx_mark });
+			i.clear();
+			i.clear_mark();
 		});
 	}
 
@@ -267,7 +331,7 @@ export class control {
 
 				if (opt.color) opt.btn.color = opt.color;
 
-				opt.btn.draw({ ctx: this.ctx_control });
+				opt.btn.draw();
 			}
 		}
 	}
@@ -327,7 +391,13 @@ export class control {
 			}
 		}
 	}
-	attach_mouse(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+	attach_mouse(opt: {
+		canvas_mark: HTMLCanvasElement;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
+		debug?: boolean;
+	}) {
 		opt.canvas_mark.addEventListener("mousedown", (event: MouseEvent) => {
 			this.mouse_event({
 				event_name: "keydown",
@@ -404,7 +474,13 @@ export class control {
 		}
 	}
 
-	attach_touch(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+	attach_touch(opt: {
+		canvas_mark: HTMLCanvasElement;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
+		debug?: boolean;
+	}) {
 		opt.canvas_mark.addEventListener("touchstart", (event: TouchEvent) => {
 			this.touch_event({
 				event_name: "keydown",
