@@ -65,7 +65,7 @@ class image {
 
 		this.ctx = opt.ctx;
 
-		this.img = new HTMLImageElement();
+		this.img = new Image();
 		this.img.src = opt.img;
 		this.img_width = opt.img_width;
 		this.img_height = opt.img_height;
@@ -390,7 +390,7 @@ export class gui {
 	}
 
 	draw() {
-		[...this.text, ...this.progress, ...this.box].forEach((i) => {
+		[...this.text, ...this.progress, ...this.box, ...this.image].forEach((i) => {
 			i.draw();
 		});
 	}
