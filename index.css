@@ -90,8 +90,7 @@ GAME */
     color:white;
     white-space: nowrap;
     font-family: "Creepster", Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 2rem;
+    text-align: center;
 }
 
 #gameCanvas,
@@ -107,10 +106,10 @@ GAME */
     left: 50%;
     transform: translate(-50%, -50%);
 
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-optimize-contrast;
-    -ms-interpolation-mode: nearest-neighbor;
+    -ms-interpolation-mode: nearest-neighbor; */
     /* border: 3px solid white; */
 }
 
