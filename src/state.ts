@@ -186,27 +186,21 @@ export class state_power_fall extends state {
 		this.player.weight = 20;
 		this.player.speed = this.player.max_speed;
 	}
+	exit(): void {
+		super.exit();
+		this.player.weight = 1;
+		this.player.speed = this.player.max_speed * 0.5;
+	}
 	update() {
 		super.update();
 		this.player.power--;
 
-		if (this.player.is_ground()) {
-			this.player.speed = this.player.max_speed * 0.5;
-			this.player.set_state("run");
-		} else {
-			if (this.player.power <= 0) {
-				this.player.weight = 1;
-				this.player.speed = this.player.max_speed * 0.5;
-				this.player.set_state("fall");
-			}
-		}
+		if (this.player.is_ground()) this.player.set_state("run");
+		else if (this.player.power <= 0) this.player.set_state("fall");
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELESE down") {
-			this.player.speed = this.player.max_speed * 0.5;
-			this.player.set_state("fall");
-		}
+		if (input.last_key === "RELESE down") this.player.set_state("fall");
 	}
 }
 
@@ -235,11 +229,12 @@ export class state_dizzy extends state {
 		this.player.speed = 0;
 		this.player.invulnerable = true;
 	}
-	animation_end(player: player) {
+	exit(): void {
 		setTimeout(() => {
-			player.invulnerable = false;
-		}, 300);
-
+			this.player.invulnerable = false;
+		}, 500);
+	}
+	animation_end(player: player) {
 		player.set_state("idle");
 	}
 }
@@ -252,19 +247,16 @@ export class state_sit extends state {
 		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
+	exit(): void {
+		this.player.invulnerable = false;
+	}
 	update(): void {
 		super.update();
 		this.player.power += 0.5;
 	}
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE down" || input.last_key === "PRESS up" || input.last_key === "PRESS left") {
-			this.player.invulnerable = false;
-			this.player.set_state("idle");
-		}
-		if (input.last_key === "PRESS left") {
-			this.player.invulnerable = false;
-			this.player.set_state("run");
-		}
+		if (input.last_key === "RELEASE down" || input.last_key === "PRESS up" || input.last_key === "PRESS left") this.player.set_state("idle");
+		if (input.last_key === "PRESS left") this.player.set_state("run");
 	}
 }
 export class state_roll extends state {
@@ -278,7 +270,7 @@ export class state_roll extends state {
 	update(): void {
 		super.update();
 		this.player.power--;
-		if (this.player.power < 0) {
+		if (this.player.power <= 0) {
 			this.player.power = 0;
 			this.player.set_state("run");
 		}
@@ -300,34 +292,25 @@ export class state_jump_roll extends state {
 		super.enter();
 		this.player.speed = this.player.max_speed;
 	}
+	exit(): void {
+		this.player.speed = this.player.max_speed * 0.5;
+	}
 	update(): void {
 		super.update();
 		this.player.power--;
 
 		if (this.player.velocity_y > 0) {
-			if (this.player.power <= 0) {
-				this.player.speed = this.player.max_speed * 0.5;
-				this.player.set_state("fall");
-			} else {
-				this.player.set_state("fall_roll");
-			}
+			if (this.player.power <= 0) this.player.set_state("fall");
+			else this.player.set_state("fall_roll");
 		} else {
-			if (this.player.power <= 0) {
-				this.player.speed = this.player.max_speed * 0.5;
-				this.player.set_state("jump");
-			}
+			if (this.player.power <= 0) this.player.set_state("jump");
 		}
 	}
 
 	handle_input(input: input) {
 		if (input.last_key === "RELEASE right") {
-			this.player.speed = this.player.max_speed * 0.5;
-
-			if (this.player.velocity_y > 0) {
-				this.player.set_state("fall");
-			} else {
-				this.player.set_state("jump");
-			}
+			if (this.player.velocity_y > 0) this.player.set_state("fall");
+			else this.player.set_state("jump");
 		}
 	}
 }
@@ -339,24 +322,20 @@ export class state_fall_roll extends state {
 		super.enter();
 		this.player.speed = this.player.max_speed;
 	}
+	exit(): void {
+		this.player.speed = this.player.max_speed * 0.5;
+	}
 	update(): void {
 		super.update();
-		if (this.player.is_ground()) {
-			this.player.set_state("roll");
-		} else {
+		if (this.player.is_ground()) this.player.set_state("roll");
+		else {
 			this.player.power--;
-			if (this.player.power <= 0) {
-				this.player.speed = this.player.max_speed * 0.5;
-				this.player.set_state("fall");
-			}
+			if (this.player.power <= 0) this.player.set_state("fall");
 		}
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE right") {
-			this.player.speed = this.player.max_speed * 0.5;
-			this.player.set_state("fall");
-		}
+		if (input.last_key === "RELEASE right") this.player.set_state("fall");
 	}
 }
 export class state_bite extends state {
@@ -369,12 +348,13 @@ export class state_bite extends state {
 		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
-	animation_end(player: player) {
+	exit(): void {
 		setTimeout(() => {
-			player.powered = false;
-			player.invulnerable = false;
-		}, 300);
-
+			this.player.powered = false;
+			this.player.invulnerable = false;
+		}, 500);
+	}
+	animation_end(player: player) {
 		player.set_state("idle");
 	}
 }
@@ -398,10 +378,12 @@ export class state_gethit extends state {
 		this.player.invulnerable = true;
 		this.player.speed = 0;
 	}
-	animation_end(player: player) {
+	exit(): void {
 		setTimeout(() => {
-			player.invulnerable = false;
-		}, 300);
+			this.player.invulnerable = false;
+		}, 500);
+	}
+	animation_end(player: player) {
 		player.set_state("idle");
 	}
 }

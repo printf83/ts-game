@@ -185,6 +185,9 @@ export class game {
 			bar_color: ["red", "yellow", "green"],
 		});
 
+		//game halt listener
+		window.addEventListener("keyup", this.game_halt_listener);
+
 		//draw control
 		this.draw_gui();
 	}
@@ -258,8 +261,8 @@ export class game {
 		this.score_value = 0;
 		this.score_text = "0";
 
-		window.removeEventListener("keyup", this.game_stop_listener);
-		window.addEventListener("keyup", this.game_pause_listener);
+		// window.removeEventListener("keyup", this.game_stop_listener);
+		// window.addEventListener("keyup", this.game_halt_listener);
 
 		this.ctl.draw_pause();
 
@@ -304,8 +307,8 @@ export class game {
 		this.player.powered = false;
 		this.player.invulnerable = false;
 
-		window.removeEventListener("keyup", this.game_stop_listener);
-		window.addEventListener("keyup", this.game_pause_listener);
+		// window.removeEventListener("keyup", this.game_stop_listener);
+		// window.addEventListener("keyup", this.game_halt_listener);
 
 		this.ctl.draw_pause();
 
@@ -394,8 +397,8 @@ export class game {
 									this.ctl.clear_pause();
 
 									this.game_over = true;
-									window.removeEventListener("keyup", this.game_pause_listener);
-									window.addEventListener("keyup", this.game_stop_listener);
+									// window.removeEventListener("keyup", this.game_halt_listener);
+									// window.addEventListener("keyup", this.game_stop_listener);
 								}, 500);
 							}
 						}
@@ -516,16 +519,16 @@ export class game {
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
 
 		//game over message
-		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
 
 		//game level up
-		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.", "green");
+		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "green");
 
 		//pause
-		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
+		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "white");
 	}
 
 	last_timestamp: number = 0;
@@ -540,8 +543,8 @@ export class game {
 			this.ctl.clear_pause();
 
 			this.game_up = true;
-			window.removeEventListener("keyup", this.game_pause_listener);
-			window.addEventListener("keyup", this.game_stop_listener);
+			// window.removeEventListener("keyup", this.game_halt_listener);
+			// window.addEventListener("keyup", this.game_stop_listener);
 		}
 
 		//update game timeout
@@ -551,8 +554,8 @@ export class game {
 			this.ctl.clear_pause();
 
 			this.game_timeout = true;
-			window.removeEventListener("keyup", this.game_pause_listener);
-			window.addEventListener("keyup", this.game_stop_listener);
+			// window.removeEventListener("keyup", this.game_halt_listener);
+			// window.addEventListener("keyup", this.game_stop_listener);
 		}
 
 		//update player power
@@ -691,53 +694,66 @@ export class game {
 		});
 	}
 
-	game_stop_listener = (event: KeyboardEvent) => {
-		if (event.key === " ") {
-			if (this.game_up || this.game_over || this.game_timeout) {
-				event.preventDefault();
-				event.stopPropagation();
+	// game_stop_listener = (event: KeyboardEvent) => {
+	// 	if (event.key === " ") {
+	// 		if (this.game_up || this.game_over || this.game_timeout) {
+	// 			event.preventDefault();
+	// 			event.stopPropagation();
 
-				if (this.game_over || this.game_timeout) this.game_start();
-				if (this.game_up) this.game_level_up();
-			}
-		} else if (event.key === "F11") {
+	// 			if (this.game_over || this.game_timeout) this.game_start();
+	// 			if (this.game_up) this.game_level_up();
+	// 		}
+	// 	} else if (event.key === "F11") {
+	// 		event.preventDefault();
+	// 		event.stopPropagation();
+
+	// 		if (isFullscreen()) {
+	// 			document
+	// 				.exitFullscreen()
+	// 				.then(() => {
+	// 					if (!isFullscreen()) this.ctl.draw_fullscreen();
+	// 				})
+	// 				.catch((reason) => {
+	// 					console.log(reason);
+	// 				});
+	// 		} else {
+	// 			const container = this.canvas_game.parentElement as HTMLDivElement;
+	// 			container
+	// 				.requestFullscreen({ navigationUI: "hide" })
+	// 				.then(() => {
+	// 					if (isFullscreen()) this.ctl.draw_normalscreen();
+	// 				})
+	// 				.catch((reason) => {
+	// 					console.log(reason);
+	// 				});
+	// 		}
+	// 	}
+	// };
+
+	game_halt_listener = (event: KeyboardEvent) => {
+		if (event.key === "Enter") {
+			// if (!this.game_up && !this.game_over && !this.game_timeout) {
+			// 	event.preventDefault();
+			// 	event.stopPropagation();
+
+			// 	if (!this.game_pause) {
+			// 		this.ctl.clear_control();
+			// 		this.ctl.draw_start();
+			// 		this.game_pause = true;
+			// 	} else if (this.game_pause) this.game_continue();
+			// }
+
 			event.preventDefault();
 			event.stopPropagation();
 
-			if (isFullscreen()) {
-				document
-					.exitFullscreen()
-					.then(() => {
-						if (!isFullscreen()) this.ctl.draw_fullscreen();
-					})
-					.catch((reason) => {
-						console.log(reason);
-					});
+			if (this.game_up || this.game_over || this.game_timeout || this.game_pause) {
+				if (this.game_over || this.game_timeout) this.game_start();
+				if (this.game_up) this.game_level_up();
+				if (this.game_pause) this.game_continue();
 			} else {
-				const container = this.canvas_game.parentElement as HTMLDivElement;
-				container
-					.requestFullscreen({ navigationUI: "hide" })
-					.then(() => {
-						if (isFullscreen()) this.ctl.draw_normalscreen();
-					})
-					.catch((reason) => {
-						console.log(reason);
-					});
-			}
-		}
-	};
-
-	game_pause_listener = (event: KeyboardEvent) => {
-		if (event.key === "Enter") {
-			if (!this.game_up && !this.game_over && !this.game_timeout) {
-				event.preventDefault();
-				event.stopPropagation();
-
-				if (!this.game_pause) {
-					this.ctl.clear_control();
-					this.ctl.draw_start();
-					this.game_pause = true;
-				} else if (this.game_pause) this.game_continue();
+				this.ctl.clear_control();
+				this.ctl.draw_start();
+				this.game_pause = true;
 			}
 		} else if (event.key === "F11") {
 			event.preventDefault();
