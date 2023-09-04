@@ -394,7 +394,7 @@ export class game {
 
 								setTimeout(() => {
 									this.ctl.clear_control();
-									this.ctl.clear_pause();
+									this.ctl.draw_start();
 
 									this.game_over = true;
 									// window.removeEventListener("keyup", this.game_halt_listener);
@@ -540,7 +540,7 @@ export class game {
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
 			this.ctl.clear_control();
-			this.ctl.clear_pause();
+			this.ctl.draw_start();
 
 			this.game_up = true;
 			// window.removeEventListener("keyup", this.game_halt_listener);
@@ -551,7 +551,7 @@ export class game {
 		this.progress_timer_index = MathFloor((this.progress_timer - timestamp) * 0.001);
 		if (this.progress_timer_index <= 0) {
 			this.ctl.clear_control();
-			this.ctl.clear_pause();
+			this.ctl.draw_start();
 
 			this.game_timeout = true;
 			// window.removeEventListener("keyup", this.game_halt_listener);
