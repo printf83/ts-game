@@ -28,7 +28,7 @@ class box {
 	draw() {
 		this.clear();
 		this.ctx.fillStyle = "red";
-		this.ctx.fillRect(this.x, this.y, this.width, this.height);
+		this.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 }
 
@@ -281,6 +281,7 @@ export class gui {
 
 	progress: progress[] = [];
 	text: text[] = [];
+	image: image[] = [];
 	box: box[] = [];
 
 	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
@@ -293,16 +294,54 @@ export class gui {
 		this.canvas_height = opt.canvas_height;
 
 		//text
-		this.text.push(new text({ ctx: this.ctx, x: 20, y: 75, text: `🎮`, shadow_blur: 0, font_weight: 50, debug: this.debug }));
-
+		// this.text.push(new text({ ctx: this.ctx, x: 20, y: 75, text: `🎮`, shadow_blur: 0, font_weight: 50, debug: this.debug }));
+		this.image.push(
+			new image({
+				ctx: this.ctx,
+				img: "./res/ctl/icon.svg",
+				img_width: 16,
+				img_height: 16,
+				x: 20,
+				y: 75,
+				width: 50,
+				height: 50,
+				debug: this.debug,
+			})
+		);
 		//life
-		this.text.push(
-			new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 47, text: `🧡`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		// this.text.push(
+		// 	new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 47, text: `🧡`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		// );
+		this.image.push(
+			new image({
+				ctx: this.ctx,
+				img: "./res/ctl/life.svg",
+				img_width: 16,
+				img_height: 16,
+				x: this.canvas_width - 150,
+				y: 47,
+				width: 16,
+				height: 16,
+				debug: this.debug,
+			})
 		);
 
 		//power
-		this.text.push(
-			new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 78, text: `🚀`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		// this.text.push(
+		// 	new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 78, text: `🚀`, text_align: "end", shadow_blur: 0, debug: this.debug })
+		// );
+		this.image.push(
+			new image({
+				ctx: this.ctx,
+				img: "./res/ctl/power.svg",
+				img_width: 16,
+				img_height: 16,
+				x: this.canvas_width - 150,
+				y: 78,
+				width: 16,
+				height: 16,
+				debug: this.debug,
+			})
 		);
 
 		if (this.debug) {
