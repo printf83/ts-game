@@ -95,6 +95,7 @@ export class player extends baseAnimation {
 		return this.powered || this.speed === this.max_speed;
 	}
 	set_state = (state: state_type) => {
+		this.current_state?.exit();
 		this.current_state = this.state_list[state];
 		this.current_state?.enter();
 	};

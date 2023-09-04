@@ -114,6 +114,7 @@ export class state {
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
 		this.player.animation_repeat = state_list[this.current_state].animation_repeat;
 	}
+	exit() {}
 	update() {}
 	handle_input(_input: input) {}
 	animation_end(_player: player) {}
