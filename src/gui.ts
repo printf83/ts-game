@@ -269,7 +269,6 @@ export class gui {
 		this.canvas_height = opt.canvas_height;
 
 		//text
-		// this.text.push(new text({ ctx: this.ctx, x: 20, y: 75, text: `🎮`, shadow_blur: 0, font_weight: 50, debug: this.debug }));
 		this.image.push(
 			new image({
 				ctx: this.ctx,
@@ -284,9 +283,6 @@ export class gui {
 			})
 		);
 		//life
-		// this.text.push(
-		// 	new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 47, text: `🧡`, text_align: "end", shadow_blur: 0, debug: this.debug })
-		// );
 		this.image.push(
 			new image({
 				ctx: this.ctx,
@@ -302,9 +298,6 @@ export class gui {
 		);
 
 		//power
-		// this.text.push(
-		// 	new text({ ctx: this.ctx, x: this.canvas_width - 150, y: 78, text: `🚀`, text_align: "end", shadow_blur: 0, debug: this.debug })
-		// );
 		this.image.push(
 			new image({
 				ctx: this.ctx,

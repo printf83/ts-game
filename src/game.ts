@@ -261,9 +261,6 @@ export class game {
 		this.score_value = 0;
 		this.score_text = "0";
 
-		// window.removeEventListener("keyup", this.game_stop_listener);
-		// window.addEventListener("keyup", this.game_halt_listener);
-
 		this.ctl.draw_pause();
 
 		if (isTouchDevice() || this.debug) {
@@ -306,9 +303,6 @@ export class game {
 		this.player.y = this.base_height - this.player.height;
 		this.player.powered = false;
 		this.player.invulnerable = false;
-
-		// window.removeEventListener("keyup", this.game_stop_listener);
-		// window.addEventListener("keyup", this.game_halt_listener);
 
 		this.ctl.draw_pause();
 
@@ -397,8 +391,6 @@ export class game {
 									this.ctl.draw_start();
 
 									this.game_over = true;
-									// window.removeEventListener("keyup", this.game_halt_listener);
-									// window.addEventListener("keyup", this.game_stop_listener);
 								}, 500);
 							}
 						}
@@ -543,8 +535,6 @@ export class game {
 			this.ctl.draw_start();
 
 			this.game_up = true;
-			// window.removeEventListener("keyup", this.game_halt_listener);
-			// window.addEventListener("keyup", this.game_stop_listener);
 		}
 
 		//update game timeout
@@ -554,8 +544,6 @@ export class game {
 			this.ctl.draw_start();
 
 			this.game_timeout = true;
-			// window.removeEventListener("keyup", this.game_halt_listener);
-			// window.addEventListener("keyup", this.game_stop_listener);
 		}
 
 		//update player power
@@ -694,54 +682,10 @@ export class game {
 		});
 	}
 
-	// game_stop_listener = (event: KeyboardEvent) => {
-	// 	if (event.key === " ") {
-	// 		if (this.game_up || this.game_over || this.game_timeout) {
-	// 			event.preventDefault();
-	// 			event.stopPropagation();
-
-	// 			if (this.game_over || this.game_timeout) this.game_start();
-	// 			if (this.game_up) this.game_level_up();
-	// 		}
-	// 	} else if (event.key === "F11") {
-	// 		event.preventDefault();
-	// 		event.stopPropagation();
-
-	// 		if (isFullscreen()) {
-	// 			document
-	// 				.exitFullscreen()
-	// 				.then(() => {
-	// 					if (!isFullscreen()) this.ctl.draw_fullscreen();
-	// 				})
-	// 				.catch((reason) => {
-	// 					console.log(reason);
-	// 				});
-	// 		} else {
-	// 			const container = this.canvas_game.parentElement as HTMLDivElement;
-	// 			container
-	// 				.requestFullscreen({ navigationUI: "hide" })
-	// 				.then(() => {
-	// 					if (isFullscreen()) this.ctl.draw_normalscreen();
-	// 				})
-	// 				.catch((reason) => {
-	// 					console.log(reason);
-	// 				});
-	// 		}
-	// 	}
-	// };
+	
 
 	game_halt_listener = (event: KeyboardEvent) => {
 		if (event.key === "Enter") {
-			// if (!this.game_up && !this.game_over && !this.game_timeout) {
-			// 	event.preventDefault();
-			// 	event.stopPropagation();
-
-			// 	if (!this.game_pause) {
-			// 		this.ctl.clear_control();
-			// 		this.ctl.draw_start();
-			// 		this.game_pause = true;
-			// 	} else if (this.game_pause) this.game_continue();
-			// }
 
 			event.preventDefault();
 			event.stopPropagation();
