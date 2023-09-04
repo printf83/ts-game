@@ -152,6 +152,7 @@ export class game {
 			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
+			x: isTouchDevice() ? (this.canvas_width - 575 * 0.25) * 0.5 : this.canvas_width * 0.1,
 			debug: this.debug,
 		});
 
@@ -189,7 +190,7 @@ export class game {
 	}
 
 	draw_gui() {
-		setTimeout(() => {
+		requestIdleCallback(() => {
 			this.gui.draw();
 			this.ctl.draw_gui();
 
@@ -214,7 +215,7 @@ export class game {
 					debug: this.debug,
 				});
 			}
-		}, 1500);
+		});
 	}
 
 	resize() {
@@ -515,24 +516,16 @@ export class game {
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
 
 		//game over message
-		if (this.game_over)
-			this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout)
-			this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
+		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Touch HERE to try again." : "Press SPACEBAR to try again.", "red");
 
 		//game level up
-		if (this.game_up)
-			this.draw_message(
-				`Level ${this.game_level} complete!`,
-				isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.",
-				"green"
-			);
+		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Touch HERE to continue." : "Press SPACEBAR to continue.", "green");
 
 		//pause
-		if (this.game_pause)
-			this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
+		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Touch PAUSE BUTTON to continue." : "Press ENTER to continue.", "white");
 	}
 
 	last_timestamp: number = 0;
@@ -578,7 +571,7 @@ export class game {
 		//add particle when player run
 		if (this.player.speed === this.player.max_speed) {
 			Array(3)
-				.fill("")
+				.fill(0)
 				.forEach((_i) => {
 					this.fire_list.unshift(
 						new fire({
@@ -693,15 +686,7 @@ export class game {
 	}
 
 	draw() {
-		[
-			this.bg,
-			...this.fire_list,
-			...this.dust_list,
-			...this.score_list,
-			...this.enemy_list,
-			this.player,
-			...this.explosion_list,
-		].forEach((i) => {
+		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
 			i.draw();
 		});
 	}
@@ -720,17 +705,14 @@ export class game {
 			event.stopPropagation();
 
 			if (isFullscreen()) {
-				document.exitFullscreen();
-				setTimeout(() => {
+				document.exitFullscreen().then(() => {
 					if (!isFullscreen()) this.ctl.draw_fullscreen();
-				}, 1000);
+				});
 			} else {
 				const container = this.canvas_game.parentElement as HTMLDivElement;
-				container.requestFullscreen({ navigationUI: "hide" });
-
-				setTimeout(() => {
+				container.requestFullscreen({ navigationUI: "hide" }).then(() => {
 					if (isFullscreen()) this.ctl.draw_normalscreen();
-				}, 1000);
+				});
 			}
 		}
 	};
@@ -752,17 +734,14 @@ export class game {
 			event.stopPropagation();
 
 			if (isFullscreen()) {
-				document.exitFullscreen();
-				setTimeout(() => {
+				document.exitFullscreen().then(() => {
 					if (!isFullscreen()) this.ctl.draw_fullscreen();
-				}, 1000);
+				});
 			} else {
 				const container = this.canvas_game.parentElement as HTMLDivElement;
-				container.requestFullscreen({ navigationUI: "hide" });
-
-				setTimeout(() => {
+				container.requestFullscreen({ navigationUI: "hide" }).then(() => {
 					if (isFullscreen()) this.ctl.draw_normalscreen();
-				}, 1000);
+				});
 			}
 		}
 	};

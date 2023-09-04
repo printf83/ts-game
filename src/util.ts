@@ -14,7 +14,7 @@ export const read_random_index = () => random_index;
 
 export const genUID = () => {
 	return Array(3)
-		.fill("")
+		.fill(0)
 		.map((_i) => MathFloor(MathRandom() * 255));
 };
 

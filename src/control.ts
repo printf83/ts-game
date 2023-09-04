@@ -44,18 +44,7 @@ class button {
 	color: string;
 	width: number;
 	height: number;
-	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
-		ctx_mark: CanvasRenderingContext2D;
-		name: string;
-		img: string;
-		x: number;
-		y: number;
-		width?: number;
-		height?: number;
-		color?: string;
-		debug?: boolean;
-	}) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; x: number; y: number; width?: number; height?: number; color?: string; debug?: boolean }) {
 		opt.width ??= BTN_SIZE;
 		opt.height ??= BTN_SIZE;
 		opt.color ??= BTN_COLOR.normal;
@@ -97,13 +86,7 @@ class button {
 	}
 	clear_mark() {
 		this.ctx_mark.clearRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
-		if (this.debug)
-			this.ctx_mark.strokeRect(
-				MathFloor(this.x - BTN_SIZE * 0.25),
-				MathFloor(this.y - BTN_SIZE * 0.25),
-				BTN_SIZE * 1.5,
-				BTN_SIZE * 1.5
-			);
+		if (this.debug) this.ctx_mark.strokeRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
 	}
 	draw_mark() {
 		this.clear_mark();
@@ -370,9 +353,9 @@ export class control {
 
 		if (x > -1 && y > -1) {
 			if (opt.debug) {
-				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
+				this.ctx_pointer.clearRect(MathFloor(x - 50), MathFloor(y - 50), 100, 100);
 				this.ctx_pointer.fillStyle = "red";
-				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
+				this.ctx_pointer.fillRect(MathFloor(x - 5), MathFloor(y - 5), 10, 10);
 			}
 
 			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;
@@ -397,13 +380,7 @@ export class control {
 			}
 		}
 	}
-	attach_mouse(opt: {
-		canvas_mark: HTMLCanvasElement;
-		marker_ctx: CanvasRenderingContext2D;
-		pointer_ctx: CanvasRenderingContext2D;
-		control_ctx: CanvasRenderingContext2D;
-		debug?: boolean;
-	}) {
+	attach_mouse(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
 		opt.canvas_mark.addEventListener("mousedown", (event: MouseEvent) => {
 			this.mouse_event({
 				event_name: "keydown",
@@ -452,9 +429,9 @@ export class control {
 
 		if (x > -1 && y > -1) {
 			if (opt.debug) {
-				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
+				this.ctx_pointer.clearRect(MathFloor(x - 50), MathFloor(y - 50), 100, 100);
 				this.ctx_pointer.fillStyle = "red";
-				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
+				this.ctx_pointer.fillRect(MathFloor(x - 5), MathFloor(y - 5), 10, 10);
 			}
 
 			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;
@@ -480,13 +457,7 @@ export class control {
 		}
 	}
 
-	attach_touch(opt: {
-		canvas_mark: HTMLCanvasElement;
-		marker_ctx: CanvasRenderingContext2D;
-		pointer_ctx: CanvasRenderingContext2D;
-		control_ctx: CanvasRenderingContext2D;
-		debug?: boolean;
-	}) {
+	attach_touch(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
 		opt.canvas_mark.addEventListener("touchstart", (event: TouchEvent) => {
 			this.touch_event({
 				event_name: "keydown",

@@ -115,7 +115,7 @@ export class baseEnemy extends baseAnimation {
 
 			this.ctx.strokeStyle = "white";
 			this.ctx.beginPath();
-			this.ctx.arc(this.collision_x, this.collision_y, this.collision_scale * 100, 0, MathPI2);
+			this.ctx.arc(MathFloor(this.collision_x), MathFloor(this.collision_y), this.collision_scale * 100, 0, MathPI2);
 			this.ctx.stroke();
 
 			this.ctx.restore();

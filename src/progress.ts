@@ -1,3 +1,5 @@
+import { MathFloor } from "./util.js";
+
 export class progress {
 	ctx: CanvasRenderingContext2D;
 
@@ -66,7 +68,7 @@ export class progress {
 		this.bar_width = (this.width - this.padding * 2) * this.percent;
 	}
 	clean() {
-		this.ctx.clearRect(this.bar_x, this.bar_y, this.bar_max_width, this.bar_height);
+		this.ctx.clearRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_max_width, this.bar_height);
 	}
 	draw() {
 		this.clean();
@@ -74,12 +76,12 @@ export class progress {
 
 		if (this.radius) {
 			this.ctx.beginPath();
-			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, this.bar_x, this.bar_max_width);
-			this.ctx.roundRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height, [this.radius]);
+			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
+			this.ctx.roundRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_width, this.bar_height, [this.radius]);
 			this.ctx.fill();
 		} else {
-			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, this.bar_x, this.bar_max_width);
-			this.ctx.fillRect(this.bar_x, this.bar_y, this.bar_width, this.bar_height);
+			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
+			this.ctx.fillRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_width, this.bar_height);
 		}
 
 		this.ctx.restore();

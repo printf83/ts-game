@@ -1,4 +1,4 @@
-import { MathRandom } from "../util.js";
+import { MathFloor, MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy11 = new Image();
@@ -64,8 +64,8 @@ export class enemy11 extends baseEnemy {
 
 	draw(): void {
 		this.ctx.beginPath();
-		this.ctx.moveTo(this.string_x, 0);
-		this.ctx.lineTo(this.string_x, this.string_y);
+		this.ctx.moveTo(MathFloor(this.string_x), 0);
+		this.ctx.lineTo(MathFloor(this.string_x), MathFloor(this.string_y));
 		this.ctx.stroke();
 		super.draw();
 	}
