@@ -81,8 +81,7 @@ class image {
 	}
 	draw() {
 		this.clear();
-		this.ctx.fillStyle = "red";
-		this.ctx.fillRect(this.x, this.y, this.width, this.height);
+		this.ctx.drawImage(this.img, 0, 0, this.img_width, this.img_height, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 }
 
