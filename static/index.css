@@ -90,8 +90,7 @@ GAME */
     color:white;
     white-space: nowrap;
     font-family: "Creepster", Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 2rem;
+    text-align: center;
 }
 
 #gameCanvas,

@@ -120,7 +120,7 @@ export class game {
 		this.canvas_pointer = opt.canvas_pointer;
 		this.canvas_mark = opt.canvas_mark;
 
-		this.ctx_game = opt.canvas_game.getContext("2d")!;
+		this.ctx_game = opt.canvas_game.getContext("2d", { alpha: false })!;
 		this.ctx_static = opt.canvas_static.getContext("2d")!;
 		this.ctx_value = opt.canvas_value.getContext("2d")!;
 		this.ctx_control = opt.canvas_control.getContext("2d")!;
@@ -705,14 +705,24 @@ export class game {
 			event.stopPropagation();
 
 			if (isFullscreen()) {
-				document.exitFullscreen().then(() => {
-					if (!isFullscreen()) this.ctl.draw_fullscreen();
-				});
+				document
+					.exitFullscreen()
+					.then(() => {
+						if (!isFullscreen()) this.ctl.draw_fullscreen();
+					})
+					.catch((reason) => {
+						console.log(reason);
+					});
 			} else {
 				const container = this.canvas_game.parentElement as HTMLDivElement;
-				container.requestFullscreen({ navigationUI: "hide" }).then(() => {
-					if (isFullscreen()) this.ctl.draw_normalscreen();
-				});
+				container
+					.requestFullscreen({ navigationUI: "hide" })
+					.then(() => {
+						if (isFullscreen()) this.ctl.draw_normalscreen();
+					})
+					.catch((reason) => {
+						console.log(reason);
+					});
 			}
 		}
 	};
@@ -734,14 +744,24 @@ export class game {
 			event.stopPropagation();
 
 			if (isFullscreen()) {
-				document.exitFullscreen().then(() => {
-					if (!isFullscreen()) this.ctl.draw_fullscreen();
-				});
+				document
+					.exitFullscreen()
+					.then(() => {
+						if (!isFullscreen()) this.ctl.draw_fullscreen();
+					})
+					.catch((reason) => {
+						console.log(reason);
+					});
 			} else {
 				const container = this.canvas_game.parentElement as HTMLDivElement;
-				container.requestFullscreen({ navigationUI: "hide" }).then(() => {
-					if (isFullscreen()) this.ctl.draw_normalscreen();
-				});
+				container
+					.requestFullscreen({ navigationUI: "hide" })
+					.then(() => {
+						if (isFullscreen()) this.ctl.draw_normalscreen();
+					})
+					.catch((reason) => {
+						console.log(reason);
+					});
 			}
 		}
 	};
