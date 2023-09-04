@@ -302,9 +302,9 @@ export class gui {
 				img_width: 16,
 				img_height: 16,
 				x: 20,
-				y: 75,
-				width: 50,
-				height: 50,
+				y: 30,
+				width: 55,
+				height: 55,
 				debug: this.debug,
 			})
 		);
@@ -318,10 +318,10 @@ export class gui {
 				img: "./res/ctl/life.svg",
 				img_width: 16,
 				img_height: 16,
-				x: this.canvas_width - 150,
-				y: 47,
-				width: 16,
-				height: 16,
+				x: this.canvas_width - 165,
+				y: 30,
+				width: 20,
+				height: 20,
 				debug: this.debug,
 			})
 		);
@@ -336,10 +336,10 @@ export class gui {
 				img: "./res/ctl/power.svg",
 				img_width: 16,
 				img_height: 16,
-				x: this.canvas_width - 150,
-				y: 78,
-				width: 16,
-				height: 16,
+				x: this.canvas_width - 165,
+				y: 60,
+				width: 20,
+				height: 20,
 				debug: this.debug,
 			})
 		);
