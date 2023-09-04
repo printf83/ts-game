@@ -1,7 +1,7 @@
 import { MathFloor, MathPI2, DPI, genUID } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
-const BTN_PADDING = 10 * DPI;
+const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
 const BTN_IMG = {
@@ -82,8 +82,8 @@ class button {
 		this.color = opt.color;
 	}
 	clear() {
-		this.ctx.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
-		if (this.debug) this.ctx.strokeRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
 	}
 	draw() {
 		this.clear();
@@ -96,15 +96,21 @@ class button {
 		this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 	clear_mark() {
-		this.ctx_mark.clearRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
-		if (this.debug) this.ctx_mark.strokeRect(MathFloor(this.x), MathFloor(this.y), BTN_SIZE, BTN_SIZE);
+		this.ctx_mark.clearRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
+		if (this.debug)
+			this.ctx_mark.strokeRect(
+				MathFloor(this.x - BTN_SIZE * 0.25),
+				MathFloor(this.y - BTN_SIZE * 0.25),
+				BTN_SIZE * 1.5,
+				BTN_SIZE * 1.5
+			);
 	}
 	draw_mark() {
 		this.clear_mark();
 
 		this.ctx_mark.fillStyle = this.uid_text;
 		this.ctx_mark.beginPath();
-		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
 		this.ctx_mark.fill();
 	}
 }

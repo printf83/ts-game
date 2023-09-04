@@ -204,6 +204,8 @@ export class game {
 					debug: this.debug,
 				});
 			} else {
+				if (this.debug) this.ctl.draw_control();
+
 				this.ctl.attach_mouse({
 					canvas_mark: this.canvas_mark,
 					marker_ctx: this.ctx_mark,
@@ -260,7 +262,7 @@ export class game {
 
 		this.ctl.draw_pause();
 
-		if (isTouchDevice()) {
+		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
 		}
 
@@ -306,7 +308,7 @@ export class game {
 
 		this.ctl.draw_pause();
 
-		if (isTouchDevice()) {
+		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
 		}
 
@@ -321,7 +323,7 @@ export class game {
 		this.progress_timer = performance.now() + this.progress_timer_index * 1000;
 
 		this.ctl.draw_pause();
-		if (isTouchDevice()) {
+		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
 		}
 

@@ -1,13 +1,15 @@
 import { MathFloor, clear_text, draw_text } from "./util.js";
 
 class box {
-	debug: boolean;
 	ctx: CanvasRenderingContext2D;
 
 	x: number;
 	y: number;
 	width: number;
 	height: number;
+
+	debug: boolean;
+
 	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height: number; debug?: boolean }) {
 		opt.debug ??= false;
 		this.debug = opt.debug;
@@ -20,7 +22,62 @@ class box {
 		this.height = opt.height;
 	}
 	clear() {
-		this.ctx.clearRect(this.x, this.y, this.width, this.height);
+		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+	}
+	draw() {
+		this.clear();
+		this.ctx.fillStyle = "red";
+		this.ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+}
+
+class image {
+	ctx: CanvasRenderingContext2D;
+
+	img: HTMLImageElement;
+	img_width: number;
+	img_height: number;
+
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+
+	debug: boolean;
+
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+
+		img: string;
+		img_width: number;
+		img_height: number;
+
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+
+		debug?: boolean;
+	}) {
+		opt.debug ??= false;
+		this.debug = opt.debug;
+
+		this.ctx = opt.ctx;
+
+		this.img = new HTMLImageElement();
+		this.img.src = opt.img;
+		this.img_width = opt.img_width;
+		this.img_height = opt.img_height;
+
+		this.x = opt.x;
+		this.y = opt.y;
+		this.width = opt.width;
+		this.height = opt.height;
+	}
+	clear() {
+		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
 	}
 	draw() {
 		this.clear();
