@@ -37,7 +37,7 @@ export class explosion extends baseAnimation {
 			sprite_length,
 
 			fps: 30,
-			animation_repeat: false,
+			animation_repeat: 1,
 		});
 
 		opt.play_sound ??= true;
@@ -71,7 +71,17 @@ export class explosion extends baseAnimation {
 
 		this.ctx.translate(this.x, this.y);
 		this.ctx.rotate(this.angle);
-		this.ctx.drawImage(this.img, MathFloor(this.sx), 0, this.sprite_width, this.sprite_width, MathFloor(this.dx), MathFloor(this.dy), this.width, this.height);
+		this.ctx.drawImage(
+			this.img,
+			MathFloor(this.sx),
+			0,
+			this.sprite_width,
+			this.sprite_width,
+			MathFloor(this.dx),
+			MathFloor(this.dy),
+			this.width,
+			this.height
+		);
 
 		this.ctx.restore();
 	}

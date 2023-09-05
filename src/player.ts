@@ -1,10 +1,29 @@
 import { baseAnimation } from "./baseAnimation.js";
+import { game } from "./game.js";
 import { input } from "./input.js";
-import { state, state_bite, state_dizzy, state_fall, state_fall_roll, state_gethit, state_idle, state_jump, state_jump_roll, state_ko, state_power_fall, state_roll, state_run, state_sit, state_type } from "./state.js";
+import {
+	state,
+	state_bite,
+	state_dizzy,
+	state_fall,
+	state_fall_roll,
+	state_gethit,
+	state_idle,
+	state_jump,
+	state_jump_roll,
+	state_ko,
+	state_power_fall,
+	state_roll,
+	state_run,
+	state_sit,
+	state_type,
+} from "./state.js";
 import { MathFloor, MathPI2 } from "./util.js";
 
 export class player extends baseAnimation {
 	debug: boolean = false;
+
+	game: game;
 
 	state_list: { [key: string]: state } = {};
 	current_state?: state;
@@ -27,7 +46,18 @@ export class player extends baseAnimation {
 	collision_x: number;
 	collision_y: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; canvas_width: number; canvas_height: number; debug?: boolean }) {
+	img_life: HTMLImageElement;
+	img_power: HTMLImageElement;
+	img_stopwatch: HTMLImageElement;
+
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		game: game;
+		x: number;
+		canvas_width: number;
+		canvas_height: number;
+		debug?: boolean;
+	}) {
 		const img = new Image();
 		img.src = "./res/player.png";
 
@@ -52,6 +82,17 @@ export class player extends baseAnimation {
 
 		opt.debug ??= false;
 		this.debug = opt.debug;
+
+		this.game = opt.game;
+
+		this.img_life = new Image();
+		this.img_life.src = "./res/ctl/life.svg";
+
+		this.img_power = new Image();
+		this.img_power.src = "./res/ctl/power.svg";
+
+		this.img_stopwatch = new Image();
+		this.img_stopwatch.src = "./res/ctl/stopwatch.svg";
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
@@ -125,6 +166,11 @@ export class player extends baseAnimation {
 	draw(): void {
 		//draw sprite
 		super.draw();
+
+		if (this.power >= 100) this.ctx.drawImage(this.img_power, MathFloor(this.x + this.width - 50), MathFloor(this.y + 20), 16, 16);
+		if (this.life < 30) this.ctx.drawImage(this.img_life, MathFloor(this.x + this.width - 50 - 20), MathFloor(this.y + 20), 16, 16);
+		if (this.game.progress_timer_index < 20)
+			this.ctx.drawImage(this.img_stopwatch, MathFloor(this.x + this.width - 50 - 40), MathFloor(this.y + 20), 16, 16);
 
 		//draw collision area
 		if (this.debug) {

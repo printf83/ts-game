@@ -24,7 +24,8 @@ export class baseAnimation {
 	sprite_height: number;
 	sprite_length: number;
 
-	animation_repeat: boolean;
+	animation_repeat: number;
+	animation_repeat_index: number;
 
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
@@ -41,10 +42,10 @@ export class baseAnimation {
 		sprite_length: number;
 
 		fps?: number;
-		animation_repeat?: boolean;
+		animation_repeat?: number;
 	}) {
 		opt.fps ??= 20;
-		opt.animation_repeat ??= true;
+		opt.animation_repeat ??= 0;
 
 		this.ctx = opt.ctx;
 
@@ -70,6 +71,7 @@ export class baseAnimation {
 		this.sprite_height = opt.sprite_height;
 
 		this.animation_repeat = opt.animation_repeat;
+		this.animation_repeat_index = 0;
 	}
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
@@ -77,17 +79,20 @@ export class baseAnimation {
 			this.frame_timer = 0;
 
 			if (this.frame >= this.sprite_length) {
-				if (this.animation_repeat) this.frame = 0;
-				else if (!this.animation_repeat && opt.onframecomplete) {
-					opt.onframecomplete();
+				if (this.animation_repeat === 0) this.frame = 0;
+				else if (this.animation_repeat > 0) {
+					this.animation_repeat_index++;
+					if (this.animation_repeat_index >= this.animation_repeat) {
+						if (opt.onframecomplete) opt.onframecomplete();
+					} else {
+						this.frame = 0;
+					}
 				} else this.mark_delete = true;
 			} else {
 				this.frame++;
 				this.frame_x = this.frame * this.sprite_width;
 
-				if (opt.onframechange) {
-					opt.onframechange();
-				}
+				if (opt.onframechange) opt.onframechange();
 			}
 		} else {
 			this.frame_timer += opt.delta_time;
@@ -95,7 +100,17 @@ export class baseAnimation {
 	}
 
 	draw() {
-		this.ctx.drawImage(this.img, this.frame_x, this.frame_y, this.sprite_width, this.sprite_height, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.drawImage(
+			this.img,
+			this.frame_x,
+			this.frame_y,
+			this.sprite_width,
+			this.sprite_height,
+			MathFloor(this.x),
+			MathFloor(this.y),
+			this.width,
+			this.height
+		);
 	}
 
 	set_position(opt: { game_speed: number }) {

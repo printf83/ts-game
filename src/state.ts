@@ -5,91 +5,91 @@ export const state_list = {
 	idle: {
 		frame_y: 0,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
 	jump: {
 		frame_y: 1,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
 	fall: {
 		frame_y: 2,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
 	run: {
 		frame_y: 3,
 		sprite_length: 8,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
 	dizzy: {
 		frame_y: 4,
 		sprite_length: 11,
-		animation_repeat: false,
+		animation_repeat: 3,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
 	sit: {
 		frame_y: 5,
 		sprite_length: 5,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: 0,
 		collision_adjust_y: 15,
 	},
 	roll: {
 		frame_y: 6,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: -2,
 		collision_adjust_y: 22,
 	},
 	jump_roll: {
 		frame_y: 6,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: -2,
 		collision_adjust_y: 22,
 	},
 	fall_roll: {
 		frame_y: 6,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: -2,
 		collision_adjust_y: 22,
 	},
 	power_fall: {
 		frame_y: 6,
 		sprite_length: 7,
-		animation_repeat: true,
+		animation_repeat: 0,
 		collision_adjust_x: -2,
 		collision_adjust_y: 22,
 	},
 	bite: {
 		frame_y: 7,
 		sprite_length: 7,
-		animation_repeat: false,
+		animation_repeat: 1,
 		collision_adjust_x: 15,
 		collision_adjust_y: 8,
 	},
 	ko: {
 		frame_y: 8,
 		sprite_length: 12,
-		animation_repeat: false,
+		animation_repeat: 1,
 		collision_adjust_x: 0,
 		collision_adjust_y: 30,
 	},
 	gethit: {
 		frame_y: 9,
 		sprite_length: 4,
-		animation_repeat: false,
+		animation_repeat: 1,
 		collision_adjust_x: 0,
 		collision_adjust_y: 0,
 	},
@@ -108,6 +108,7 @@ export class state {
 	enter() {
 		this.player.frame = 0;
 		this.player.frame_x = 0;
+		this.player.animation_repeat_index = 0;
 		this.player.collision_adjust_x = state_list[this.current_state].collision_adjust_x;
 		this.player.collision_adjust_y = state_list[this.current_state].collision_adjust_y;
 		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
@@ -255,7 +256,8 @@ export class state_sit extends state {
 		this.player.power += 0.5;
 	}
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE down" || input.last_key === "PRESS up" || input.last_key === "PRESS left") this.player.set_state("idle");
+		if (input.last_key === "RELEASE down" || input.last_key === "PRESS up" || input.last_key === "PRESS left")
+			this.player.set_state("idle");
 		if (input.last_key === "PRESS left") this.player.set_state("run");
 	}
 }

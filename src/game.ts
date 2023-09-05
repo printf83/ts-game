@@ -149,6 +149,7 @@ export class game {
 		this.bg = new bg2({ ctx: this.ctx_game, canvas_width: this.canvas_width, canvas_height: this.canvas_height });
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({
+			game: this,
 			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
@@ -511,16 +512,24 @@ export class game {
 		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
 
 		//game over message
-		if (this.game_over) this.draw_message("Game over!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
+		if (this.game_over)
+			this.draw_message("Game over!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
 
 		//game timeout message
-		if (this.game_timeout) this.draw_message("Time up!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
+		if (this.game_timeout)
+			this.draw_message("Time up!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
 
 		//game level up
-		if (this.game_up) this.draw_message(`Level ${this.game_level} complete!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "green");
+		if (this.game_up)
+			this.draw_message(
+				`Level ${this.game_level} complete!`,
+				isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.",
+				"green"
+			);
 
 		//pause
-		if (this.game_pause) this.draw_message(`Pause!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "white");
+		if (this.game_pause)
+			this.draw_message(`Pause!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "white");
 	}
 
 	last_timestamp: number = 0;
@@ -677,16 +686,21 @@ export class game {
 	}
 
 	draw() {
-		[this.bg, ...this.fire_list, ...this.dust_list, ...this.score_list, ...this.enemy_list, this.player, ...this.explosion_list].forEach((i) => {
+		[
+			this.bg,
+			...this.fire_list,
+			...this.dust_list,
+			...this.score_list,
+			...this.enemy_list,
+			this.player,
+			...this.explosion_list,
+		].forEach((i) => {
 			i.draw();
 		});
 	}
 
-	
-
 	game_halt_listener = (event: KeyboardEvent) => {
 		if (event.key === "Enter") {
-
 			event.preventDefault();
 			event.stopPropagation();
 
