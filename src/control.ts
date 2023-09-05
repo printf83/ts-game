@@ -117,11 +117,17 @@ class arrow {
 	start_degree: number;
 	end_degree: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; img_width: number; img_height: number; width: number; height: number; x: number; y: number; btn_width?: number; hole_width?: number; start_degree: number; end_degree: number; color?: string; line_width?: number; debug?: boolean }) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; img_width?: number; img_height?: number; width?: number; height?: number; x: number; y: number; btn_width?: number; hole_width?: number; start_degree: number; end_degree: number; color?: string; line_width?: number; debug?: boolean }) {
 		opt.hole_width ??= BTN_SIZE;
 		opt.btn_width ??= BTN_SIZE + opt.hole_width;
 		opt.color ??= BTN_COLOR.normal;
-		opt.line_width ??= 3;
+		opt.line_width ??= 2;
+
+		opt.img_width ??= 16;
+		opt.img_height ??= 16;
+		opt.width ??= BTN_SIZE;
+		opt.height ??= BTN_SIZE;
+
 		opt.debug ??= false;
 
 		this.debug = opt.debug;
@@ -215,7 +221,6 @@ class arrow {
 
 	draw_mark() {
 		this.clear_mark();
-
 		this.draw_fill({
 			ctx: this.ctx_mark,
 			x: this.x,
@@ -226,54 +231,38 @@ class arrow {
 			end_degree: this.end_degree,
 			color: this.uid_text,
 		});
-
-		// this.ctx_mark.fillStyle = this.uid_text;
-		// this.ctx_mark.beginPath();
-
-		// this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
-		// this.ctx_mark.fill();
-
-		// const hole_radius = BTN_SIZE;
-		// const radius = BTN_SIZE * 2 + hole_radius;
-
-		// const center_x = MathFloor(this.x + BTN_SIZE * 0.5 + 5);
-		// const center_y = MathFloor(this.y + BTN_SIZE * 0.5 + 5);
-
-		// //right bottom
-		// this.fill(this.ctx_mark, center_x, center_y - 5, hole_radius, radius, 315, 45, "blue");
-		// this.line(this.ctx, center_x, center_y - 5, hole_radius, radius, 315, 45, "blue", 3);
-
-		// //left bottom
-		// this.fill(this.ctx_mark, center_x - 5, center_y, hole_radius, radius, 45, 135, "red");
-		// this.line(this.ctx, center_x - 5, center_y, hole_radius, radius, 45, 135, "red", 3);
-
-		// //left top
-		// this.fill(this.ctx_mark, center_x - 10, center_y - 5, hole_radius, radius, 135, 225, "green");
-		// this.line(this.ctx, center_x - 10, center_y - 5, hole_radius, radius, 135, 225, "green", 3);
-
-		// //right top
-		// this.fill(this.ctx_mark, center_x - 5, center_y - 10, hole_radius, radius, 225, 315, "yellow");
-		// this.line(this.ctx, center_x - 5, center_y - 10, hole_radius, radius, 225, 315, "yellow", 3);
 	}
 
-	private calc_middle_degree(start_degree: number, end_degree: number) {
-		if (end_degree > start_degree) {
-			return (end_degree - start_degree) * 0.5;
-		} else {
+	private calc_middle_degree(start_degree: number, end_degree: number): number {
+		if (start_degree > end_degree) {
 			let a = 360 - start_degree;
 			return (end_degree + a) * 0.5 - a;
+		} else {
+			// Normalize angles to be between 0 and 360 degrees
+			start_degree = ((start_degree % 360) + 360) % 360;
+			end_degree = ((end_degree % 360) + 360) % 360;
+
+			// Calculate the middle angle
+			let middleAngle = (start_degree + end_degree) * 0.5;
+
+			// Normalize the middle angle to be between 0 and 360 degrees
+			middleAngle = ((middleAngle % 360) + 360) % 360;
+
+			return middleAngle;
 		}
 	}
+
 	private calc_degree(value: number): number {
 		if (value > 360) return this.calc_degree(360 - value);
 		else if (value < 0) return this.calc_degree(360 + value);
+		else if (value === 360) return 0;
 		else return value;
 	}
 	private get_angle_position(center_x: number, center_y: number, radius: number, angle_degree: number) {
 		const angle_rad = (angle_degree * MathPI) / 180;
 		const x = center_x + radius * Math.cos(angle_rad);
 		const y = center_y + radius * Math.sin(angle_rad);
-		return { x, y };
+		return { x: MathFloor(x), y: MathFloor(y) };
 	}
 	private angle_degree_for_arc(angle_degree: number) {
 		return MathPI * (angle_degree * (2 / 360));
@@ -346,8 +335,8 @@ class arrow {
 		const mid_degree = this.calc_middle_degree(opt.start_degree, opt.end_degree);
 		const mid_coord = this.get_angle_position(this.x, this.y, this.btn_width - this.hole_width, mid_degree);
 
-		const img_x = mid_coord.x - this.width * 0.5;
-		const img_y = mid_coord.y - this.height * 0.5;
+		let img_x = mid_coord.x - this.width * 0.5;
+		let img_y = mid_coord.y - this.height * 0.5;
 
 		opt.ctx.drawImage(this.img, 0, 0, this.img_width, this.img_height, img_x, img_y, this.width, this.height);
 
@@ -371,6 +360,11 @@ export class control {
 	right: button;
 	right_down: button;
 	right_up: button;
+
+	arrow_right: arrow;
+	arrow_down: arrow;
+	arrow_left: arrow;
+	arrow_up: arrow;
 
 	btn_list: button[] = [];
 	btn_gui_list: button[] = [];
@@ -418,28 +412,63 @@ export class control {
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
-		this.arrow_list.push(
-			new arrow({
-				ctx: this.ctx_control,
-				ctx_mark: this.ctx_mark,
-				debug: this.debug,
+		this.arrow_right = new arrow({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
 
-				name: "ArrowUp",
-				img: ASSET.ctl.up,
-				img_width: 16,
-				img_height: 16,
-				width: BTN_SIZE,
-				height: BTN_SIZE,
+			name: "ArrowRight",
+			img: ASSET.ctl.right,
 
-				x: this.canvas_width * 0.5,
-				y: this.canvas_height * 0.5,
+			x: this.canvas_width * 0.5 + 10,
+			y: this.canvas_height * 0.5 - 10,
 
-				start_degree: 315,
-				end_degree: 45,
+			start_degree: 315,
+			end_degree: 45,
+		});
 
-				color: "red",
-			})
-		);
+		this.arrow_down = new arrow({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
+			name: "ArrowDown",
+			img: ASSET.ctl.down,
+
+			x: this.canvas_width * 0.5,
+			y: this.canvas_height * 0.5,
+
+			start_degree: 45,
+			end_degree: 135,
+		});
+		this.arrow_left = new arrow({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
+			name: "ArrowLeft",
+			img: ASSET.ctl.left,
+
+			x: this.canvas_width * 0.5 - 10,
+			y: this.canvas_height * 0.5 - 10,
+
+			start_degree: 135,
+			end_degree: 225,
+		});
+		this.arrow_up = new arrow({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
+			name: "ArrowUp",
+			img: ASSET.ctl.up,
+
+			x: this.canvas_width * 0.5,
+			y: this.canvas_height * 0.5 - 20,
+
+			start_degree: 225,
+			end_degree: 315,
+		});
 
 		this.info = new button({
 			ctx: this.ctx_control,
@@ -527,6 +556,7 @@ export class control {
 		this.btn_gui_list = [this.pause, this.info];
 		this.btn_control_list = [this.left, this.left_up, this.left_down, this.right, this.right_up, this.right_down];
 		this.btn_list = [...this.btn_gui_list, ...this.btn_control_list];
+		this.arrow_list = [this.arrow_right, this.arrow_down, this.arrow_left, this.arrow_up];
 	}
 
 	resize() {
@@ -620,6 +650,21 @@ export class control {
 		}
 	}
 
+	redraw_arrow(opt: { arr: arrow; img?: string; color?: string }) {
+		if (opt.arr) {
+			if (opt.img || opt.color) {
+				if (opt.img) {
+					opt.arr.img = new Image();
+					opt.arr.img.src = opt.img;
+				}
+
+				if (opt.color) opt.arr.color = opt.color;
+
+				opt.arr.draw();
+			}
+		}
+	}
+
 	private get_mouse_location(canvas: HTMLCanvasElement, event: MouseEvent) {
 		let totalOffsetX = 0;
 		let totalOffsetY = 0;
@@ -670,6 +715,19 @@ export class control {
 						else if (opt.event_name === "keyup") this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
 
 						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+					} else {
+						const arr = this.arrow_list.filter((i) => {
+							return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
+						});
+
+						if (arr && arr.length > 0 && arr[0]) {
+							const key = arr[0].name;
+
+							if (opt.event_name === "keydown") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
+							else if (opt.event_name === "keyup") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
+
+							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+						}
 					}
 				}
 			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
@@ -746,6 +804,19 @@ export class control {
 						else if (opt.event_name === "keyup") this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
 
 						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+					} else {
+						const arr = this.arrow_list.filter((i) => {
+							return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
+						});
+
+						if (arr && arr.length > 0 && arr[0]) {
+							const key = arr[0].name;
+
+							if (opt.event_name === "keydown") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
+							else if (opt.event_name === "keyup") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
+
+							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+						}
 					}
 				}
 			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
