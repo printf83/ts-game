@@ -66,12 +66,18 @@ class button {
 	draw() {
 		this.clear();
 
+		this.ctx.save();
 		this.ctx.fillStyle = this.color;
+		this.ctx.strokeStyle = this.color;
+		this.ctx.lineWidth = 2;
 		this.ctx.beginPath();
 		this.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
 		this.ctx.fill();
+		this.ctx.stroke();
+		this.ctx.restore();
 
-		this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		// this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.drawImage(this.img, MathFloor(this.x + (this.width - 16) * 0.5), MathFloor(this.y + (this.height - 16) * 0.5), 16, 16);
 	}
 	clear_mark() {
 		this.ctx_mark.clearRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
@@ -118,15 +124,15 @@ class arrow {
 	end_degree: number;
 
 	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; img_width?: number; img_height?: number; width?: number; height?: number; x: number; y: number; btn_width?: number; hole_width?: number; start_degree: number; end_degree: number; color?: string; line_width?: number; debug?: boolean }) {
-		opt.hole_width ??= BTN_SIZE;
-		opt.btn_width ??= BTN_SIZE + opt.hole_width;
+		opt.hole_width ??= BTN_SIZE * 0.5;
+		opt.btn_width ??= BTN_SIZE * 0.5 + opt.hole_width;
 		opt.color ??= BTN_COLOR.normal;
 		opt.line_width ??= 2;
 
 		opt.img_width ??= 16;
 		opt.img_height ??= 16;
-		opt.width ??= BTN_SIZE;
-		opt.height ??= BTN_SIZE;
+		opt.width ??= 16;
+		opt.height ??= 16;
 
 		opt.debug ??= false;
 
@@ -350,16 +356,11 @@ export class control {
 	canvas_width: number;
 	canvas_height: number;
 
-	pause: button;
-	info: button;
+	button_pause: button;
+	button_fullscreen: button;
 
-	left: button;
-	left_down: button;
-	left_up: button;
-
-	right: button;
-	right_down: button;
-	right_up: button;
+	button_power: button;
+	button_action: button;
 
 	arrow_right: arrow;
 	arrow_down: arrow;
@@ -412,6 +413,9 @@ export class control {
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
+		const arrow_x = 80;
+		const arrow_y = this.canvas_height - 80;
+		const arrow_padding = 5;
 		this.arrow_right = new arrow({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
@@ -420,8 +424,8 @@ export class control {
 			name: "ArrowRight",
 			img: ASSET.ctl.right,
 
-			x: this.canvas_width * 0.5 + 10,
-			y: this.canvas_height * 0.5 - 10,
+			x: arrow_x + arrow_padding,
+			y: arrow_y - arrow_padding,
 
 			start_degree: 315,
 			end_degree: 45,
@@ -435,8 +439,8 @@ export class control {
 			name: "ArrowDown",
 			img: ASSET.ctl.down,
 
-			x: this.canvas_width * 0.5,
-			y: this.canvas_height * 0.5,
+			x: arrow_x,
+			y: arrow_y,
 
 			start_degree: 45,
 			end_degree: 135,
@@ -449,8 +453,8 @@ export class control {
 			name: "ArrowLeft",
 			img: ASSET.ctl.left,
 
-			x: this.canvas_width * 0.5 - 10,
-			y: this.canvas_height * 0.5 - 10,
+			x: arrow_x - arrow_padding,
+			y: arrow_y - arrow_padding,
 
 			start_degree: 135,
 			end_degree: 225,
@@ -463,14 +467,14 @@ export class control {
 			name: "ArrowUp",
 			img: ASSET.ctl.up,
 
-			x: this.canvas_width * 0.5,
-			y: this.canvas_height * 0.5 - 20,
+			x: arrow_x,
+			y: arrow_y - arrow_padding * 2,
 
 			start_degree: 225,
 			end_degree: 315,
 		});
 
-		this.info = new button({
+		this.button_fullscreen = new button({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
 			debug: this.debug,
@@ -480,7 +484,8 @@ export class control {
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: 110,
 		});
-		this.pause = new button({
+
+		this.button_pause = new button({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
 			debug: this.debug,
@@ -488,73 +493,32 @@ export class control {
 			name: "Enter",
 			img: ASSET.ctl.pause,
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
-			y: this.info.y + BTN_SIZE + BTN_PADDING,
+			y: this.button_fullscreen.y + BTN_SIZE + BTN_PADDING,
 		});
 
-		this.left = new button({
+		this.button_action = new button({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
 			debug: this.debug,
 
-			name: "ArrowLeft",
-			img: ASSET.ctl.left,
-			x: BTN_MARGIN,
-			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
-		});
-		this.left_up = new button({
-			ctx: this.ctx_control,
-			ctx_mark: this.ctx_mark,
-			debug: this.debug,
-
-			name: "ArrowUp",
-			img: ASSET.ctl.up,
-			x: BTN_MARGIN,
-			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
-		});
-		this.left_down = new button({
-			ctx: this.ctx_control,
-			ctx_mark: this.ctx_mark,
-			debug: this.debug,
-
-			name: "ArrowDown",
-			img: ASSET.ctl.down,
-			x: BTN_PADDING + BTN_MARGIN + BTN_SIZE,
-			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
-		});
-
-		this.right = new button({
-			ctx: this.ctx_control,
-			ctx_mark: this.ctx_mark,
-			debug: this.debug,
-
-			name: "ArrowRight",
-			img: ASSET.ctl.right,
-			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
-			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
-		});
-		this.right_up = new button({
-			ctx: this.ctx_control,
-			ctx_mark: this.ctx_mark,
-			debug: this.debug,
-
-			name: "ArrowUp",
-			img: ASSET.ctl.up,
+			name: " ",
+			img: ASSET.ctl.power1,
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
-		this.right_down = new button({
+		this.button_power = new button({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
 			debug: this.debug,
 
-			name: "ArrowDown",
-			img: ASSET.ctl.down,
+			name: "Control",
+			img: ASSET.ctl.power2,
 			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
 
-		this.btn_gui_list = [this.pause, this.info];
-		this.btn_control_list = [this.left, this.left_up, this.left_down, this.right, this.right_up, this.right_down];
+		this.btn_gui_list = [this.button_pause, this.button_fullscreen];
+		this.btn_control_list = [this.button_power, this.button_action];
 		this.btn_list = [...this.btn_gui_list, ...this.btn_control_list];
 		this.arrow_list = [this.arrow_right, this.arrow_down, this.arrow_left, this.arrow_up];
 	}
@@ -571,23 +535,23 @@ export class control {
 	}
 
 	draw_fullscreen() {
-		this.redraw_button({ btn: this.info, img: ASSET.ctl.full_screen });
-		this.info.draw_mark();
+		this.redraw_button({ btn: this.button_fullscreen, img: ASSET.ctl.full_screen });
+		this.button_fullscreen.draw_mark();
 	}
 
 	draw_normalscreen() {
-		this.redraw_button({ btn: this.info, img: ASSET.ctl.normal_screen });
-		this.info.draw_mark();
+		this.redraw_button({ btn: this.button_fullscreen, img: ASSET.ctl.normal_screen });
+		this.button_fullscreen.draw_mark();
 	}
 
 	draw_pause() {
-		this.redraw_button({ btn: this.pause, img: ASSET.ctl.pause });
-		this.pause.draw_mark();
+		this.redraw_button({ btn: this.button_pause, img: ASSET.ctl.pause });
+		this.button_pause.draw_mark();
 	}
 
 	draw_start() {
-		this.redraw_button({ btn: this.pause, img: ASSET.ctl.start });
-		this.pause.draw_mark();
+		this.redraw_button({ btn: this.button_pause, img: ASSET.ctl.start });
+		this.button_pause.draw_mark();
 	}
 
 	draw_control() {
@@ -612,13 +576,13 @@ export class control {
 	}
 
 	clear_fullscreen() {
-		this.info.clear();
-		this.info.clear_mark();
+		this.button_fullscreen.clear();
+		this.button_fullscreen.clear_mark();
 	}
 
 	clear_pause() {
-		this.pause.clear();
-		this.pause.clear_mark();
+		this.button_pause.clear();
+		this.button_pause.clear_mark();
 	}
 
 	clear_control() {
