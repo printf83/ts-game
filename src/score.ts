@@ -1,4 +1,4 @@
-import { draw_text } from "./util.js";
+import { COLOR, draw_text } from "./util.js";
 
 export class score {
 	ctx: CanvasRenderingContext2D;
@@ -13,7 +13,15 @@ export class score {
 	speed_y: number;
 	mark_delete: boolean;
 	timer: number;
-	constructor(opt: { ctx: CanvasRenderingContext2D; text: string; value: number; x: number; y: number; destination_x: number; destination_y: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		text: string;
+		value: number;
+		x: number;
+		y: number;
+		destination_x: number;
+		destination_y: number;
+	}) {
 		this.ctx = opt.ctx;
 		this.text = opt.text;
 		this.value = opt.value;
@@ -35,7 +43,7 @@ export class score {
 	}
 	draw() {
 		draw_text({
-			text_color: this.value <= 0 ? "red" : "white",
+			text_color: this.value <= 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
 			ctx: this.ctx,
 			x: this.x,
 			y: this.y,

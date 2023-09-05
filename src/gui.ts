@@ -1,4 +1,4 @@
-import { MathFloor, clear_text, draw_text } from "./util.js";
+import { COLOR, MathFloor, clear_text, draw_text } from "./util.js";
 
 class box {
 	ctx: CanvasRenderingContext2D;
@@ -80,7 +80,7 @@ class image {
 	}
 	draw() {
 		this.clear();
-		this.ctx.fillStyle = "red";
+		this.ctx.fillStyle = `rgb(${COLOR.red})`;
 		this.ctx.drawImage(this.img, 0, 0, this.img_width, this.img_height, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 	}
 }
@@ -105,7 +105,18 @@ class progress {
 
 	radius: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height?: number; bg_color?: string; shadow_color?: string; shadow_blur?: number; radius?: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		width: number;
+		height?: number;
+		bg_color?: string;
+		shadow_color?: string;
+		shadow_blur?: number;
+		radius?: number;
+		debug?: boolean;
+	}) {
 		opt.height ??= 20;
 		opt.shadow_color ??= "#555555";
 		opt.shadow_blur ??= 1;
@@ -133,11 +144,18 @@ class progress {
 		this.shadow_height = this.height + this.shadow_blur * 2;
 	}
 	clear() {
-		if (this.shadow_color && this.shadow_blur) this.ctx.clearRect(MathFloor(this.shadow_x - 2), MathFloor(this.shadow_y - 2), this.shadow_width + 4, this.shadow_height + 4);
+		if (this.shadow_color && this.shadow_blur)
+			this.ctx.clearRect(MathFloor(this.shadow_x - 2), MathFloor(this.shadow_y - 2), this.shadow_width + 4, this.shadow_height + 4);
 		else this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
 
 		if (this.debug) {
-			if (this.shadow_color && this.shadow_blur) this.ctx.strokeRect(MathFloor(this.shadow_x - 2), MathFloor(this.shadow_y - 2), this.shadow_width + 4, this.shadow_height + 4);
+			if (this.shadow_color && this.shadow_blur)
+				this.ctx.strokeRect(
+					MathFloor(this.shadow_x - 2),
+					MathFloor(this.shadow_y - 2),
+					this.shadow_width + 4,
+					this.shadow_height + 4
+				);
 			else this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
 		}
 	}
@@ -150,7 +168,9 @@ class progress {
 			if (this.shadow_color && this.shadow_blur) {
 				this.ctx.beginPath();
 				this.ctx.fillStyle = this.shadow_color;
-				this.ctx.roundRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height, [this.radius]);
+				this.ctx.roundRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height, [
+					this.radius,
+				]);
 				this.ctx.fill();
 			}
 			this.ctx.beginPath();
@@ -185,11 +205,23 @@ class text {
 	shadow_color: string;
 	shadow_blur: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; text: string; text_align?: CanvasTextAlign; font_weight?: number; font_family?: string; text_color?: string | CanvasGradient | CanvasPattern; shadow_color?: string; shadow_blur?: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		text: string;
+		text_align?: CanvasTextAlign;
+		font_weight?: number;
+		font_family?: string;
+		text_color?: string | CanvasGradient | CanvasPattern;
+		shadow_color?: string;
+		shadow_blur?: number;
+		debug?: boolean;
+	}) {
 		opt.font_family ??= "Creepster";
 		opt.font_weight ??= 20;
-		opt.text_color ??= "white";
-		opt.shadow_color ??= "black";
+		opt.text_color ??= `rgb(${COLOR.light})`;
+		opt.shadow_color ??= `rgb(${COLOR.dark})`;
 		opt.shadow_blur ??= 2;
 		opt.text_align ??= "left";
 		opt.debug ??= false;
@@ -322,7 +354,7 @@ export class gui {
 					y: text_y + text_y_index++ * 25,
 					shadow_blur: 0,
 					text: text_value,
-					text_color: "yellow",
+					text_color: `rgb(${COLOR.yellow})`,
 					font_family: "Arial",
 					font_weight: 20,
 					debug: this.debug,

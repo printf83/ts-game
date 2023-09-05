@@ -18,6 +18,16 @@ export const genUID = () => {
 		.map((_i) => MathFloor(MathRandom() * 255));
 };
 
+export const COLOR = {
+	red: "255,36,0",
+	yellow: "255,215,0",
+	green: "42, 170, 138",
+	blue: "0, 150, 255",
+	light: "255, 255, 255",
+	medium: "128, 128, 128",
+	dark: "0, 0, 0",
+};
+
 export const isTouchDevice = () => "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
 export const isFullscreen = () => window.innerHeight === screen.height;
@@ -125,8 +135,8 @@ export const draw_clear_text = (opt: {
 }) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
-	opt.text_color ??= "white";
-	opt.shadow_color ??= "black";
+	opt.text_color ??= `rgb(${COLOR.light})`;
+	opt.shadow_color ??= `rgb(${COLOR.dark})`;
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
 	opt.debug ??= false;
@@ -149,8 +159,8 @@ export const draw_text = (opt: {
 }) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
-	opt.text_color ??= "white";
-	opt.shadow_color ??= "black";
+	opt.text_color ??= `rgb(${COLOR.light})`;
+	opt.shadow_color ??= `rgb(${COLOR.dark})`;
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
 	opt.debug ??= false;

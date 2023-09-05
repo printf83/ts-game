@@ -1,4 +1,4 @@
-import { MathFloor } from "./util.js";
+import { COLOR, MathFloor } from "./util.js";
 
 export class progress {
 	ctx: CanvasRenderingContext2D;
@@ -23,7 +23,22 @@ export class progress {
 	radius: number;
 	padding: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; min?: number; max?: number; width: number; height?: number; value?: number; bg_color?: string; bar_color?: string | string[]; shadow_color?: string; shadow_blur?: number; radius?: number; padding?: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		min?: number;
+		max?: number;
+		width: number;
+		height?: number;
+		value?: number;
+		bg_color?: string;
+		bar_color?: string | string[];
+		shadow_color?: string;
+		shadow_blur?: number;
+		radius?: number;
+		padding?: number;
+	}) {
 		opt.shadow_color ??= "#555555";
 		opt.shadow_blur ??= 1;
 		opt.bg_color ??= "#FFFFFF";
@@ -99,7 +114,7 @@ export class progress {
 			} else if (bar_color.length === 1 && bar_color[0]) {
 				return bar_color[0];
 			} else {
-				return "black";
+				return `rgb(${COLOR.dark})`;
 			}
 		} else return bar_color;
 	}

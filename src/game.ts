@@ -17,7 +17,17 @@ import { explosion } from "./explosion.js";
 import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
-import { MathFloor, MathRandom, clear_text, draw_clear_text, draw_text, isFullscreen, isTouchDevice, read_random_index } from "./util.js";
+import {
+	COLOR,
+	MathFloor,
+	MathRandom,
+	clear_text,
+	draw_clear_text,
+	draw_text,
+	isFullscreen,
+	isTouchDevice,
+	read_random_index,
+} from "./util.js";
 import { input } from "./input.js";
 import { score } from "./score.js";
 import { dust } from "./dust.js";
@@ -153,7 +163,8 @@ export class game {
 			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
-			x: isTouchDevice() ? (this.canvas_width - 575 * 0.25) * 0.5 : this.canvas_width * 0.1,
+			// x: isTouchDevice() ? (this.canvas_width - 575 * 0.25) * 0.5 : this.canvas_width * 0.1,
+			x: isTouchDevice() ? this.canvas_width * 0.25 : this.canvas_width * 0.1,
 			debug: this.debug,
 		});
 
@@ -165,7 +176,7 @@ export class game {
 			max: this.progress_max,
 			width: this.canvas_width * 0.4,
 			value: this.progress_index,
-			bar_color: ["red", "yellow", "green"],
+			bar_color: [`rgb(${COLOR.red})`, `rgb(${COLOR.yellow})`, `rgb(${COLOR.green})`],
 		});
 		this.prg_life = new progress({
 			ctx: this.ctx_value,
@@ -174,7 +185,7 @@ export class game {
 			width: 100,
 			value: this.player.life,
 			max: 100,
-			bar_color: ["red", "yellow", "green"],
+			bar_color: [`rgb(${COLOR.red})`, `rgb(${COLOR.yellow})`, `rgb(${COLOR.green})`],
 		});
 		this.prg_power = new progress({
 			ctx: this.ctx_value,
@@ -183,7 +194,7 @@ export class game {
 			width: 100,
 			value: this.player.power,
 			max: 100,
-			bar_color: ["red", "yellow", "green"],
+			bar_color: [`rgb(${COLOR.red})`, `rgb(${COLOR.yellow})`, `rgb(${COLOR.green})`],
 		});
 
 		//game halt listener
@@ -471,7 +482,7 @@ export class game {
 			x: 90,
 			y: 80,
 			text: `${this.score_text}`,
-			text_color: this.score_value < 0 ? "red" : "white",
+			text_color: this.score_value < 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
 			font_weight: 60,
 			debug: this.debug,
 		});
@@ -494,7 +505,7 @@ export class game {
 			y: 50,
 			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
 			text_align: "end",
-			text_color: this.progress_timer_index < 20 ? "red" : "white",
+			text_color: this.progress_timer_index < 20 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
 			font_weight: 25,
 			debug: this.debug,
 		});
@@ -513,23 +524,35 @@ export class game {
 
 		//game over message
 		if (this.game_over)
-			this.draw_message("Game over!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
+			this.draw_message(
+				"Game over!",
+				isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.",
+				`rgb(${COLOR.red})`
+			);
 
 		//game timeout message
 		if (this.game_timeout)
-			this.draw_message("Time up!", isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.", "red");
+			this.draw_message(
+				"Time up!",
+				isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.",
+				`rgb(${COLOR.red})`
+			);
 
 		//game level up
 		if (this.game_up)
 			this.draw_message(
 				`Level ${this.game_level} complete!`,
 				isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.",
-				"green"
+				`rgb(${COLOR.green})`
 			);
 
 		//pause
 		if (this.game_pause)
-			this.draw_message(`Pause!`, isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.", "white");
+			this.draw_message(
+				`Pause!`,
+				isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.",
+				`rgb(${COLOR.light})`
+			);
 	}
 
 	last_timestamp: number = 0;
@@ -765,14 +788,14 @@ export class game {
 				y: text_y + text_y_index++ * 25,
 				shadow_blur: 0,
 				text: text,
-				text_color: text_color ? text_color : "yellow",
+				text_color: text_color ? text_color : `rgb(${COLOR.yellow})`,
 				font_family: "Arial",
 				font_weight: 20,
 				debug: this.debug,
 			});
 		};
 
-		gen_text(78, `${this.game_fps}`, this.game_fps < 30 ? "red" : "yellow");
+		gen_text(78, `${this.game_fps}`, this.game_fps < 30 ? `rgb(${COLOR.red})` : `rgb(${COLOR.yellow})`);
 		gen_text(80, `${this.dust_list.length}`);
 		gen_text(73, `${this.fire_list.length}`);
 		gen_text(125, `${this.explosion_list.length}`);

@@ -1,4 +1,4 @@
-import { MathFloor, MathPI2, genUID } from "../util.js";
+import { COLOR, MathFloor, MathPI2, genUID } from "../util.js";
 import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
 
@@ -113,7 +113,7 @@ export class baseEnemy extends baseAnimation {
 		if (this.debug) {
 			this.ctx.save();
 
-			this.ctx.strokeStyle = "white";
+			this.ctx.strokeStyle = `rgb(${COLOR.light})`;
 			this.ctx.beginPath();
 			this.ctx.arc(MathFloor(this.collision_x), MathFloor(this.collision_y), this.collision_scale * 100, 0, MathPI2);
 			this.ctx.stroke();
