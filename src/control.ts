@@ -1,5 +1,5 @@
 import { ASSET } from "./asset.js";
-import { MathFloor, MathPI2, DPI, genUID, COLOR } from "./util.js";
+import { MathFloor, MathPI2, DPI, genUID, COLOR, MathPI } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
 const BTN_PADDING = 20 * DPI;
@@ -11,6 +11,7 @@ const BTN_COLOR = {
 	click: `rgba(${COLOR.blue}, 0.5)`,
 	active: `rgba(${COLOR.blue}, 0.5)`,
 };
+
 class button {
 	debug: boolean;
 
@@ -103,6 +104,157 @@ class button {
 	}
 }
 
+class arrow {
+	debug: boolean;
+
+	ctx: CanvasRenderingContext2D;
+	ctx_mark: CanvasRenderingContext2D;
+
+	name: string;
+
+	x: number;
+	y: number;
+
+	uid: number[];
+	uid_text: string;
+	uid_number: string;
+
+	img: HTMLImageElement;
+	img_url: string;
+
+	color: string;
+	width: number;
+	height: number;
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
+		name: string;
+		img: string;
+		x: number;
+		y: number;
+		width?: number;
+		height?: number;
+		color?: string;
+		debug?: boolean;
+	}) {
+		opt.width ??= BTN_SIZE;
+		opt.height ??= BTN_SIZE;
+		opt.color ??= BTN_COLOR.normal;
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
+
+		this.ctx = opt.ctx;
+		this.ctx_mark = opt.ctx_mark;
+
+		this.uid = genUID();
+		this.uid_number = `${this.uid[0]},${this.uid[1]},${this.uid[2]}`;
+		this.uid_text = `rgb(${this.uid[0]},${this.uid[1]},${this.uid[2]})`;
+
+		this.name = opt.name;
+
+		this.img = new Image();
+		this.img.src = opt.img;
+		this.img_url = opt.img;
+		this.x = opt.x;
+		this.y = opt.y;
+		this.width = opt.width;
+		this.height = opt.height;
+		this.color = opt.color;
+	}
+	clear() {
+		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
+	}
+	draw() {
+		this.clear();
+
+		this.ctx.fillStyle = this.color;
+		this.ctx.beginPath();
+		this.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		this.ctx.fill();
+
+		this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+	}
+	clear_mark() {
+		this.ctx_mark.clearRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
+		if (this.debug)
+			this.ctx_mark.strokeRect(
+				MathFloor(this.x - BTN_SIZE * 0.25),
+				MathFloor(this.y - BTN_SIZE * 0.25),
+				BTN_SIZE * 1.5,
+				BTN_SIZE * 1.5
+			);
+	}
+	draw_mark() {
+		this.clear_mark();
+
+		this.ctx_mark.fillStyle = this.uid_text;
+		this.ctx_mark.beginPath();
+
+		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
+		this.ctx_mark.fill();
+
+		var calculateStart = function (data, index, total) {
+			if (index === 0) {
+				return 0;
+			}
+
+			return calculateEnd(data, index - 1, total);
+		};
+
+		var calculateEndAngle = function (data, index, total) {
+			var angle = (data[index].value / total) * 360;
+			var inc = index === 0 ? 0 : calculateEndAngle(data, index - 1, total);
+
+			return angle + inc;
+		};
+
+		var calculateEnd = function (data, index, total) {
+			return degreeToRadians(calculateEndAngle(data, index, total));
+		};
+
+		var degreeToRadians = function (angle) {
+			return (angle * Math.PI) / 180;
+		};
+
+		//test
+		// const a1 = 0.5;
+		// this.ctx_mark.save();
+		// this.ctx_mark.beginPath();
+		// this.ctx_mark.fillStyle = `red`;
+
+		// this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 50, MathPI * a1, MathPI);
+
+		// this.ctx_mark.lineTo(MathFloor(this.x - 150), MathFloor(this.y));
+
+		// this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 150, MathPI, MathPI * a1, true);
+
+		// this.ctx_mark.lineTo(MathFloor(this.x), MathFloor(this.y + 50));
+
+		// this.ctx_mark.fill();
+		// this.ctx_mark.restore();
+
+		//test 2
+		const a2 = 0.5;
+		const a3 = 0.2;
+		this.ctx_mark.save();
+		this.ctx_mark.beginPath();
+		this.ctx_mark.fillStyle = `blue`;
+
+		this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 50, MathPI * a2 - a3, MathPI - a3);
+
+		this.ctx_mark.lineTo(MathFloor(this.x - 150), MathFloor(this.y));
+
+		this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 150, MathPI + a3, MathPI * a2 + a3, true);
+
+		this.ctx_mark.lineTo(MathFloor(this.x), MathFloor(this.y + 50));
+
+		this.ctx_mark.fill();
+		this.ctx_mark.restore();
+	}
+}
+
 export class control {
 	debug: boolean;
 
@@ -123,6 +275,7 @@ export class control {
 	btn_list: button[] = [];
 	btn_gui_list: button[] = [];
 	btn_control_list: button[] = [];
+	arrow_list: arrow[] = [];
 
 	canvas_rect: DOMRect;
 
@@ -164,6 +317,19 @@ export class control {
 		this.canvas_height = opt.canvas_height;
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
+
+		this.arrow_list.push(
+			new arrow({
+				ctx: this.ctx_control,
+				ctx_mark: this.ctx_mark,
+				debug: this.debug,
+
+				name: "ArrowUp",
+				img: ASSET.ctl.up,
+				x: this.canvas_width * 0.5,
+				y: this.canvas_height * 0.5,
+			})
+		);
 
 		this.info = new button({
 			ctx: this.ctx_control,
@@ -291,6 +457,13 @@ export class control {
 		});
 	}
 
+	draw_arrow() {
+		this.arrow_list.forEach((i) => {
+			i.draw();
+			i.draw_mark();
+		});
+	}
+
 	clear_gui() {
 		this.btn_gui_list.forEach((i) => {
 			i.clear();
@@ -310,6 +483,13 @@ export class control {
 
 	clear_control() {
 		this.btn_control_list.forEach((i) => {
+			i.clear();
+			i.clear_mark();
+		});
+	}
+
+	clear_arrow() {
+		this.arrow_list.forEach((i) => {
 			i.clear();
 			i.clear_mark();
 		});
@@ -361,6 +541,8 @@ export class control {
 				this.ctx_pointer.clearRect(MathFloor(x - 50), MathFloor(y - 50), 100, 100);
 				this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
 				this.ctx_pointer.fillRect(MathFloor(x - 5), MathFloor(y - 5), 10, 10);
+
+				console.log({ x, y });
 			}
 
 			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;

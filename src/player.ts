@@ -198,7 +198,7 @@ export class player extends baseAnimation {
 			this.ctx.drawImage(this.img_stopwatch, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
 		else this.ctx.drawImage(this.img_stopwatch_inactive, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
 
-		if (this.invulnerable)
+		if (this.invulnerable || this.is_powered())
 			this.ctx.drawImage(this.img_shield, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
 		else this.ctx.drawImage(this.img_shield_inactive, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
 

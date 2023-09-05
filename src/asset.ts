@@ -32,8 +32,8 @@ export const ASSET = {
 		shield_icon_inactive: "./res/ctl/shield_icon_inactive.svg",
 		shield_icon: "./res/ctl/shield_icon.svg",
 		start: "./res/ctl/start.svg",
-		stopwatch_icon_inactive: "./res/ctl/shield_icon_inactive.svg",
-		stopwatch_icon: "./res/ctl/shield_icon.svg",
+		stopwatch_icon_inactive: "./res/ctl/stopwatch_icon_inactive.svg",
+		stopwatch_icon: "./res/ctl/stopwatch_icon.svg",
 		up: "./res/ctl/up.svg",
 	},
 	enemy: {
@@ -56,8 +56,8 @@ export const ASSET = {
 		Creepster_woff: "./res/font/Creepster.woff",
 		Creepster_woff2: "./res/font/Creepster.woff2",
 	},
-	boom: "boom.png",
-	boom_wav: "boom.wav",
-	fire: "fire.png",
-	player: "player.png",
+	boom: "./res/boom.png",
+	boom_wav: "./res/boom.wav",
+	fire: "./res/fire.png",
+	player: "./res/player.png",
 };

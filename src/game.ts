@@ -211,6 +211,7 @@ export class game {
 
 			if (isTouchDevice()) {
 				this.ctl.draw_control();
+				this.ctl.draw_arrow();
 
 				this.ctl.attach_touch({
 					canvas_mark: this.canvas_mark,
@@ -220,7 +221,10 @@ export class game {
 					debug: this.debug,
 				});
 			} else {
-				if (this.debug) this.ctl.draw_control();
+				if (this.debug) {
+					this.ctl.draw_control();
+					this.ctl.draw_arrow();
+				}
 
 				this.ctl.attach_mouse({
 					canvas_mark: this.canvas_mark,
@@ -277,6 +281,7 @@ export class game {
 
 		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
+			this.ctl.draw_arrow();
 		}
 
 		this.game_over = false;
@@ -320,6 +325,7 @@ export class game {
 
 		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
+			this.ctl.draw_arrow();
 		}
 
 		this.game_up = false;
@@ -335,6 +341,7 @@ export class game {
 		this.ctl.draw_pause();
 		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
+			this.ctl.draw_arrow();
 		}
 
 		this.game_pause = false;
@@ -400,6 +407,7 @@ export class game {
 
 								setTimeout(() => {
 									this.ctl.clear_control();
+									this.ctl.clear_arrow();
 									this.ctl.draw_start();
 
 									this.game_over = true;
@@ -564,6 +572,7 @@ export class game {
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
 			this.ctl.clear_control();
+			this.ctl.clear_arrow();
 			this.ctl.draw_start();
 
 			this.game_up = true;
@@ -573,6 +582,7 @@ export class game {
 		this.progress_timer_index = MathFloor((this.progress_timer - timestamp) * 0.001);
 		if (this.progress_timer_index <= 0) {
 			this.ctl.clear_control();
+			this.ctl.clear_arrow();
 			this.ctl.draw_start();
 
 			this.game_timeout = true;
@@ -733,6 +743,7 @@ export class game {
 				if (this.game_pause) this.game_continue();
 			} else {
 				this.ctl.clear_control();
+				this.ctl.clear_arrow();
 				this.ctl.draw_start();
 				this.game_pause = true;
 			}
