@@ -413,9 +413,9 @@ export class control {
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
-		const arrow_x = 80;
-		const arrow_y = this.canvas_height - 80;
-		const arrow_padding = 5;
+		const arrow_x = 70 * DPI;
+		const arrow_y = this.canvas_height - 70 * DPI;
+		const arrow_padding = 5 * DPI;
 		this.arrow_right = new arrow({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
