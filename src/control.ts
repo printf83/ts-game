@@ -186,6 +186,17 @@ class arrow {
 				BTN_SIZE * 1.5
 			);
 	}
+
+	private calc(center_x: number, center_y: number, radius: number, angle_degree: number) {
+		const angle_rad = (angle_degree * MathPI) / 180;
+		const x = center_x + radius * Math.cos(angle_rad);
+		const y = center_y + radius * Math.sin(angle_rad);
+		return { x, y };
+	}
+	private angle(angle_degree: number) {
+		return angle_degree * 360;
+	}
+
 	draw_mark() {
 		this.clear_mark();
 
@@ -195,28 +206,28 @@ class arrow {
 		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
 		this.ctx_mark.fill();
 
-		var calculateStart = function (data, index, total) {
-			if (index === 0) {
-				return 0;
-			}
+		// var calculateStart = function (data, index, total) {
+		// 	if (index === 0) {
+		// 		return 0;
+		// 	}
 
-			return calculateEnd(data, index - 1, total);
-		};
+		// 	return calculateEnd(data, index - 1, total);
+		// };
 
-		var calculateEndAngle = function (data, index, total) {
-			var angle = (data[index].value / total) * 360;
-			var inc = index === 0 ? 0 : calculateEndAngle(data, index - 1, total);
+		// var calculateEndAngle = function (data, index, total) {
+		// 	var angle = (data[index].value / total) * 360;
+		// 	var inc = index === 0 ? 0 : calculateEndAngle(data, index - 1, total);
 
-			return angle + inc;
-		};
+		// 	return angle + inc;
+		// };
 
-		var calculateEnd = function (data, index, total) {
-			return degreeToRadians(calculateEndAngle(data, index, total));
-		};
+		// var calculateEnd = function (data, index, total) {
+		// 	return degreeToRadians(calculateEndAngle(data, index, total));
+		// };
 
-		var degreeToRadians = function (angle) {
-			return (angle * Math.PI) / 180;
-		};
+		// var degreeToRadians = function (angle) {
+		// 	return (angle * Math.PI) / 180;
+		// };
 
 		//test
 		// const a1 = 0.5;
@@ -235,20 +246,80 @@ class arrow {
 		// this.ctx_mark.fill();
 		// this.ctx_mark.restore();
 
-		//test 2
-		const a2 = 0.5;
-		const a3 = 0.2;
+		const hole_radius = BTN_SIZE;
+		const radius = BTN_SIZE * 2 + hole_radius;
+
+		const center_x = MathFloor(this.x + BTN_SIZE * 0.5 + 5);
+		const center_y = MathFloor(this.y + BTN_SIZE * 0.5 + 5);
+
+		//right bottom
 		this.ctx_mark.save();
 		this.ctx_mark.beginPath();
 		this.ctx_mark.fillStyle = `blue`;
 
-		this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 50, MathPI * a2 - a3, MathPI - a3);
+		this.ctx_mark.arc(center_x, center_y, hole_radius, 0, MathPI * 0.5);
 
-		this.ctx_mark.lineTo(MathFloor(this.x - 150), MathFloor(this.y));
+		let c1 = this.calc(center_x, center_y, radius, 90);
+		this.ctx_mark.lineTo(c1.x, c1.y);
 
-		this.ctx_mark.arc(MathFloor(this.x), MathFloor(this.y), 150, MathPI + a3, MathPI * a2 + a3, true);
+		this.ctx_mark.arc(center_x, center_y, radius, MathPI * 0.5, 0, true);
 
-		this.ctx_mark.lineTo(MathFloor(this.x), MathFloor(this.y + 50));
+		let c2 = this.calc(center_x, center_y, hole_radius, 0);
+		this.ctx_mark.lineTo(c2.x, c2.y);
+
+		this.ctx_mark.fill();
+		this.ctx_mark.restore();
+
+		//left bottom
+		this.ctx_mark.save();
+		this.ctx_mark.beginPath();
+		this.ctx_mark.fillStyle = `red`;
+
+		this.ctx_mark.arc(center_x - 10, center_y, hole_radius, MathPI * 0.5, MathPI);
+
+		let c3 = this.calc(center_x - 10, center_y, radius, 180);
+		this.ctx_mark.lineTo(c3.x, c3.y);
+
+		this.ctx_mark.arc(center_x - 10, center_y, radius, MathPI, MathPI * 0.5, true);
+
+		let c4 = this.calc(center_x - 10, center_y, hole_radius, 90);
+		this.ctx_mark.lineTo(c4.x, c4.y);
+
+		this.ctx_mark.fill();
+		this.ctx_mark.restore();
+
+		//left top
+		this.ctx_mark.save();
+		this.ctx_mark.beginPath();
+		this.ctx_mark.fillStyle = `green`;
+
+		this.ctx_mark.arc(center_x - 10, center_y - 10, hole_radius, MathPI * 1, MathPI * 1.5);
+
+		let c5 = this.calc(center_x - 10, center_y - 10, radius, 270);
+		this.ctx_mark.lineTo(c5.x, c5.y);
+
+		this.ctx_mark.arc(center_x - 10, center_y - 10, radius, MathPI * 1.5, MathPI * 1, true);
+
+		let c6 = this.calc(center_x - 10, center_y - 10, hole_radius, 180);
+		this.ctx_mark.lineTo(c6.x, c6.y);
+
+		this.ctx_mark.fill();
+		this.ctx_mark.restore();
+
+		//right top
+		this.ctx_mark.save();
+		this.ctx_mark.beginPath();
+		this.ctx_mark.fillStyle = `yellow`;
+
+		this.ctx_mark.arc(center_x, center_y - 10, hole_radius, MathPI * 1.5, MathPI * 0);
+
+		let c7 = this.calc(center_x, center_y - 10, radius, 0);
+		this.ctx_mark.lineTo(c7.x, c7.y);
+
+		this.ctx_mark.arc(center_x, center_y - 10, radius, MathPI * 0, MathPI * 1.5, true);
+
+		let c8 = this.calc(center_x, center_y - 10, hole_radius, 270);
+		this.ctx_mark.lineTo(c8.x, c8.y);
 
 		this.ctx_mark.fill();
 		this.ctx_mark.restore();
