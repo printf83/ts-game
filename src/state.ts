@@ -134,6 +134,7 @@ export class state_idle extends state {
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
 		if (input.last_key === "PRESS down") this.player.set_state("sit");
 		if (input.last_key === "PRESS space") this.player.set_state("bite");
+		if (input.last_key === "PRESS control") this.player.set_state("roll");
 	}
 }
 export class state_jump extends state {
@@ -147,6 +148,7 @@ export class state_jump extends state {
 			this.player.velocity_y -= 32;
 		}
 	}
+
 	update(): void {
 		super.update();
 		if (this.player.velocity_y > 0) this.player.set_state("fall");
@@ -156,7 +158,7 @@ export class state_jump extends state {
 			this.player.velocity_y = 0;
 			this.player.set_state("fall");
 		}
-		if (input.last_key === "PRESS right" && this.player.power > 10) this.player.set_state("jump_roll");
+		if (input.last_key === "PRESS control" && this.player.power > 10) this.player.set_state("jump_roll");
 	}
 }
 export class state_fall extends state {
@@ -174,7 +176,7 @@ export class state_fall extends state {
 		}
 	}
 	handle_input(input: input) {
-		if (input.last_key === "PRESS right" && this.player.power > 10) this.player.set_state("fall_roll");
+		if (input.last_key === "PRESS control" && this.player.power > 10) this.player.set_state("fall_roll");
 		if (input.last_key === "PRESS down" && this.player.power > 10) this.player.set_state("power_fall");
 	}
 }
@@ -215,10 +217,10 @@ export class state_run extends state {
 	}
 	handle_input(input: input) {
 		if (input.last_key === "PRESS left") this.player.set_state("idle");
-		if (input.last_key === "PRESS right" && this.player.power > 10) this.player.set_state("roll");
 		if (input.last_key === "PRESS down") this.player.set_state("sit");
 		if (input.last_key === "PRESS up") this.player.set_state("jump");
 		if (input.last_key === "PRESS space") this.player.set_state("bite");
+		if (input.last_key === "PRESS control" && this.player.power > 10) this.player.set_state("roll");
 	}
 }
 export class state_dizzy extends state {
@@ -279,11 +281,12 @@ export class state_roll extends state {
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE right") this.player.set_state("run");
-		if (input.last_key === "RELEASE down") this.player.set_state("run");
-		if (input.last_key === "PRESS up" && this.player.power > 10) this.player.set_state("jump_roll");
-		if (input.last_key === "PRESS left") this.player.set_state("idle");
-		if (input.last_key === "PRESS down") this.player.set_state("sit");
+		if (input.last_key === "RELEASE control") this.player.set_state("run");
+		// if (input.last_key === "RELEASE right") this.player.set_state("run");
+		// if (input.last_key === "RELEASE down") this.player.set_state("run");
+		// if (input.last_key === "PRESS up" && this.player.power > 10) this.player.set_state("jump_roll");
+		// if (input.last_key === "PRESS left") this.player.set_state("idle");
+		// if (input.last_key === "PRESS down") this.player.set_state("sit");
 	}
 }
 export class state_jump_roll extends state {
@@ -310,7 +313,7 @@ export class state_jump_roll extends state {
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE right") {
+		if (input.last_key === "RELEASE control") {
 			if (this.player.velocity_y > 0) this.player.set_state("fall");
 			else this.player.set_state("jump");
 		}
@@ -337,7 +340,7 @@ export class state_fall_roll extends state {
 	}
 
 	handle_input(input: input) {
-		if (input.last_key === "RELEASE right") this.player.set_state("fall");
+		if (input.last_key === "RELEASE control") this.player.set_state("fall");
 	}
 }
 export class state_bite extends state {

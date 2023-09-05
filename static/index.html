@@ -1,19 +1,59 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html
+	lang="en"
+	data-bs-theme="dark"
+>
 	<head>
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content="Testing website" />
-		<link href="/res/font/Creepster.eot" as="font" type="font/eot" crossorigin />
-		<link href="/res/font/Creepster.woff2" as="font" type="font/woff2" crossorigin />
-		<link href="/res/font/Creepster.woff" as="font" type="font/woff" crossorigin />
-		<link href="/res/font/Creepster.ttf" as="font" type="font/ttf" crossorigin />
-		<link href="/res/font/Creepster.svg" as="font" type="font/svg" crossorigin />
-		<link rel="stylesheet" href="index.css" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1"
+		/>
+		<meta
+			name="description"
+			content="Testing website"
+		/>
+		<link
+			href="/res/font/Creepster.eot"
+			as="font"
+			type="font/eot"
+			crossorigin
+		/>
+		<link
+			href="/res/font/Creepster.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+		<link
+			href="/res/font/Creepster.woff"
+			as="font"
+			type="font/woff"
+			crossorigin
+		/>
+		<link
+			href="/res/font/Creepster.ttf"
+			as="font"
+			type="font/ttf"
+			crossorigin
+		/>
+		<link
+			href="/res/font/Creepster.svg"
+			as="font"
+			type="font/svg"
+			crossorigin
+		/>
+		<link
+			rel="stylesheet"
+			href="index.css"
+		/>
 		<title>Testing website</title>
 	</head>
 	<body>
-		<div id="gameContainer" class="container container-dark">
+		<div
+			id="gameContainer"
+			class="container container-dark"
+		>
 			<div class="loading">
 				<h1>Please wait</h1>
 				<h3>Downloading 6.4Mb asset file</h3>
@@ -26,45 +66,251 @@
 			<canvas id="markerCanvas"></canvas>
 		</div>
 
-		<audio class="hide" src="res/boom.wav" id="boom_wav" />
-		<img class="hide" src="res/boom.png" id="boom_png" />
-		<img class="hide" src="res/fire.png" id="fire_png" />
-		<img class="hide" src="res/player.png" id="player_png" />
-		<img class="hide" src="res/bg1/layer-1.png" id="bg1_layer1_png" />
-		<img class="hide" src="res/bg1/layer-2.png" id="bg1_layer2_png" />
-		<img class="hide" src="res/bg1/layer-3.png" id="bg1_layer3_png" />
-		<img class="hide" src="res/bg1/layer-4.png" id="bg1_layer4_png" />
-		<img class="hide" src="res/bg1/layer-5.png" id="bg1_layer5_png" />
-		<img class="hide" src="res/bg2/layer-1.png" id="bg2_layer1_png" />
-		<img class="hide" src="res/bg2/layer-2.png" id="bg2_layer2_png" />
-		<img class="hide" src="res/bg2/layer-3.png" id="bg2_layer3_png" />
-		<img class="hide" src="res/bg2/layer-4.png" id="bg2_layer4_png" />
-		<img class="hide" src="res/bg2/layer-5.png" id="bg2_layer5_png" />
-		<img class="hide" src="res/ctl/action.svg" id="ctl_action_svg" />
-		<img class="hide" src="res/ctl/down.svg" id="ctl_down_svg" />
-		<img class="hide" src="res/ctl/full_screen.svg" id="ctl_full_screen_svg" />
-		<img class="hide" src="res/ctl/info.svg" id="ctl_info_svg" />
-		<img class="hide" src="res/ctl/left.svg" id="ctl_left_svg" />
-		<img class="hide" src="res/ctl/normal_screen.svg" id="ctl_normal_screen_svg" />
-		<img class="hide" src="res/ctl/pause.svg" id="ctl_pause_svg" />
-		<img class="hide" src="res/ctl/right.svg" id="ctl_right_svg" />
-		<img class="hide" src="res/ctl/start.svg" id="ctl_start_svg" />
-		<img class="hide" src="res/ctl/up.svg" id="ctl_up_svg" />
-		<img class="hide" src="res/ctl/icon.svg" id="ctl_icon_svg" />
-		<img class="hide" src="res/ctl/life.svg" id="ctl_life_svg" />
-		<img class="hide" src="res/ctl/power.svg" id="ctl_power_svg" />
-		<img class="hide" src="res/enemy/enemy1.png" id="enemy_enemy1_png" />
-		<img class="hide" src="res/enemy/enemy2.png" id="enemy_enemy2_png" />
-		<img class="hide" src="res/enemy/enemy3.png" id="enemy_enemy3_png" />
-		<img class="hide" src="res/enemy/enemy4.png" id="enemy_enemy4_png" />
-		<img class="hide" src="res/enemy/enemy5.png" id="enemy_enemy5_png" />
-		<img class="hide" src="res/enemy/enemy6.png" id="enemy_enemy6_png" />
-		<img class="hide" src="res/enemy/enemy7.png" id="enemy_enemy7_png" />
-		<img class="hide" src="res/enemy/enemy8.png" id="enemy_enemy8_png" />
-		<img class="hide" src="res/enemy/enemy9.png" id="enemy_enemy9_png" />
-		<img class="hide" src="res/enemy/enemy10.png" id="enemy_enemy10_png" />
-		<img class="hide" src="res/enemy/enemy11.png" id="enemy_enemy11_png" />
+		<audio
+			class="hide"
+			src="res/boom.wav"
+			id="boom_wav"
+		/>
+		<img
+			class="hide"
+			src="res/boom.png"
+			id="boom_png"
+		/>
+		<img
+			class="hide"
+			src="res/fire.png"
+			id="fire_png"
+		/>
+		<img
+			class="hide"
+			src="res/player.png"
+			id="player_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg1/layer-1.png"
+			id="bg1_layer1_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg1/layer-2.png"
+			id="bg1_layer2_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg1/layer-3.png"
+			id="bg1_layer3_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg1/layer-4.png"
+			id="bg1_layer4_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg1/layer-5.png"
+			id="bg1_layer5_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg2/layer-1.png"
+			id="bg2_layer1_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg2/layer-2.png"
+			id="bg2_layer2_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg2/layer-3.png"
+			id="bg2_layer3_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg2/layer-4.png"
+			id="bg2_layer4_png"
+		/>
+		<img
+			class="hide"
+			src="res/bg2/layer-5.png"
+			id="bg2_layer5_png"
+		/>
 
-		<script type="module" src="./src/main.js"></script>
+		<img
+			class="hide"
+			src="res/ctl/action.svg"
+			id="ctl_action_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/down.svg"
+			id="ctl_down_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/full_screen.svg"
+			id="ctl_full_screen_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/icon.svg"
+			id="ctl_icon_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/info.svg"
+			id="ctl_info_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/left.svg"
+			id="ctl_left_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/life_icon.svg"
+			id="ctl_life_icon_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/life_icon_inactive.svg"
+			id="ctl_life_icon_inactive_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/normal_screen.svg"
+			id="ctl_normal_screen_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/pause.svg"
+			id="ctl_pause_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/power_icon.svg"
+			id="ctl_power_icon_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/power_icon_inactive.svg"
+			id="ctl_power_icon_inactive_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/power1.svg"
+			id="ctl_power1_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/power2.svg"
+			id="ctl_power2_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/right.svg"
+			id="ctl_right_svg"
+		/>
+
+		<img
+			class="hide"
+			src="res/ctl/shield_icon_inactive.svg"
+			id="ctl_shield_icon_inactive_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/shield_icon.svg"
+			id="ctl_shield_icon_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/start.svg"
+			id="ctl_start_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/stopwatch_icon.svg"
+			id="ctl_stopwatch_icon_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/stopwatch_icon_inactive.svg"
+			id="ctl_stopwatch_icon_inactive_svg"
+		/>
+		<img
+			class="hide"
+			src="res/ctl/up.svg"
+			id="ctl_up_svg"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy1.png"
+			id="enemy_enemy1_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy2.png"
+			id="enemy_enemy2_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy3.png"
+			id="enemy_enemy3_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy4.png"
+			id="enemy_enemy4_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy5.png"
+			id="enemy_enemy5_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy6.png"
+			id="enemy_enemy6_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy7.png"
+			id="enemy_enemy7_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy8.png"
+			id="enemy_enemy8_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy9.png"
+			id="enemy_enemy9_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy10.png"
+			id="enemy_enemy10_png"
+		/>
+		<img
+			class="hide"
+			src="res/enemy/enemy11.png"
+			id="enemy_enemy11_png"
+		/>
+
+		<script
+			type="module"
+			src="./src/main.js"
+		></script>
 	</body>
 </html>

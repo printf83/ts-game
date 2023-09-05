@@ -1,8 +1,9 @@
+import { ASSET } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy1 = new Image();
-imgEnemy1.src = "./res/enemy/enemy1.png";
+imgEnemy1.src = ASSET.enemy.enemy1;
 
 export class enemy1 extends baseEnemy {
 	life_index: number;

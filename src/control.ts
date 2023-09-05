@@ -1,21 +1,9 @@
+import { ASSET } from "./asset.js";
 import { MathFloor, MathPI2, DPI, genUID, COLOR } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
 const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
-
-const BTN_IMG = {
-	full_screen: "./res/ctl/full_screen.svg",
-	normal_screen: "./res/ctl/normal_screen.svg",
-	pause: "./res/ctl/pause.svg",
-	start: "./res/ctl/start.svg",
-	left: "./res/ctl/left.svg",
-	right: "./res/ctl/right.svg",
-	up: "./res/ctl/up.svg",
-	down: "./res/ctl/down.svg",
-	action: "./res/ctl/action.svg",
-	info: "./res/ctl/info.svg",
-};
 
 const BTN_COLOR = {
 	normal: `rgba(${COLOR.medium}, 0.5)`,
@@ -183,7 +171,7 @@ export class control {
 			debug: this.debug,
 
 			name: "F11",
-			img: BTN_IMG.full_screen,
+			img: ASSET.ctl.full_screen,
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: 110,
 		});
@@ -193,7 +181,7 @@ export class control {
 			debug: this.debug,
 
 			name: "Enter",
-			img: BTN_IMG.pause,
+			img: ASSET.ctl.pause,
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: this.info.y + BTN_SIZE + BTN_PADDING,
 		});
@@ -204,7 +192,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowLeft",
-			img: "./res/ctl/left.svg",
+			img: ASSET.ctl.left,
 			x: BTN_MARGIN,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -214,7 +202,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowUp",
-			img: "./res/ctl/up.svg",
+			img: ASSET.ctl.up,
 			x: BTN_MARGIN,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
@@ -224,7 +212,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowDown",
-			img: "./res/ctl/down.svg",
+			img: ASSET.ctl.down,
 			x: BTN_PADDING + BTN_MARGIN + BTN_SIZE,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -235,7 +223,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowRight",
-			img: "./res/ctl/right.svg",
+			img: ASSET.ctl.right,
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -245,7 +233,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowUp",
-			img: "./res/ctl/up.svg",
+			img: ASSET.ctl.up,
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
@@ -255,7 +243,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowDown",
-			img: "./res/ctl/down.svg",
+			img: ASSET.ctl.down,
 			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -277,22 +265,22 @@ export class control {
 	}
 
 	draw_fullscreen() {
-		this.redraw_button({ btn: this.info, img: BTN_IMG.full_screen });
+		this.redraw_button({ btn: this.info, img: ASSET.ctl.full_screen });
 		this.info.draw_mark();
 	}
 
 	draw_normalscreen() {
-		this.redraw_button({ btn: this.info, img: BTN_IMG.normal_screen });
+		this.redraw_button({ btn: this.info, img: ASSET.ctl.normal_screen });
 		this.info.draw_mark();
 	}
 
 	draw_pause() {
-		this.redraw_button({ btn: this.pause, img: BTN_IMG.pause });
+		this.redraw_button({ btn: this.pause, img: ASSET.ctl.pause });
 		this.pause.draw_mark();
 	}
 
 	draw_start() {
-		this.redraw_button({ btn: this.pause, img: BTN_IMG.start });
+		this.redraw_button({ btn: this.pause, img: ASSET.ctl.start });
 		this.pause.draw_mark();
 	}
 

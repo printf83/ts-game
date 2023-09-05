@@ -1,3 +1,4 @@
+import { ASSET } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { game } from "./game.js";
 import { input } from "./input.js";
@@ -47,8 +48,13 @@ export class player extends baseAnimation {
 	collision_y: number;
 
 	img_life: HTMLImageElement;
+	img_life_inactive: HTMLImageElement;
 	img_power: HTMLImageElement;
+	img_power_inactive: HTMLImageElement;
 	img_stopwatch: HTMLImageElement;
+	img_stopwatch_inactive: HTMLImageElement;
+	img_shield: HTMLImageElement;
+	img_shield_inactive: HTMLImageElement;
 
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
@@ -59,7 +65,7 @@ export class player extends baseAnimation {
 		debug?: boolean;
 	}) {
 		const img = new Image();
-		img.src = "./res/player.png";
+		img.src = ASSET.player;
 
 		const sprite_width = 575;
 		const sprite_height = 523;
@@ -86,13 +92,28 @@ export class player extends baseAnimation {
 		this.game = opt.game;
 
 		this.img_life = new Image();
-		this.img_life.src = "./res/ctl/life.svg";
+		this.img_life.src = ASSET.ctl.life_icon;
 
 		this.img_power = new Image();
-		this.img_power.src = "./res/ctl/power.svg";
+		this.img_power.src = ASSET.ctl.power_icon;
 
 		this.img_stopwatch = new Image();
-		this.img_stopwatch.src = "./res/ctl/stopwatch.svg";
+		this.img_stopwatch.src = ASSET.ctl.stopwatch_icon;
+
+		this.img_shield = new Image();
+		this.img_shield.src = ASSET.ctl.shield_icon;
+
+		this.img_life_inactive = new Image();
+		this.img_life_inactive.src = ASSET.ctl.life_icon_inactive;
+
+		this.img_power_inactive = new Image();
+		this.img_power_inactive.src = ASSET.ctl.power_icon_inactive;
+
+		this.img_stopwatch_inactive = new Image();
+		this.img_stopwatch_inactive.src = ASSET.ctl.stopwatch_icon_inactive;
+
+		this.img_shield_inactive = new Image();
+		this.img_shield_inactive.src = ASSET.ctl.shield_icon_inactive;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
@@ -168,9 +189,18 @@ export class player extends baseAnimation {
 		super.draw();
 
 		if (this.power >= 100) this.ctx.drawImage(this.img_power, MathFloor(this.x + this.width * 0.5), MathFloor(this.y + 10), 16, 16);
+		else this.ctx.drawImage(this.img_power_inactive, MathFloor(this.x + this.width * 0.5), MathFloor(this.y + 10), 16, 16);
+
 		if (this.life < 30) this.ctx.drawImage(this.img_life, MathFloor(this.x + this.width * 0.5 + 20), MathFloor(this.y + 10), 16, 16);
+		else this.ctx.drawImage(this.img_life_inactive, MathFloor(this.x + this.width * 0.5 + 20), MathFloor(this.y + 10), 16, 16);
+
 		if (this.game.progress_timer_index < 20)
 			this.ctx.drawImage(this.img_stopwatch, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
+		else this.ctx.drawImage(this.img_stopwatch_inactive, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
+
+		if (this.invulnerable)
+			this.ctx.drawImage(this.img_shield, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
+		else this.ctx.drawImage(this.img_shield_inactive, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
 
 		//draw collision area
 		if (this.debug) {

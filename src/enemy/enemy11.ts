@@ -1,8 +1,9 @@
+import { ASSET } from "../asset.js";
 import { MathFloor, MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy11 = new Image();
-imgEnemy11.src = "./res/enemy/enemy11.png";
+imgEnemy11.src = ASSET.enemy.enemy11;
 
 export class enemy11 extends baseEnemy {
 	destination_y: number;

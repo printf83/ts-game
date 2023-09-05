@@ -1,8 +1,9 @@
+import { ASSET } from "./asset.js";
 import { particle } from "./particle.js";
 import { MathFloor, MathRandom } from "./util.js";
 
 const imgFire = new Image();
-imgFire.src = "./res/fire.png";
+imgFire.src = ASSET.fire;
 
 export class fire extends particle {
 	img: HTMLImageElement;

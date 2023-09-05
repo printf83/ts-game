@@ -1,8 +1,9 @@
+import { ASSET } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy2 = new Image();
-imgEnemy2.src = "./res/enemy/enemy2.png";
+imgEnemy2.src = ASSET.enemy.enemy2;
 
 export class enemy2 extends baseEnemy {
 	move_speed: number;

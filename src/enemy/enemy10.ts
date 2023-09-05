@@ -1,8 +1,9 @@
+import { ASSET } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy10 = new Image();
-imgEnemy10.src = "./res/enemy/enemy10.png";
+imgEnemy10.src = ASSET.enemy.enemy10;
 
 export class enemy10 extends baseEnemy {
 	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {

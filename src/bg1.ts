@@ -1,3 +1,4 @@
+import { ASSET } from "./asset.js";
 import { baseBg } from "./baseBg.js";
 
 export class bg1 extends baseBg {
@@ -5,11 +6,11 @@ export class bg1 extends baseBg {
 		super({
 			ctx: opt.ctx,
 			img: [
-				{ url: "./res/bg1/layer-1.png", speed_modifier: 0 },
-				{ url: "./res/bg1/layer-2.png", speed_modifier: 0.2 },
-				{ url: "./res/bg1/layer-3.png", speed_modifier: 0.4 },
-				{ url: "./res/bg1/layer-4.png", speed_modifier: 0.8 },
-				{ url: "./res/bg1/layer-5.png", speed_modifier: 1 },
+				{ url: ASSET.bg1.layer1, speed_modifier: 0 },
+				{ url: ASSET.bg1.layer2, speed_modifier: 0.2 },
+				{ url: ASSET.bg1.layer3, speed_modifier: 0.4 },
+				{ url: ASSET.bg1.layer4, speed_modifier: 0.8 },
+				{ url: ASSET.bg1.layer5, speed_modifier: 1 },
 			],
 			canvas_width: opt.canvas_width,
 			canvas_height: opt.canvas_height,

@@ -1,8 +1,9 @@
+import { ASSET } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
 
 const imgEnemy3 = new Image();
-imgEnemy3.src = "./res/enemy/enemy3.png";
+imgEnemy3.src = ASSET.enemy.enemy3;
 
 export class enemy3 extends baseEnemy {
 	angle: number;

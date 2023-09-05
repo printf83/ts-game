@@ -1,10 +1,11 @@
+import { ASSET } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { MathFloor, MathRandom } from "./util.js";
 
 const imgExplosion = new Image();
-imgExplosion.src = "./res/boom.png";
+imgExplosion.src = ASSET.boom;
 
-const soundExplosion = "./res/boom.wav";
+const soundExplosion = ASSET.boom_wav;
 
 export class explosion extends baseAnimation {
 	sound_played?: boolean;
