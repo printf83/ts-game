@@ -346,7 +346,21 @@ export class gui {
 			})
 		);
 
-		//copyright
+		//url
+		this.text.push(
+			new text({
+				ctx: this.ctx,
+				x: 5,
+				y: MathFloor(this.canvas_height - 5),
+				text: "https://github.com/printf83/ts-game",
+				text_align: "left",
+				font_family: "Arial",
+				shadow_blur: 0,
+				text_color: `rgb(${COLOR.light})`,
+				font_weight: 15,
+				debug: this.debug,
+			})
+		);
 		this.text.push(
 			new text({
 				ctx: this.ctx,

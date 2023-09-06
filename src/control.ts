@@ -6,7 +6,7 @@ const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
 const BTN_COLOR = {
-	normal: `rgba(${COLOR.dark}, 0.5)`,
+	normal: `rgba(${COLOR.dark}, 0.3)`,
 	highlight: `rgba(${COLOR.blue}, 0.5)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
 	active: `rgba(${COLOR.blue}, 0.5)`,
