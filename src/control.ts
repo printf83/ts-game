@@ -338,7 +338,7 @@ class arrow {
 		const angle_rad = (angle_degree * MathPI) / 180;
 		const x = center_x + radius * Math.cos(angle_rad);
 		const y = center_y + radius * Math.sin(angle_rad);
-		return { x: MathFloor(x), y: MathFloor(y) };
+		return { x: x, y: y };
 	}
 	private angle_degree_for_arc(angle_degree: number) {
 		return MathPI * (angle_degree * (2 / 360));
@@ -358,22 +358,28 @@ class arrow {
 		opt.ctx.beginPath();
 		opt.ctx.fillStyle = opt.color;
 
-		opt.ctx.arc(opt.x, opt.y, opt.hole_width, this.angle_degree_for_arc(opt.start_degree), this.angle_degree_for_arc(opt.end_degree));
+		opt.ctx.arc(
+			MathFloor(opt.x),
+			MathFloor(opt.y),
+			opt.hole_width,
+			this.angle_degree_for_arc(opt.start_degree),
+			this.angle_degree_for_arc(opt.end_degree)
+		);
 
-		let coord_1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
-		opt.ctx.lineTo(coord_1.x, coord_1.y);
+		let c1 = this.get_angle_position(MathFloor(opt.x), MathFloor(opt.y), opt.btn_width, opt.end_degree);
+		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
 
 		opt.ctx.arc(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.btn_width,
 			this.angle_degree_for_arc(opt.end_degree),
 			this.angle_degree_for_arc(opt.start_degree),
 			true
 		);
 
-		let coord_2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
-		opt.ctx.lineTo(coord_2.x, coord_2.y);
+		let c2 = this.get_angle_position(MathFloor(opt.x), MathFloor(opt.y), opt.hole_width, opt.start_degree);
+		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
 
 		opt.ctx.fill();
 		opt.ctx.restore();
@@ -395,14 +401,20 @@ class arrow {
 		opt.ctx.strokeStyle = opt.color;
 		opt.ctx.lineWidth = opt.line_width;
 
-		opt.ctx.arc(opt.x, opt.y, opt.hole_width, this.angle_degree_for_arc(opt.start_degree), this.angle_degree_for_arc(opt.end_degree));
+		opt.ctx.arc(
+			MathFloor(opt.x),
+			MathFloor(opt.y),
+			opt.hole_width,
+			this.angle_degree_for_arc(opt.start_degree),
+			this.angle_degree_for_arc(opt.end_degree)
+		);
 
 		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
-		opt.ctx.lineTo(c1.x, c1.y);
+		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
 
 		opt.ctx.arc(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.btn_width,
 			this.angle_degree_for_arc(opt.end_degree),
 			this.angle_degree_for_arc(opt.start_degree),
@@ -410,7 +422,7 @@ class arrow {
 		);
 
 		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
-		opt.ctx.lineTo(c2.x, c2.y);
+		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
 
 		opt.ctx.stroke();
 		opt.ctx.restore();
@@ -434,24 +446,24 @@ class arrow {
 		opt.ctx.lineWidth = opt.line_width;
 
 		opt.ctx.arc(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.hole_width - opt.line_width,
 			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
 			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2))
 		);
 
 		let c1 = this.get_angle_position(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.btn_width + opt.line_width * 2,
 			this.calc_degree(opt.end_degree + opt.line_width * 2)
 		);
-		opt.ctx.lineTo(c1.x, c1.y);
+		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
 
 		opt.ctx.arc(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.btn_width + opt.line_width * 2,
 			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)),
 			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
@@ -459,12 +471,12 @@ class arrow {
 		);
 
 		let c2 = this.get_angle_position(
-			opt.x,
-			opt.y,
+			MathFloor(opt.x),
+			MathFloor(opt.y),
 			opt.hole_width - opt.line_width,
 			this.calc_degree(opt.start_degree - opt.line_width)
 		);
-		opt.ctx.lineTo(c2.x, c2.y);
+		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
 
 		opt.ctx.fill();
 		opt.ctx.restore();
@@ -568,7 +580,8 @@ export class control {
 
 		const arrow_x = 70 * DPI;
 		const arrow_y = this.canvas_height - 70 * DPI;
-		const arrow_padding = 5 * DPI;
+		const arrow_padding = 3 * DPI;
+
 		this.arrow_right = new arrow({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,

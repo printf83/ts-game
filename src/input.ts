@@ -19,7 +19,7 @@ export class input {
 				if (e.key === "Control") this.last_key = "PRESS control";
 				if (e.key === "Enter") this.last_key = "PRESS enter";
 
-				console.log(this.last_key);
+				// console.log(this.last_key);
 			}
 		});
 
@@ -27,6 +27,7 @@ export class input {
 			if (this.key_filter.indexOf(e.key) > -1) {
 				e.preventDefault();
 				e.stopPropagation();
+
 				if (e.key === "ArrowLeft") this.last_key = "RELEASE left";
 				if (e.key === "ArrowRight") this.last_key = "RELEASE right";
 				if (e.key === "ArrowUp") this.last_key = "RELEASE up";
@@ -35,7 +36,7 @@ export class input {
 				if (e.key === "Control") this.last_key = "RELEASE control";
 				if (e.key === "Enter") this.last_key = "RELEASE enter";
 
-				console.log(this.last_key);
+				// console.log(this.last_key);
 			}
 		});
 	}

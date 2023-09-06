@@ -163,7 +163,6 @@ export class game {
 			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
-			// x: isTouchDevice() ? (this.canvas_width - 575 * 0.25) * 0.5 : this.canvas_width * 0.1,
 			x: isTouchDevice() ? this.canvas_width * 0.25 : this.canvas_width * 0.1,
 			debug: this.debug,
 		});

@@ -13,6 +13,7 @@ export class progress {
 	percent: number;
 
 	bar_color: string | string[];
+	generated_bar_color: string | CanvasGradient;
 
 	bar_x: number;
 	bar_y: number;
@@ -71,6 +72,7 @@ export class progress {
 		this.bar_width = this.bar_max_width * this.percent;
 
 		this.bar_color = opt.bar_color;
+		this.generated_bar_color = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
 	}
 	update(value: number, min?: number, max?: number) {
 		this.min = min ?? this.min;
@@ -91,7 +93,7 @@ export class progress {
 
 		if (this.radius) {
 			this.ctx.beginPath();
-			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
+			this.ctx.fillStyle = this.generated_bar_color;
 			this.ctx.roundRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_width, this.bar_height, [this.radius]);
 			this.ctx.fill();
 		} else {
