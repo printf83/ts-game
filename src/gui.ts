@@ -190,6 +190,7 @@ class progress {
 		this.ctx.restore();
 	}
 }
+
 class text {
 	debug: boolean;
 
@@ -341,6 +342,22 @@ export class gui {
 				y: 60,
 				width: 20,
 				height: 20,
+				debug: this.debug,
+			})
+		);
+
+		//copyright
+		this.text.push(
+			new text({
+				ctx: this.ctx,
+				x: MathFloor(this.canvas_width - 5),
+				y: MathFloor(this.canvas_height - 5),
+				text: "https://printf83.github.io/ts-game/",
+				text_align: "right",
+				font_family: "Arial",
+				shadow_blur: 0,
+				text_color: `rgb(${COLOR.light})`,
+				font_weight: 15,
 				debug: this.debug,
 			})
 		);

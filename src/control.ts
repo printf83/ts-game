@@ -6,7 +6,7 @@ const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
 const BTN_COLOR = {
-	normal: `rgba(${COLOR.medium}, 0.5)`,
+	normal: `rgba(${COLOR.dark}, 0.5)`,
 	highlight: `rgba(${COLOR.blue}, 0.5)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
 	active: `rgba(${COLOR.blue}, 0.5)`,
@@ -29,14 +29,38 @@ class button {
 
 	img: HTMLImageElement;
 	img_url: string;
+	img_width: number;
+	img_height: number;
 
 	color: string;
 	width: number;
 	height: number;
-	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; x: number; y: number; width?: number; height?: number; color?: string; debug?: boolean }) {
+	padding: number;
+	line_width: number;
+
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
+		name: string;
+		img: string;
+		x: number;
+		y: number;
+		img_width?: number;
+		img_height?: number;
+		width?: number;
+		height?: number;
+		padding?: number;
+		color?: string;
+		line_width?: number;
+		debug?: boolean;
+	}) {
 		opt.width ??= BTN_SIZE;
 		opt.height ??= BTN_SIZE;
+		opt.img_width ??= 16;
+		opt.img_height ??= 16;
+		opt.padding ??= BTN_SIZE * 0.4;
 		opt.color ??= BTN_COLOR.normal;
+		opt.line_width ??= 2;
 		opt.debug ??= false;
 
 		this.debug = opt.debug;
@@ -53,15 +77,19 @@ class button {
 		this.img = new Image();
 		this.img.src = opt.img;
 		this.img_url = opt.img;
+		this.img_width = opt.img_width;
+		this.img_height = opt.img_height;
 		this.x = opt.x;
 		this.y = opt.y;
 		this.width = opt.width;
 		this.height = opt.height;
+		this.padding = opt.padding;
 		this.color = opt.color;
+		this.line_width = opt.line_width;
 	}
 	clear() {
-		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
-		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), BTN_SIZE + 2, BTN_SIZE + 2);
+		this.ctx.clearRect(MathFloor(this.x - 2), MathFloor(this.y - 2), BTN_SIZE + 4, BTN_SIZE + 4);
+		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 2), MathFloor(this.y - 2), BTN_SIZE + 4, BTN_SIZE + 4);
 	}
 	draw() {
 		this.clear();
@@ -69,19 +97,39 @@ class button {
 		this.ctx.save();
 		this.ctx.fillStyle = this.color;
 		this.ctx.strokeStyle = this.color;
-		this.ctx.lineWidth = 2;
+		this.ctx.lineWidth = this.line_width;
 		this.ctx.beginPath();
 		this.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
 		this.ctx.fill();
 		this.ctx.stroke();
 		this.ctx.restore();
 
-		// this.ctx.drawImage(this.img, 0, 0, 16, 16, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
-		this.ctx.drawImage(this.img, MathFloor(this.x + (this.width - 16) * 0.5), MathFloor(this.y + (this.height - 16) * 0.5), 16, 16);
+		this.ctx.drawImage(
+			this.img,
+			0,
+			0,
+			this.img_width,
+			this.img_height,
+			MathFloor(this.x + (this.width - (this.width - this.padding)) * 0.5),
+			MathFloor(this.y + (this.height - (this.height - this.padding)) * 0.5),
+			this.width - this.padding,
+			this.height - this.padding
+		);
 	}
 	clear_mark() {
-		this.ctx_mark.clearRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
-		if (this.debug) this.ctx_mark.strokeRect(MathFloor(this.x - BTN_SIZE * 0.25), MathFloor(this.y - BTN_SIZE * 0.25), BTN_SIZE * 1.5, BTN_SIZE * 1.5);
+		this.ctx_mark.clearRect(
+			MathFloor(this.x - BTN_SIZE * 0.25 - 2),
+			MathFloor(this.y - BTN_SIZE * 0.25 - 2),
+			BTN_SIZE * 1.5 + 4,
+			BTN_SIZE * 1.5 + 4
+		);
+		if (this.debug)
+			this.ctx_mark.strokeRect(
+				MathFloor(this.x - BTN_SIZE * 0.25 - 2),
+				MathFloor(this.y - BTN_SIZE * 0.25 - 2),
+				BTN_SIZE * 1.5 + 4,
+				BTN_SIZE * 1.5 + 4
+			);
 	}
 	draw_mark() {
 		this.clear_mark();
@@ -114,6 +162,7 @@ class arrow {
 	img_height: number;
 	width: number;
 	height: number;
+	padding: number;
 
 	color: string;
 	line_width: number;
@@ -123,16 +172,36 @@ class arrow {
 	start_degree: number;
 	end_degree: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; ctx_mark: CanvasRenderingContext2D; name: string; img: string; img_width?: number; img_height?: number; width?: number; height?: number; x: number; y: number; btn_width?: number; hole_width?: number; start_degree: number; end_degree: number; color?: string; line_width?: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
+		name: string;
+		img: string;
+		img_width?: number;
+		img_height?: number;
+		width?: number;
+		height?: number;
+		padding?: number;
+		x: number;
+		y: number;
+		btn_width?: number;
+		hole_width?: number;
+		start_degree: number;
+		end_degree: number;
+		color?: string;
+		line_width?: number;
+		debug?: boolean;
+	}) {
 		opt.hole_width ??= BTN_SIZE * 0.5;
 		opt.btn_width ??= BTN_SIZE * 0.5 + opt.hole_width;
+		opt.padding ??= opt.btn_width * 0.4;
 		opt.color ??= BTN_COLOR.normal;
 		opt.line_width ??= 2;
 
 		opt.img_width ??= 16;
 		opt.img_height ??= 16;
-		opt.width ??= 16;
-		opt.height ??= 16;
+		opt.width ??= opt.btn_width;
+		opt.height ??= opt.btn_width;
 
 		opt.debug ??= false;
 
@@ -163,6 +232,7 @@ class arrow {
 		this.end_degree = opt.end_degree;
 
 		this.color = opt.color;
+		this.padding = opt.padding;
 		this.line_width = opt.line_width;
 	}
 	clear() {
@@ -274,7 +344,16 @@ class arrow {
 		return MathPI * (angle_degree * (2 / 360));
 	}
 
-	private draw_fill(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; hole_width: number; btn_width: number; start_degree: number; end_degree: number; color: string }) {
+	private draw_fill(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		hole_width: number;
+		btn_width: number;
+		start_degree: number;
+		end_degree: number;
+		color: string;
+	}) {
 		opt.ctx.save();
 		opt.ctx.beginPath();
 		opt.ctx.fillStyle = opt.color;
@@ -284,7 +363,14 @@ class arrow {
 		let coord_1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
 		opt.ctx.lineTo(coord_1.x, coord_1.y);
 
-		opt.ctx.arc(opt.x, opt.y, opt.btn_width, this.angle_degree_for_arc(opt.end_degree), this.angle_degree_for_arc(opt.start_degree), true);
+		opt.ctx.arc(
+			opt.x,
+			opt.y,
+			opt.btn_width,
+			this.angle_degree_for_arc(opt.end_degree),
+			this.angle_degree_for_arc(opt.start_degree),
+			true
+		);
 
 		let coord_2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
 		opt.ctx.lineTo(coord_2.x, coord_2.y);
@@ -293,7 +379,17 @@ class arrow {
 		opt.ctx.restore();
 	}
 
-	private draw_line(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; hole_width: number; btn_width: number; start_degree: number; end_degree: number; color: string; line_width: number }) {
+	private draw_line(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		hole_width: number;
+		btn_width: number;
+		start_degree: number;
+		end_degree: number;
+		color: string;
+		line_width: number;
+	}) {
 		opt.ctx.save();
 		opt.ctx.beginPath();
 		opt.ctx.strokeStyle = opt.color;
@@ -304,7 +400,14 @@ class arrow {
 		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
 		opt.ctx.lineTo(c1.x, c1.y);
 
-		opt.ctx.arc(opt.x, opt.y, opt.btn_width, this.angle_degree_for_arc(opt.end_degree), this.angle_degree_for_arc(opt.start_degree), true);
+		opt.ctx.arc(
+			opt.x,
+			opt.y,
+			opt.btn_width,
+			this.angle_degree_for_arc(opt.end_degree),
+			this.angle_degree_for_arc(opt.start_degree),
+			true
+		);
 
 		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
 		opt.ctx.lineTo(c2.x, c2.y);
@@ -313,7 +416,16 @@ class arrow {
 		opt.ctx.restore();
 	}
 
-	private draw_clear(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; hole_width: number; btn_width: number; start_degree: number; end_degree: number; line_width: number }) {
+	private draw_clear(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		hole_width: number;
+		btn_width: number;
+		start_degree: number;
+		end_degree: number;
+		line_width: number;
+	}) {
 		opt.ctx.save();
 		opt.ctx.globalCompositeOperation = "destination-out";
 		opt.ctx.beginPath();
@@ -321,21 +433,52 @@ class arrow {
 		opt.ctx.strokeStyle = "black";
 		opt.ctx.lineWidth = opt.line_width;
 
-		opt.ctx.arc(opt.x, opt.y, opt.hole_width - opt.line_width, this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)), this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)));
+		opt.ctx.arc(
+			opt.x,
+			opt.y,
+			opt.hole_width - opt.line_width,
+			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
+			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2))
+		);
 
-		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width + opt.line_width * 2, this.calc_degree(opt.end_degree + opt.line_width * 2));
+		let c1 = this.get_angle_position(
+			opt.x,
+			opt.y,
+			opt.btn_width + opt.line_width * 2,
+			this.calc_degree(opt.end_degree + opt.line_width * 2)
+		);
 		opt.ctx.lineTo(c1.x, c1.y);
 
-		opt.ctx.arc(opt.x, opt.y, opt.btn_width + opt.line_width * 2, this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)), this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)), true);
+		opt.ctx.arc(
+			opt.x,
+			opt.y,
+			opt.btn_width + opt.line_width * 2,
+			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)),
+			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
+			true
+		);
 
-		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width - opt.line_width, this.calc_degree(opt.start_degree - opt.line_width));
+		let c2 = this.get_angle_position(
+			opt.x,
+			opt.y,
+			opt.hole_width - opt.line_width,
+			this.calc_degree(opt.start_degree - opt.line_width)
+		);
 		opt.ctx.lineTo(c2.x, c2.y);
 
 		opt.ctx.fill();
 		opt.ctx.restore();
 	}
 
-	private draw_img(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; hole_width: number; btn_width: number; start_degree: number; end_degree: number }) {
+	private draw_img(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		hole_width: number;
+		btn_width: number;
+		start_degree: number;
+		end_degree: number;
+	}) {
 		opt.ctx.save();
 
 		const mid_degree = this.calc_middle_degree(opt.start_degree, opt.end_degree);
@@ -344,7 +487,17 @@ class arrow {
 		let img_x = mid_coord.x - this.width * 0.5;
 		let img_y = mid_coord.y - this.height * 0.5;
 
-		opt.ctx.drawImage(this.img, 0, 0, this.img_width, this.img_height, img_x, img_y, this.width, this.height);
+		opt.ctx.drawImage(
+			this.img,
+			0,
+			0,
+			this.img_width,
+			this.img_height,
+			MathFloor(img_x + (this.width - (this.width - this.padding)) * 0.5),
+			MathFloor(img_y + (this.height - (this.height - this.padding)) * 0.5),
+			this.width - this.padding,
+			this.height - this.padding
+		);
 
 		opt.ctx.restore();
 	}
@@ -496,16 +649,6 @@ export class control {
 			y: this.button_fullscreen.y + BTN_SIZE + BTN_PADDING,
 		});
 
-		this.button_action = new button({
-			ctx: this.ctx_control,
-			ctx_mark: this.ctx_mark,
-			debug: this.debug,
-
-			name: " ",
-			img: ASSET.ctl.power1,
-			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
-			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
-		});
 		this.button_power = new button({
 			ctx: this.ctx_control,
 			ctx_mark: this.ctx_mark,
@@ -513,6 +656,16 @@ export class control {
 
 			name: "Control",
 			img: ASSET.ctl.power2,
+			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
+			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
+		});
+		this.button_action = new button({
+			ctx: this.ctx_control,
+			ctx_mark: this.ctx_mark,
+			debug: this.debug,
+
+			name: " ",
+			img: ASSET.ctl.power1,
 			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -699,7 +852,13 @@ export class control {
 			}
 		}
 	}
-	attach_mouse(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+	attach_mouse(opt: {
+		canvas_mark: HTMLCanvasElement;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
+		debug?: boolean;
+	}) {
 		opt.canvas_mark.addEventListener("mousedown", (event: MouseEvent) => {
 			this.mouse_event({
 				event_name: "keydown",
@@ -789,7 +948,13 @@ export class control {
 		}
 	}
 
-	attach_touch(opt: { canvas_mark: HTMLCanvasElement; marker_ctx: CanvasRenderingContext2D; pointer_ctx: CanvasRenderingContext2D; control_ctx: CanvasRenderingContext2D; debug?: boolean }) {
+	attach_touch(opt: {
+		canvas_mark: HTMLCanvasElement;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
+		debug?: boolean;
+	}) {
 		opt.canvas_mark.addEventListener("touchstart", (event: TouchEvent) => {
 			this.touch_event({
 				event_name: "keydown",
