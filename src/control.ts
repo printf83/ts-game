@@ -1,5 +1,5 @@
 import { ASSET } from "./asset.js";
-import { MathFloor, MathPI2, DPI, genUID, COLOR, MathPI } from "./util.js";
+import { MathPI2, DPI, genUID, COLOR, MathPI } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
 const BTN_PADDING = 20 * DPI;
@@ -88,19 +88,8 @@ class button {
 		this.line_width = opt.line_width;
 	}
 	clear() {
-		this.ctx.clearRect(
-			MathFloor(this.x - 2),
-			MathFloor(this.y - 2),
-			BTN_SIZE + 4,
-			BTN_SIZE + 4
-		);
-		if (this.debug)
-			this.ctx.strokeRect(
-				MathFloor(this.x - 2),
-				MathFloor(this.y - 2),
-				BTN_SIZE + 4,
-				BTN_SIZE + 4
-			);
+		this.ctx.clearRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
+		if (this.debug) this.ctx.strokeRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
 	}
 	draw() {
 		this.clear();
@@ -111,8 +100,8 @@ class button {
 		this.ctx.lineWidth = this.line_width;
 		this.ctx.beginPath();
 		this.ctx.arc(
-			MathFloor(this.x + this.width * 0.5),
-			MathFloor(this.y + this.width * 0.5),
+			this.x + this.width * 0.5,
+			this.y + this.width * 0.5,
 			BTN_SIZE * 0.5,
 			0,
 			MathPI2
@@ -127,23 +116,23 @@ class button {
 			0,
 			this.img_width,
 			this.img_height,
-			MathFloor(this.x + (this.width - (this.width - this.padding)) * 0.5),
-			MathFloor(this.y + (this.height - (this.height - this.padding)) * 0.5),
+			this.x + (this.width - (this.width - this.padding)) * 0.5,
+			this.y + (this.height - (this.height - this.padding)) * 0.5,
 			this.width - this.padding,
 			this.height - this.padding
 		);
 	}
 	clear_mark() {
 		this.ctx_mark.clearRect(
-			MathFloor(this.x - BTN_SIZE * 0.25 - 2),
-			MathFloor(this.y - BTN_SIZE * 0.25 - 2),
+			this.x - BTN_SIZE * 0.25 - 2,
+			this.y - BTN_SIZE * 0.25 - 2,
 			BTN_SIZE * 1.5 + 4,
 			BTN_SIZE * 1.5 + 4
 		);
 		if (this.debug)
 			this.ctx_mark.strokeRect(
-				MathFloor(this.x - BTN_SIZE * 0.25 - 2),
-				MathFloor(this.y - BTN_SIZE * 0.25 - 2),
+				this.x - BTN_SIZE * 0.25 - 2,
+				this.y - BTN_SIZE * 0.25 - 2,
 				BTN_SIZE * 1.5 + 4,
 				BTN_SIZE * 1.5 + 4
 			);
@@ -154,8 +143,8 @@ class button {
 		this.ctx_mark.fillStyle = this.uid_text;
 		this.ctx_mark.beginPath();
 		this.ctx_mark.arc(
-			MathFloor(this.x + this.width * 0.5),
-			MathFloor(this.y + this.width * 0.5),
+			this.x + this.width * 0.5,
+			this.y + this.width * 0.5,
 			BTN_SIZE * 0.75,
 			0,
 			MathPI2
@@ -369,9 +358,9 @@ class arrow {
 		return { x: x, y: y };
 	}
 	private angle_degree_for_arc(angle_degree: number) {
-		return MathPI * (angle_degree * (2 / 360));
+		const two_360 = 0.00555555555; //2/360
+		return MathPI * (angle_degree * two_360);
 	}
-
 	private draw_fill(opt: {
 		ctx: CanvasRenderingContext2D;
 		x: number;
@@ -387,37 +376,27 @@ class arrow {
 		opt.ctx.fillStyle = opt.color;
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.hole_width,
 			this.angle_degree_for_arc(opt.start_degree),
 			this.angle_degree_for_arc(opt.end_degree)
 		);
 
-		let c1 = this.get_angle_position(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
-			opt.btn_width,
-			opt.end_degree
-		);
-		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
+		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
+		opt.ctx.lineTo(c1.x, c1.y);
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.btn_width,
 			this.angle_degree_for_arc(opt.end_degree),
 			this.angle_degree_for_arc(opt.start_degree),
 			true
 		);
 
-		let c2 = this.get_angle_position(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
-			opt.hole_width,
-			opt.start_degree
-		);
-		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
+		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
+		opt.ctx.lineTo(c2.x, c2.y);
 
 		opt.ctx.fill();
 		opt.ctx.restore();
@@ -440,19 +419,19 @@ class arrow {
 		opt.ctx.lineWidth = opt.line_width;
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.hole_width,
 			this.angle_degree_for_arc(opt.start_degree),
 			this.angle_degree_for_arc(opt.end_degree)
 		);
 
 		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
-		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
+		opt.ctx.lineTo(c1.x, c1.y);
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.btn_width,
 			this.angle_degree_for_arc(opt.end_degree),
 			this.angle_degree_for_arc(opt.start_degree),
@@ -460,7 +439,7 @@ class arrow {
 		);
 
 		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
-		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
+		opt.ctx.lineTo(c2.x, c2.y);
 
 		opt.ctx.stroke();
 		opt.ctx.restore();
@@ -484,24 +463,24 @@ class arrow {
 		opt.ctx.lineWidth = opt.line_width;
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.hole_width - opt.line_width,
 			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
 			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2))
 		);
 
 		let c1 = this.get_angle_position(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.btn_width + opt.line_width * 2,
 			this.calc_degree(opt.end_degree + opt.line_width * 2)
 		);
-		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
+		opt.ctx.lineTo(c1.x, c1.y);
 
 		opt.ctx.arc(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.btn_width + opt.line_width * 2,
 			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)),
 			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
@@ -509,12 +488,12 @@ class arrow {
 		);
 
 		let c2 = this.get_angle_position(
-			MathFloor(opt.x),
-			MathFloor(opt.y),
+			opt.x,
+			opt.y,
 			opt.hole_width - opt.line_width,
 			this.calc_degree(opt.start_degree - opt.line_width)
 		);
-		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
+		opt.ctx.lineTo(c2.x, c2.y);
 
 		opt.ctx.fill();
 		opt.ctx.restore();
@@ -548,8 +527,8 @@ class arrow {
 			0,
 			this.img_width,
 			this.img_height,
-			MathFloor(img_x + (this.width - (this.width - this.padding)) * 0.5),
-			MathFloor(img_y + (this.height - (this.height - this.padding)) * 0.5),
+			img_x + (this.width - (this.width - this.padding)) * 0.5,
+			img_y + (this.height - (this.height - this.padding)) * 0.5,
 			this.width - this.padding,
 			this.height - this.padding
 		);
@@ -870,9 +849,9 @@ export class control {
 
 		if (x > -1 && y > -1) {
 			if (opt.debug) {
-				this.ctx_pointer.clearRect(MathFloor(x - 50), MathFloor(y - 50), 100, 100);
+				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
 				this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
-				this.ctx_pointer.fillRect(MathFloor(x - 5), MathFloor(y - 5), 10, 10);
+				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
 
 				console.log({ x, y });
 			}
@@ -977,9 +956,9 @@ export class control {
 
 		if (x > -1 && y > -1) {
 			if (opt.debug) {
-				this.ctx_pointer.clearRect(MathFloor(x - 50), MathFloor(y - 50), 100, 100);
+				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
 				this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
-				this.ctx_pointer.fillRect(MathFloor(x - 5), MathFloor(y - 5), 10, 10);
+				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
 			}
 
 			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;

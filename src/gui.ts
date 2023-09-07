@@ -1,5 +1,5 @@
 import { ASSET } from "./asset.js";
-import { COLOR, MathFloor, clear_text, draw_text } from "./util.js";
+import { COLOR, clear_text, draw_text } from "./util.js";
 
 class box {
 	ctx: CanvasRenderingContext2D;
@@ -30,23 +30,13 @@ class box {
 		this.height = opt.height;
 	}
 	clear() {
-		this.ctx.clearRect(
-			MathFloor(this.x - 1),
-			MathFloor(this.y - 1),
-			this.width + 2,
-			this.height + 2
-		);
+		this.ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 		if (this.debug)
-			this.ctx.strokeRect(
-				MathFloor(this.x - 1),
-				MathFloor(this.y - 1),
-				this.width + 2,
-				this.height + 2
-			);
+			this.ctx.strokeRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 	}
 	draw() {
 		this.clear();
-		this.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 }
 
@@ -94,19 +84,9 @@ class image {
 		this.height = opt.height;
 	}
 	clear() {
-		this.ctx.clearRect(
-			MathFloor(this.x - 1),
-			MathFloor(this.y - 1),
-			this.width + 2,
-			this.height + 2
-		);
+		this.ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 		if (this.debug)
-			this.ctx.strokeRect(
-				MathFloor(this.x - 1),
-				MathFloor(this.y - 1),
-				this.width + 2,
-				this.height + 2
-			);
+			this.ctx.strokeRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 	}
 	draw() {
 		this.clear();
@@ -117,8 +97,8 @@ class image {
 			0,
 			this.img_width,
 			this.img_height,
-			MathFloor(this.x),
-			MathFloor(this.y),
+			this.x,
+			this.y,
 			this.width,
 			this.height
 		);
@@ -186,34 +166,22 @@ class progress {
 	clear() {
 		if (this.shadow_color && this.shadow_blur)
 			this.ctx.clearRect(
-				MathFloor(this.shadow_x - 2),
-				MathFloor(this.shadow_y - 2),
+				this.shadow_x - 2,
+				this.shadow_y - 2,
 				this.shadow_width + 4,
 				this.shadow_height + 4
 			);
-		else
-			this.ctx.clearRect(
-				MathFloor(this.x - 1),
-				MathFloor(this.y - 1),
-				this.width + 2,
-				this.height + 2
-			);
+		else this.ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 
 		if (this.debug) {
 			if (this.shadow_color && this.shadow_blur)
 				this.ctx.strokeRect(
-					MathFloor(this.shadow_x - 2),
-					MathFloor(this.shadow_y - 2),
+					this.shadow_x - 2,
+					this.shadow_y - 2,
 					this.shadow_width + 4,
 					this.shadow_height + 4
 				);
-			else
-				this.ctx.strokeRect(
-					MathFloor(this.x - 1),
-					MathFloor(this.y - 1),
-					this.width + 2,
-					this.height + 2
-				);
+			else this.ctx.strokeRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 		}
 	}
 	draw() {
@@ -226,8 +194,8 @@ class progress {
 				this.ctx.beginPath();
 				this.ctx.fillStyle = this.shadow_color;
 				this.ctx.roundRect(
-					MathFloor(this.shadow_x),
-					MathFloor(this.shadow_y),
+					this.shadow_x,
+					this.shadow_y,
 					this.shadow_width,
 					this.shadow_height,
 					[this.radius]
@@ -236,22 +204,20 @@ class progress {
 			}
 			this.ctx.beginPath();
 			this.ctx.fillStyle = this.bg_color;
-			this.ctx.roundRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height, [
-				this.radius,
-			]);
+			this.ctx.roundRect(this.x, this.y, this.width, this.height, [this.radius]);
 			this.ctx.fill();
 		} else {
 			if (this.shadow_color && this.shadow_blur) {
 				this.ctx.fillStyle = this.shadow_color;
 				this.ctx.fillRect(
-					MathFloor(this.shadow_x),
-					MathFloor(this.shadow_y),
+					this.shadow_x,
+					this.shadow_y,
 					this.shadow_width,
 					this.shadow_height
 				);
 			}
 			this.ctx.fillStyle = this.bg_color;
-			this.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+			this.ctx.fillRect(this.x, this.y, this.width, this.height);
 		}
 
 		this.ctx.restore();
@@ -423,7 +389,7 @@ export class gui {
 			new text({
 				ctx: this.ctx,
 				x: 5,
-				y: MathFloor(this.canvas_height - 5),
+				y: this.canvas_height - 5,
 				text: "https://github.com/printf83/ts-game",
 				text_align: "left",
 				font_family: "Arial",
@@ -436,8 +402,8 @@ export class gui {
 		this.text.push(
 			new text({
 				ctx: this.ctx,
-				x: MathFloor(this.canvas_width - 5),
-				y: MathFloor(this.canvas_height - 5),
+				x: this.canvas_width - 5,
+				y: this.canvas_height - 5,
 				text: "https://printf83.github.io/ts-game/",
 				text_align: "right",
 				font_family: "Arial",

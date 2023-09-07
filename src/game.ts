@@ -307,6 +307,9 @@ export class game {
 		this.game_over = false;
 		this.game_timeout = false;
 		this.clean_ctx_value_message();
+
+		this.player.set_state("run");
+
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
@@ -350,6 +353,9 @@ export class game {
 
 		this.game_up = false;
 		this.clean_ctx_value_message();
+
+		this.player.set_state("run");
+
 		requestAnimationFrame((timestamp) => {
 			this.animate(timestamp);
 		});
