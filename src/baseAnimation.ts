@@ -9,7 +9,6 @@ export class baseAnimation {
 	frame_interval: number;
 
 	frame_y: number;
-	// frame_x: number;
 
 	mark_delete: boolean;
 
