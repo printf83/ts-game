@@ -11,8 +11,22 @@ const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement
 
 (function () {
 	window.addEventListener("load", () => {
-		if (canvas_game && canvas_static && canvas_value && canvas_control && canvas_pointer && canvas_mark) {
-			[canvas_game, canvas_static, canvas_value, canvas_control, canvas_pointer, canvas_mark].forEach((i) => {
+		if (
+			canvas_game &&
+			canvas_static &&
+			canvas_value &&
+			canvas_control &&
+			canvas_pointer &&
+			canvas_mark
+		) {
+			[
+				canvas_game,
+				canvas_static,
+				canvas_value,
+				canvas_control,
+				canvas_pointer,
+				canvas_mark,
+			].forEach((i) => {
 				i.width = 1300;
 				i.height = 700;
 			});

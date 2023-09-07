@@ -54,27 +54,13 @@ export class layer {
 		this.x2 = this.x + this.width - game_speed - 1;
 	}
 	draw() {
+		this.ctx.drawImage(this.img, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
 		this.ctx.drawImage(
 			this.img,
-			0,
-			0,
-			this.width,
-			this.height,
-			MathFloor(this.x),
-			MathFloor(this.y),
-			this.canvas_width,
-			this.canvas_height
-		);
-		this.ctx.drawImage(
-			this.img,
-			0,
-			0,
-			this.width,
-			this.height,
 			MathFloor(this.x2),
 			MathFloor(this.y),
-			this.canvas_width,
-			this.canvas_height
+			this.width,
+			this.height
 		);
 	}
 }

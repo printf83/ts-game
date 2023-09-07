@@ -72,7 +72,11 @@ export class progress {
 		this.bar_width = this.bar_max_width * this.percent;
 
 		this.bar_color = opt.bar_color;
-		this.generated_bar_color = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
+		this.generated_bar_color = this.gradient_bar_color(
+			this.bar_color,
+			MathFloor(this.bar_x),
+			MathFloor(this.bar_max_width)
+		);
 	}
 	update(value: number, min?: number, max?: number) {
 		this.min = min ?? this.min;
@@ -85,7 +89,12 @@ export class progress {
 		this.bar_width = (this.width - this.padding * 2) * this.percent;
 	}
 	clean() {
-		this.ctx.clearRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_max_width, this.bar_height);
+		this.ctx.clearRect(
+			MathFloor(this.bar_x),
+			MathFloor(this.bar_y),
+			this.bar_max_width,
+			this.bar_height
+		);
 	}
 	draw() {
 		this.clean();
@@ -94,11 +103,26 @@ export class progress {
 		if (this.radius) {
 			this.ctx.beginPath();
 			this.ctx.fillStyle = this.generated_bar_color;
-			this.ctx.roundRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_width, this.bar_height, [this.radius]);
+			this.ctx.roundRect(
+				MathFloor(this.bar_x),
+				MathFloor(this.bar_y),
+				this.bar_width,
+				this.bar_height,
+				[this.radius]
+			);
 			this.ctx.fill();
 		} else {
-			this.ctx.fillStyle = this.gradient_bar_color(this.bar_color, MathFloor(this.bar_x), MathFloor(this.bar_max_width));
-			this.ctx.fillRect(MathFloor(this.bar_x), MathFloor(this.bar_y), this.bar_width, this.bar_height);
+			this.ctx.fillStyle = this.gradient_bar_color(
+				this.bar_color,
+				MathFloor(this.bar_x),
+				MathFloor(this.bar_max_width)
+			);
+			this.ctx.fillRect(
+				MathFloor(this.bar_x),
+				MathFloor(this.bar_y),
+				this.bar_width,
+				this.bar_height
+			);
 		}
 
 		this.ctx.restore();

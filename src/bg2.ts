@@ -2,7 +2,11 @@ import { ASSET } from "./asset.js";
 import { baseBg } from "./baseBg.js";
 
 export class bg2 extends baseBg {
-	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		canvas_width: number;
+		canvas_height: number;
+	}) {
 		super({
 			ctx: opt.ctx,
 			img: [
@@ -14,8 +18,10 @@ export class bg2 extends baseBg {
 			],
 			canvas_width: opt.canvas_width,
 			canvas_height: opt.canvas_height,
-			width: 1667,
-			height: 500,
+			// width: 1667,
+			// height: 500,
+			width: 2400,
+			height: 700,
 			ground: 50,
 		});
 	}

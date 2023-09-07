@@ -188,19 +188,73 @@ export class player extends baseAnimation {
 		//draw sprite
 		super.draw();
 
-		if (this.power >= 100) this.ctx.drawImage(this.img_power, MathFloor(this.x + this.width * 0.5), MathFloor(this.y + 10), 16, 16);
-		else this.ctx.drawImage(this.img_power_inactive, MathFloor(this.x + this.width * 0.5), MathFloor(this.y + 10), 16, 16);
+		if (this.power >= 100)
+			this.ctx.drawImage(
+				this.img_power,
+				MathFloor(this.x + this.width * 0.5),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
+		else
+			this.ctx.drawImage(
+				this.img_power_inactive,
+				MathFloor(this.x + this.width * 0.5),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
 
-		if (this.life < 30) this.ctx.drawImage(this.img_life, MathFloor(this.x + this.width * 0.5 + 20), MathFloor(this.y + 10), 16, 16);
-		else this.ctx.drawImage(this.img_life_inactive, MathFloor(this.x + this.width * 0.5 + 20), MathFloor(this.y + 10), 16, 16);
+		if (this.life < 30)
+			this.ctx.drawImage(
+				this.img_life,
+				MathFloor(this.x + this.width * 0.5 + 20),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
+		else
+			this.ctx.drawImage(
+				this.img_life_inactive,
+				MathFloor(this.x + this.width * 0.5 + 20),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
 
 		if (this.game.progress_timer_index < 20)
-			this.ctx.drawImage(this.img_stopwatch, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
-		else this.ctx.drawImage(this.img_stopwatch_inactive, MathFloor(this.x + this.width * 0.5 - 20), MathFloor(this.y + 10), 16, 16);
+			this.ctx.drawImage(
+				this.img_stopwatch,
+				MathFloor(this.x + this.width * 0.5 - 20),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
+		else
+			this.ctx.drawImage(
+				this.img_stopwatch_inactive,
+				MathFloor(this.x + this.width * 0.5 - 20),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
 
 		if (this.invulnerable || this.is_powered())
-			this.ctx.drawImage(this.img_shield, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
-		else this.ctx.drawImage(this.img_shield_inactive, MathFloor(this.x + this.width * 0.5 - 40), MathFloor(this.y + 10), 16, 16);
+			this.ctx.drawImage(
+				this.img_shield,
+				MathFloor(this.x + this.width * 0.5 - 40),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
+		else
+			this.ctx.drawImage(
+				this.img_shield_inactive,
+				MathFloor(this.x + this.width * 0.5 - 40),
+				MathFloor(this.y + 10),
+				16,
+				16
+			);
 
 		//draw collision area
 		if (this.debug) {
@@ -208,7 +262,13 @@ export class player extends baseAnimation {
 
 			this.ctx.strokeStyle = `rgb(${COLOR.light})`;
 			this.ctx.beginPath();
-			this.ctx.arc(MathFloor(this.collision_x), MathFloor(this.collision_y), this.collision_scale * 100, 0, MathPI2);
+			this.ctx.arc(
+				MathFloor(this.collision_x),
+				MathFloor(this.collision_y),
+				this.collision_scale * 100,
+				0,
+				MathPI2
+			);
 			this.ctx.stroke();
 
 			this.ctx.restore();

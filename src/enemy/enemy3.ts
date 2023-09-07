@@ -12,7 +12,12 @@ export class enemy3 extends baseEnemy {
 	life_index: 0;
 	life_length: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		canvas_width: number;
+		canvas_height: number;
+		debug?: boolean;
+	}) {
 		const sprite_length = 5;
 		const sprite_width = 218;
 		const sprite_height = 177;
@@ -48,11 +53,15 @@ export class enemy3 extends baseEnemy {
 	}
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
-		this.x = (this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) + (this.canvas_width / 2 - this.width / 2);
+		this.x =
+			(this.canvas_width / 2) * Math.cos((this.angle * Math.PI) / 90) +
+			(this.canvas_width / 2 - this.width / 2);
 
 		if (this.x + this.width < 0) this.x = this.canvas_width;
 
-		this.y = (this.canvas_height / 2) * Math.sin((this.angle * Math.PI) / 270) + (this.canvas_height / 2 - this.height / 2);
+		this.y =
+			(this.canvas_height / 2) * Math.sin((this.angle * Math.PI) / 270) +
+			(this.canvas_height / 2 - this.height / 2);
 
 		if (this.y + this.height < 0) this.y = this.canvas_height;
 

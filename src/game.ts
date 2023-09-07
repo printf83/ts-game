@@ -48,13 +48,24 @@ const enemyDB = {
 	enemy11: enemy11,
 };
 export type enemyDBType = keyof typeof enemyDB;
-const enemy_type = ["enemy1", "enemy2", "enemy3", "enemy4", "enemy5", "enemy6", "enemy7", "enemy8", "enemy9", "enemy10", "enemy11"];
+const enemy_type = [
+	"enemy1",
+	"enemy2",
+	"enemy3",
+	"enemy4",
+	"enemy5",
+	"enemy6",
+	"enemy7",
+	"enemy8",
+	"enemy9",
+	"enemy10",
+	"enemy11",
+];
 // const enemy_type = ["enemy4"];
 // const enemy_type = ["enemy8", "enemy11"];
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 export class game {
-	canvas_hide: HTMLCanvasElement;
 	canvas_game: HTMLCanvasElement;
 	canvas_static: HTMLCanvasElement;
 	canvas_value: HTMLCanvasElement;
@@ -62,7 +73,6 @@ export class game {
 	canvas_pointer: HTMLCanvasElement;
 	canvas_mark: HTMLCanvasElement;
 
-	ctx_hide: CanvasRenderingContext2D;
 	ctx_game: CanvasRenderingContext2D;
 	ctx_static: CanvasRenderingContext2D;
 	ctx_value: CanvasRenderingContext2D;
@@ -142,11 +152,6 @@ export class game {
 		this.canvas_width = opt.canvas_game.width;
 		this.canvas_height = opt.canvas_game.height;
 
-		this.canvas_hide = document.createElement("canvas");
-		this.canvas_hide.width = this.canvas_width;
-		this.canvas_hide.height = this.canvas_height;
-		this.ctx_hide = this.canvas_hide.getContext("2d", { alpha: false })!;
-
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
@@ -162,12 +167,21 @@ export class game {
 			canvas_height: this.canvas_height,
 			debug: this.debug,
 		});
-		this.gui = new gui({ ctx: this.ctx_static, canvas_width: this.canvas_width, canvas_height: this.canvas_height, debug: this.debug });
-		this.bg = new bg2({ ctx: this.ctx_hide, canvas_width: this.canvas_width, canvas_height: this.canvas_height });
+		this.gui = new gui({
+			ctx: this.ctx_static,
+			canvas_width: this.canvas_width,
+			canvas_height: this.canvas_height,
+			debug: this.debug,
+		});
+		this.bg = new bg2({
+			ctx: this.ctx_game,
+			canvas_width: this.canvas_width,
+			canvas_height: this.canvas_height,
+		});
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({
 			game: this,
-			ctx: this.ctx_hide,
+			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
 			x: isTouchDevice() ? this.canvas_width * 0.25 : this.canvas_width * 0.1,
@@ -360,7 +374,7 @@ export class game {
 	add_explosion(enemy: baseEnemy, play_sound: boolean) {
 		this.explosion_list.push(
 			new explosion({
-				ctx: this.ctx_hide,
+				ctx: this.ctx_game,
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
 				scale: enemy.width * 0.008,
@@ -370,14 +384,18 @@ export class game {
 	}
 
 	add_floating_score(enemy: baseEnemy, deduction: boolean) {
-		let point = MathFloor((100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) * 0.1 * enemy.point);
+		let point = MathFloor(
+			(100 - (enemy.y / (enemy.canvas_height - enemy.height + this.base_height)) * 100) *
+				0.1 *
+				enemy.point
+		);
 
 		if (deduction && point > 0) point *= -1;
 		if (!deduction && point < 0) point *= -1;
 
 		this.score_list.push(
 			new score({
-				ctx: this.ctx_hide,
+				ctx: this.ctx_game,
 				text: `${point > 0 ? "+" : ""}${point}`,
 				value: point,
 				x: enemy.x + enemy.width * 0.5,
@@ -519,7 +537,8 @@ export class game {
 			y: 50,
 			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
 			text_align: "end",
-			text_color: this.progress_timer_index < 20 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
+			text_color:
+				this.progress_timer_index < 20 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
 			font_weight: 25,
 			debug: this.debug,
 		});
@@ -614,7 +633,7 @@ export class game {
 				.forEach((_i) => {
 					this.fire_list.unshift(
 						new fire({
-							ctx: this.ctx_hide,
+							ctx: this.ctx_game,
 							x: this.player.x - 40 + MathRandom() * 10 - 10,
 							y: this.player.y + 25 + MathRandom() * 10 - 10,
 						})
@@ -630,7 +649,7 @@ export class game {
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
 			const new_enemy = new enemy_object({
-				ctx: this.ctx_hide,
+				ctx: this.ctx_game,
 				canvas_width: this.canvas_width,
 				canvas_height: this.base_height,
 				debug: this.debug,
@@ -640,7 +659,7 @@ export class game {
 			if (new_enemy.explode_in) {
 				this.explosion_list.push(
 					new explosion({
-						ctx: this.ctx_hide,
+						ctx: this.ctx_game,
 						x: new_enemy.x + new_enemy.width * 0.5,
 						y: new_enemy.y + new_enemy.height * 0.5,
 						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
@@ -700,7 +719,7 @@ export class game {
 			if (i.have_particle) {
 				this.dust_list.unshift(
 					new dust({
-						ctx: this.ctx_hide,
+						ctx: this.ctx_game,
 						x: i.x + i.width * 0.5 + MathRandom() * 50 - 25,
 						y: i.y + i.height * 0.5 + MathRandom() * 30 - 15,
 						color: `rgba(${i.uid_number},0.2)`,
@@ -720,8 +739,10 @@ export class game {
 		this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
 
 		//remove overflow particle
-		if (this.dust_list.length > this.dust_max) this.dust_list = this.dust_list.slice(0, this.dust_max);
-		if (this.fire_list.length > this.fire_max) this.fire_list = this.fire_list.slice(0, this.fire_max);
+		if (this.dust_list.length > this.dust_max)
+			this.dust_list = this.dust_list.slice(0, this.dust_max);
+		if (this.fire_list.length > this.fire_max)
+			this.fire_list = this.fire_list.slice(0, this.fire_max);
 	}
 
 	draw() {
@@ -782,7 +803,8 @@ export class game {
 
 	is_enough_fps(timestamp: number, callback: (timestamp: number) => void) {
 		const last_second = timestamp - 1000;
-		if (this.game_fps_list.length > this.fps_min) this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
+		if (this.game_fps_list.length > this.fps_min)
+			this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
 		this.game_fps_list.push(timestamp);
 		this.game_fps = this.game_fps_list.length;
 
@@ -812,7 +834,11 @@ export class game {
 			});
 		};
 
-		gen_text(78, `${this.game_fps}`, this.game_fps < 30 ? `rgb(${COLOR.red})` : `rgb(${COLOR.yellow})`);
+		gen_text(
+			78,
+			`${this.game_fps}`,
+			this.game_fps < 30 ? `rgb(${COLOR.red})` : `rgb(${COLOR.yellow})`
+		);
 		gen_text(80, `${this.dust_list.length}`);
 		gen_text(73, `${this.fire_list.length}`);
 		gen_text(125, `${this.explosion_list.length}`);
@@ -835,8 +861,6 @@ export class game {
 		if (this.debug) this.debug_info();
 
 		if (!this.game_over && !this.game_timeout && !this.game_pause && !this.game_up) {
-			this.ctx_game.drawImage(this.canvas_hide, 0, 0);
-
 			requestAnimationFrame((timestamp) => {
 				this.animate(timestamp);
 			});

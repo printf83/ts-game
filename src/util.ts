@@ -9,7 +9,8 @@ const random_table = Array(random_max)
 	.fill(0)
 	.map((_i) => Math.random());
 
-export const MathRandom = (): number => (++random_index >= random_max ? random_table[(random_index = 0)]! : random_table[random_index]!);
+export const MathRandom = (): number =>
+	++random_index >= random_max ? random_table[(random_index = 0)]! : random_table[random_index]!;
 export const read_random_index = () => random_index;
 
 export const genUID = () => {
@@ -51,7 +52,10 @@ const measure_text = (opt: {
 	const metrics = opt.ctx.measureText(` ${opt.text.toUpperCase()} `);
 	opt.ctx.restore();
 
-	return { w: metrics.width, h: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent };
+	return {
+		w: metrics.width,
+		h: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent,
+	};
 };
 
 export const clear_text = (opt: {
@@ -171,7 +175,11 @@ export const draw_text = (opt: {
 	opt.ctx.font = `${opt.font_weight}px ${opt.font_family}`;
 
 	opt.ctx.fillStyle = opt.shadow_color;
-	opt.ctx.fillText(opt.text, MathFloor(opt.x + opt.shadow_blur), MathFloor(opt.y + opt.shadow_blur));
+	opt.ctx.fillText(
+		opt.text,
+		MathFloor(opt.x + opt.shadow_blur),
+		MathFloor(opt.y + opt.shadow_blur)
+	);
 
 	//text
 	opt.ctx.fillStyle = opt.text_color;

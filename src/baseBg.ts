@@ -17,7 +17,15 @@ export class baseBg {
 
 	bg_list: layer[] = [];
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; img: { url: string; speed_modifier: number }[]; canvas_width: number; canvas_height: number; width: number; height: number; ground: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		img: { url: string; speed_modifier: number }[];
+		canvas_width: number;
+		canvas_height: number;
+		width: number;
+		height: number;
+		ground: number;
+	}) {
 		this.ctx = opt.ctx;
 
 		this.width = opt.width;
@@ -28,7 +36,16 @@ export class baseBg {
 		this.canvas_height = opt.canvas_height;
 
 		opt.img.forEach((i) => {
-			this.bg_list.push(new layer({ ctx: this.ctx, img: this.img_setup(i.url), canvas_height: this.canvas_height, width: this.width, height: this.height, speed_modifier: i.speed_modifier }));
+			this.bg_list.push(
+				new layer({
+					ctx: this.ctx,
+					img: this.img_setup(i.url),
+					canvas_height: this.canvas_height,
+					width: this.width,
+					height: this.height,
+					speed_modifier: i.speed_modifier,
+				})
+			);
 		});
 	}
 

@@ -16,7 +16,13 @@ export class explosion extends baseAnimation {
 	dy: number;
 	sx: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; scale: number; play_sound?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		scale: number;
+		play_sound?: boolean;
+	}) {
 		const sprite_length = 5;
 		const sprite_width = 200;
 		const sprite_height = 179;

@@ -11,7 +11,14 @@ export class particle {
 	size: number;
 	mark_delete: boolean;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; speed_x?: number; speed_y?: number; size?: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		speed_x?: number;
+		speed_y?: number;
+		size?: number;
+	}) {
 		opt.speed_x ??= MathRandom();
 		opt.speed_y ??= MathRandom();
 		opt.size ??= MathRandom() * 10 + 10;

@@ -12,7 +12,12 @@ export class enemy11 extends baseEnemy {
 	string_x: number;
 	string_y: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		canvas_width: number;
+		canvas_height: number;
+		debug?: boolean;
+	}) {
 		const sprite_length = 5;
 		const sprite_width = 120;
 		const sprite_height = 144;

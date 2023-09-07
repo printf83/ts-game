@@ -103,7 +103,12 @@ export class baseEnemy extends baseAnimation {
 	draw() {
 		if (this.ctx_collision) {
 			this.ctx_collision.fillStyle = this.uid_text;
-			this.ctx_collision.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+			this.ctx_collision.fillRect(
+				MathFloor(this.x),
+				MathFloor(this.y),
+				this.width,
+				this.height
+			);
 		}
 
 		//draw sprite
@@ -115,7 +120,13 @@ export class baseEnemy extends baseAnimation {
 
 			this.ctx.strokeStyle = `rgb(${COLOR.light})`;
 			this.ctx.beginPath();
-			this.ctx.arc(MathFloor(this.collision_x), MathFloor(this.collision_y), this.collision_scale * 100, 0, MathPI2);
+			this.ctx.arc(
+				MathFloor(this.collision_x),
+				MathFloor(this.collision_y),
+				this.collision_scale * 100,
+				0,
+				MathPI2
+			);
 			this.ctx.stroke();
 
 			this.ctx.restore();
@@ -130,6 +141,9 @@ export class baseEnemy extends baseAnimation {
 		const dy = this.collision_y - opt.player.collision_y;
 
 		const distance = Math.sqrt(dx * dx + dy * dy);
-		return distance < this.width * this.collision_scale + opt.player.width * opt.player.collision_scale;
+		return (
+			distance <
+			this.width * this.collision_scale + opt.player.width * opt.player.collision_scale
+		);
 	}
 }

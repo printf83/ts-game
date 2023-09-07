@@ -11,7 +11,14 @@ class box {
 
 	debug: boolean;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; width: number; height: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+		debug?: boolean;
+	}) {
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
@@ -23,8 +30,19 @@ class box {
 		this.height = opt.height;
 	}
 	clear() {
-		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
-		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+		this.ctx.clearRect(
+			MathFloor(this.x - 1),
+			MathFloor(this.y - 1),
+			this.width + 2,
+			this.height + 2
+		);
+		if (this.debug)
+			this.ctx.strokeRect(
+				MathFloor(this.x - 1),
+				MathFloor(this.y - 1),
+				this.width + 2,
+				this.height + 2
+			);
 	}
 	draw() {
 		this.clear();
@@ -76,13 +94,34 @@ class image {
 		this.height = opt.height;
 	}
 	clear() {
-		this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
-		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+		this.ctx.clearRect(
+			MathFloor(this.x - 1),
+			MathFloor(this.y - 1),
+			this.width + 2,
+			this.height + 2
+		);
+		if (this.debug)
+			this.ctx.strokeRect(
+				MathFloor(this.x - 1),
+				MathFloor(this.y - 1),
+				this.width + 2,
+				this.height + 2
+			);
 	}
 	draw() {
 		this.clear();
 		this.ctx.fillStyle = `rgb(${COLOR.red})`;
-		this.ctx.drawImage(this.img, 0, 0, this.img_width, this.img_height, MathFloor(this.x), MathFloor(this.y), this.width, this.height);
+		this.ctx.drawImage(
+			this.img,
+			0,
+			0,
+			this.img_width,
+			this.img_height,
+			MathFloor(this.x),
+			MathFloor(this.y),
+			this.width,
+			this.height
+		);
 	}
 }
 
@@ -146,8 +185,19 @@ class progress {
 	}
 	clear() {
 		if (this.shadow_color && this.shadow_blur)
-			this.ctx.clearRect(MathFloor(this.shadow_x - 2), MathFloor(this.shadow_y - 2), this.shadow_width + 4, this.shadow_height + 4);
-		else this.ctx.clearRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+			this.ctx.clearRect(
+				MathFloor(this.shadow_x - 2),
+				MathFloor(this.shadow_y - 2),
+				this.shadow_width + 4,
+				this.shadow_height + 4
+			);
+		else
+			this.ctx.clearRect(
+				MathFloor(this.x - 1),
+				MathFloor(this.y - 1),
+				this.width + 2,
+				this.height + 2
+			);
 
 		if (this.debug) {
 			if (this.shadow_color && this.shadow_blur)
@@ -157,7 +207,13 @@ class progress {
 					this.shadow_width + 4,
 					this.shadow_height + 4
 				);
-			else this.ctx.strokeRect(MathFloor(this.x - 1), MathFloor(this.y - 1), this.width + 2, this.height + 2);
+			else
+				this.ctx.strokeRect(
+					MathFloor(this.x - 1),
+					MathFloor(this.y - 1),
+					this.width + 2,
+					this.height + 2
+				);
 		}
 	}
 	draw() {
@@ -169,19 +225,30 @@ class progress {
 			if (this.shadow_color && this.shadow_blur) {
 				this.ctx.beginPath();
 				this.ctx.fillStyle = this.shadow_color;
-				this.ctx.roundRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height, [
-					this.radius,
-				]);
+				this.ctx.roundRect(
+					MathFloor(this.shadow_x),
+					MathFloor(this.shadow_y),
+					this.shadow_width,
+					this.shadow_height,
+					[this.radius]
+				);
 				this.ctx.fill();
 			}
 			this.ctx.beginPath();
 			this.ctx.fillStyle = this.bg_color;
-			this.ctx.roundRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height, [this.radius]);
+			this.ctx.roundRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height, [
+				this.radius,
+			]);
 			this.ctx.fill();
 		} else {
 			if (this.shadow_color && this.shadow_blur) {
 				this.ctx.fillStyle = this.shadow_color;
-				this.ctx.fillRect(MathFloor(this.shadow_x), MathFloor(this.shadow_y), this.shadow_width, this.shadow_height);
+				this.ctx.fillRect(
+					MathFloor(this.shadow_x),
+					MathFloor(this.shadow_y),
+					this.shadow_width,
+					this.shadow_height
+				);
 			}
 			this.ctx.fillStyle = this.bg_color;
 			this.ctx.fillRect(MathFloor(this.x), MathFloor(this.y), this.width, this.height);
@@ -293,7 +360,12 @@ export class gui {
 	image: image[] = [];
 	box: box[] = [];
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; canvas_width: number; canvas_height: number; debug?: boolean }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D;
+		canvas_width: number;
+		canvas_height: number;
+		debug?: boolean;
+	}) {
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
@@ -415,10 +487,26 @@ export class gui {
 		);
 
 		//life
-		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 30, width: 100, debug: this.debug }));
+		this.progress.push(
+			new progress({
+				ctx: this.ctx,
+				x: this.canvas_width - 130,
+				y: 30,
+				width: 100,
+				debug: this.debug,
+			})
+		);
 
 		//power
-		this.progress.push(new progress({ ctx: this.ctx, x: this.canvas_width - 130, y: 60, width: 100, debug: this.debug }));
+		this.progress.push(
+			new progress({
+				ctx: this.ctx,
+				x: this.canvas_width - 130,
+				y: 60,
+				width: 100,
+				debug: this.debug,
+			})
+		);
 	}
 
 	draw() {

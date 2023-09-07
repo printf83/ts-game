@@ -88,8 +88,19 @@ class button {
 		this.line_width = opt.line_width;
 	}
 	clear() {
-		this.ctx.clearRect(MathFloor(this.x - 2), MathFloor(this.y - 2), BTN_SIZE + 4, BTN_SIZE + 4);
-		if (this.debug) this.ctx.strokeRect(MathFloor(this.x - 2), MathFloor(this.y - 2), BTN_SIZE + 4, BTN_SIZE + 4);
+		this.ctx.clearRect(
+			MathFloor(this.x - 2),
+			MathFloor(this.y - 2),
+			BTN_SIZE + 4,
+			BTN_SIZE + 4
+		);
+		if (this.debug)
+			this.ctx.strokeRect(
+				MathFloor(this.x - 2),
+				MathFloor(this.y - 2),
+				BTN_SIZE + 4,
+				BTN_SIZE + 4
+			);
 	}
 	draw() {
 		this.clear();
@@ -99,7 +110,13 @@ class button {
 		this.ctx.strokeStyle = this.color;
 		this.ctx.lineWidth = this.line_width;
 		this.ctx.beginPath();
-		this.ctx.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.5, 0, MathPI2);
+		this.ctx.arc(
+			MathFloor(this.x + this.width * 0.5),
+			MathFloor(this.y + this.width * 0.5),
+			BTN_SIZE * 0.5,
+			0,
+			MathPI2
+		);
 		this.ctx.fill();
 		this.ctx.stroke();
 		this.ctx.restore();
@@ -136,7 +153,13 @@ class button {
 
 		this.ctx_mark.fillStyle = this.uid_text;
 		this.ctx_mark.beginPath();
-		this.ctx_mark.arc(MathFloor(this.x + this.width * 0.5), MathFloor(this.y + this.width * 0.5), BTN_SIZE * 0.75, 0, MathPI2);
+		this.ctx_mark.arc(
+			MathFloor(this.x + this.width * 0.5),
+			MathFloor(this.y + this.width * 0.5),
+			BTN_SIZE * 0.75,
+			0,
+			MathPI2
+		);
 		this.ctx_mark.fill();
 	}
 }
@@ -334,7 +357,12 @@ class arrow {
 		else if (value === 360) return 0;
 		else return value;
 	}
-	private get_angle_position(center_x: number, center_y: number, radius: number, angle_degree: number) {
+	private get_angle_position(
+		center_x: number,
+		center_y: number,
+		radius: number,
+		angle_degree: number
+	) {
 		const angle_rad = (angle_degree * MathPI) / 180;
 		const x = center_x + radius * Math.cos(angle_rad);
 		const y = center_y + radius * Math.sin(angle_rad);
@@ -366,7 +394,12 @@ class arrow {
 			this.angle_degree_for_arc(opt.end_degree)
 		);
 
-		let c1 = this.get_angle_position(MathFloor(opt.x), MathFloor(opt.y), opt.btn_width, opt.end_degree);
+		let c1 = this.get_angle_position(
+			MathFloor(opt.x),
+			MathFloor(opt.y),
+			opt.btn_width,
+			opt.end_degree
+		);
 		opt.ctx.lineTo(MathFloor(c1.x), MathFloor(c1.y));
 
 		opt.ctx.arc(
@@ -378,7 +411,12 @@ class arrow {
 			true
 		);
 
-		let c2 = this.get_angle_position(MathFloor(opt.x), MathFloor(opt.y), opt.hole_width, opt.start_degree);
+		let c2 = this.get_angle_position(
+			MathFloor(opt.x),
+			MathFloor(opt.y),
+			opt.hole_width,
+			opt.start_degree
+		);
 		opt.ctx.lineTo(MathFloor(c2.x), MathFloor(c2.y));
 
 		opt.ctx.fill();
@@ -494,7 +532,12 @@ class arrow {
 		opt.ctx.save();
 
 		const mid_degree = this.calc_middle_degree(opt.start_degree, opt.end_degree);
-		const mid_coord = this.get_angle_position(this.x, this.y, this.btn_width - this.hole_width, mid_degree);
+		const mid_coord = this.get_angle_position(
+			this.x,
+			this.y,
+			this.btn_width - this.hole_width,
+			mid_degree
+		);
 
 		let img_x = mid_coord.x - this.width * 0.5;
 		let img_y = mid_coord.y - this.height * 0.5;
@@ -805,7 +848,11 @@ export class control {
 		do {
 			totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
 			totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
-		} while ((currentElement = currentElement.offsetParent ? (currentElement.offsetParent as HTMLElement) : null));
+		} while (
+			(currentElement = currentElement.offsetParent
+				? (currentElement.offsetParent as HTMLElement)
+				: null)
+		);
 
 		canvasX = event.pageX - totalOffsetX;
 		canvasY = event.pageY - totalOffsetY;
@@ -841,20 +888,26 @@ export class control {
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
 
-						if (opt.event_name === "keydown") this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
-						else if (opt.event_name === "keyup") this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
+						if (opt.event_name === "keydown")
+							this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
+						else if (opt.event_name === "keyup")
+							this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
 
 						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 					} else {
 						const arr = this.arrow_list.filter((i) => {
-							return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
+							return (
+								i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2]
+							);
 						});
 
 						if (arr && arr.length > 0 && arr[0]) {
 							const key = arr[0].name;
 
-							if (opt.event_name === "keydown") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
-							else if (opt.event_name === "keyup") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
+							if (opt.event_name === "keydown")
+								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
+							else if (opt.event_name === "keyup")
+								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
 
 							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 						}
@@ -900,7 +953,11 @@ export class control {
 			do {
 				totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
 				totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
-			} while ((currentElement = currentElement.offsetParent ? (currentElement.offsetParent as HTMLElement) : null));
+			} while (
+				(currentElement = currentElement.offsetParent
+					? (currentElement.offsetParent as HTMLElement)
+					: null)
+			);
 
 			canvasX = event.touches[0].pageX - totalOffsetX;
 			canvasY = event.touches[0].pageY - totalOffsetY;
@@ -936,20 +993,26 @@ export class control {
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
 
-						if (opt.event_name === "keydown") this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
-						else if (opt.event_name === "keyup") this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
+						if (opt.event_name === "keydown")
+							this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
+						else if (opt.event_name === "keyup")
+							this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
 
 						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 					} else {
 						const arr = this.arrow_list.filter((i) => {
-							return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
+							return (
+								i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2]
+							);
 						});
 
 						if (arr && arr.length > 0 && arr[0]) {
 							const key = arr[0].name;
 
-							if (opt.event_name === "keydown") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
-							else if (opt.event_name === "keyup") this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
+							if (opt.event_name === "keydown")
+								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
+							else if (opt.event_name === "keyup")
+								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
 
 							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 						}
