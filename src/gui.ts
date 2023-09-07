@@ -340,13 +340,13 @@ export class gui {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
-		//text
+		//thropy
 		this.image.push(
 			new image({
 				ctx: this.ctx,
-				img: ASSET.ctl.icon,
-				img_width: 16,
-				img_height: 16,
+				img: ASSET.ctl.icon_png,
+				img_width: 72,
+				img_height: 72,
 				x: 20,
 				y: 30,
 				width: 55,
