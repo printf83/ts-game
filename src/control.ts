@@ -920,86 +920,121 @@ export class control {
 		});
 	}
 
-	private last_touch_location: { x: number; y: number } = { x: -1, y: -1 };
+	private last_touch_location: { x: number; y: number }[] = [];
+
 	private get_touch_location(canvas: HTMLCanvasElement, event: TouchEvent) {
-		if (event.touches && event.touches.length > 0 && event.touches[0]) {
-			let totalOffsetX = 0;
-			let totalOffsetY = 0;
-			let canvasX = 0;
-			let canvasY = 0;
-			let currentElement: HTMLElement | null = canvas;
-
-			do {
-				totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
-				totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
-			} while (
-				(currentElement = currentElement.offsetParent
-					? (currentElement.offsetParent as HTMLElement)
-					: null)
-			);
-
-			canvasX = event.touches[0].pageX - totalOffsetX;
-			canvasY = event.touches[0].pageY - totalOffsetY;
-
+		if (event.touches && event.touches.length > 0) {
 			const scale = this.canvas_width / this.canvas_rect.width;
-			const x = canvasX * scale + this.canvas_width * 0.5;
-			const y = canvasY * scale + this.canvas_height * 0.5;
 
-			this.last_touch_location = { x: x, y: y };
+			this.last_touch_location = Array.from(event.touches).map((i) => {
+				if (i) {
+					let totalOffsetX = 0;
+					let totalOffsetY = 0;
+					let canvasX = 0;
+					let canvasY = 0;
+					let currentElement: HTMLElement | null = canvas;
+
+					do {
+						totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
+						totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
+					} while (
+						(currentElement = currentElement.offsetParent
+							? (currentElement.offsetParent as HTMLElement)
+							: null)
+					);
+
+					canvasX = i.pageX - totalOffsetX;
+					canvasY = i.pageY - totalOffsetY;
+
+					return {
+						x: canvasX * scale + this.canvas_width * 0.5,
+						y: canvasY * scale + this.canvas_height * 0.5,
+					};
+				} else {
+					return {
+						x: -1,
+						y: -1,
+					};
+				}
+			});
 		}
 
 		return this.last_touch_location;
 	}
 
 	private touch_event(opt: { event_name: string; event: TouchEvent; debug?: boolean }) {
-		let { x, y } = this.get_touch_location(this.canvas_mark, opt.event);
+		let touch_list = this.get_touch_location(this.canvas_mark, opt.event);
+		if (touch_list && touch_list.length > 0) {
+			touch_list.forEach(({ x, y }) => {
+				{
+					if (x > -1 && y > -1) {
+						if (opt.debug) {
+							this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
+							this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
+							this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
+						}
 
-		if (x > -1 && y > -1) {
-			if (opt.debug) {
-				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
-				this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
-				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
-			}
+						const data = this.ctx_mark.getImageData(x, y, 1, 1).data;
 
-			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;
+						if (data && data.length > 3 && data[0] && data[1] && data[2]) {
+							if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
+								const btn = this.btn_list.filter((i) => {
+									return (
+										i.uid[0] === data[0] &&
+										i.uid[1] === data[1] &&
+										i.uid[2] === data[2]
+									);
+								});
 
-			if (data && data.length > 3 && data[0] && data[1] && data[2]) {
-				if (data[0] > 0 && data[1] > 0 && data[2] > 0) {
-					const btn = this.btn_list.filter((i) => {
-						return i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2];
-					});
+								if (btn && btn.length > 0 && btn[0]) {
+									const key = btn[0].name;
 
-					if (btn && btn.length > 0 && btn[0]) {
-						const key = btn[0].name;
+									if (opt.event_name === "keydown")
+										this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
+									else if (opt.event_name === "keyup")
+										this.redraw_button({
+											btn: btn[0],
+											color: BTN_COLOR.normal,
+										});
 
-						if (opt.event_name === "keydown")
-							this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
-						else if (opt.event_name === "keyup")
-							this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
+									window.dispatchEvent(
+										new KeyboardEvent(opt.event_name, { key: key })
+									);
+								} else {
+									const arr = this.arrow_list.filter((i) => {
+										return (
+											i.uid[0] === data[0] &&
+											i.uid[1] === data[1] &&
+											i.uid[2] === data[2]
+										);
+									});
 
-						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
-					} else {
-						const arr = this.arrow_list.filter((i) => {
-							return (
-								i.uid[0] === data[0] && i.uid[1] === data[1] && i.uid[2] === data[2]
-							);
-						});
+									if (arr && arr.length > 0 && arr[0]) {
+										const key = arr[0].name;
 
-						if (arr && arr.length > 0 && arr[0]) {
-							const key = arr[0].name;
+										if (opt.event_name === "keydown")
+											this.redraw_arrow({
+												arr: arr[0],
+												color: BTN_COLOR.click,
+											});
+										else if (opt.event_name === "keyup")
+											this.redraw_arrow({
+												arr: arr[0],
+												color: BTN_COLOR.normal,
+											});
 
-							if (opt.event_name === "keydown")
-								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
-							else if (opt.event_name === "keyup")
-								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
-
-							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
+										window.dispatchEvent(
+											new KeyboardEvent(opt.event_name, { key: key })
+										);
+									}
+								}
+							}
+						} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
+							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: " " }));
 						}
 					}
 				}
-			} else if (data[0] === 0 && data[1] === 0 && data[2] === 0) {
-				window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: " " }));
-			}
+			});
 		}
 	}
 
