@@ -1,7 +1,7 @@
 import { COLOR, draw_text } from "./util.js";
 
 export class score {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	text: string;
 	value: number;
@@ -14,7 +14,7 @@ export class score {
 	mark_delete: boolean;
 	timer: number;
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		text: string;
 		value: number;
 		x: number;

@@ -1,7 +1,7 @@
 import { MathRandom } from "./util.js";
 
 export class particle {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	x: number;
 	y: number;
@@ -12,7 +12,7 @@ export class particle {
 	mark_delete: boolean;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		x: number;
 		y: number;
 		speed_x?: number;

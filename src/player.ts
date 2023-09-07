@@ -57,7 +57,7 @@ export class player extends baseAnimation {
 	img_shield_inactive: HTMLImageElement;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		game: game;
 		x: number;
 		canvas_width: number;

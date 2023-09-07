@@ -36,7 +36,7 @@ export const isFullscreen = () => window.innerHeight === screen.height;
 export const DPI = window.devicePixelRatio;
 
 const measure_text = (opt: {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	text: string;
 	font_weight?: number;
 	font_family?: string;
@@ -59,7 +59,7 @@ const measure_text = (opt: {
 };
 
 export const clear_text = (opt: {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	x: number;
 	y: number;
 	text: string;
@@ -125,7 +125,7 @@ export const clear_text = (opt: {
 };
 
 export const draw_clear_text = (opt: {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	x: number;
 	y: number;
 	text: string;
@@ -149,7 +149,7 @@ export const draw_clear_text = (opt: {
 	draw_text(opt);
 };
 export const draw_text = (opt: {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	x: number;
 	y: number;
 	text: string;

@@ -12,7 +12,7 @@ export class enemy2 extends baseEnemy {
 	curve: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		canvas_width: number;
 		canvas_height: number;
 		debug?: boolean;

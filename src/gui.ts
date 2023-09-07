@@ -2,7 +2,7 @@ import { ASSET } from "./asset.js";
 import { COLOR, clear_text, draw_text } from "./util.js";
 
 class box {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	x: number;
 	y: number;
@@ -12,7 +12,7 @@ class box {
 	debug: boolean;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		x: number;
 		y: number;
 		width: number;
@@ -41,7 +41,7 @@ class box {
 }
 
 class image {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	img: HTMLImageElement;
 	img_width: number;
@@ -55,7 +55,7 @@ class image {
 	debug: boolean;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 		img: string;
 		img_width: number;
@@ -107,7 +107,7 @@ class image {
 
 class progress {
 	debug: boolean;
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	x: number;
 	y: number;
@@ -126,7 +126,7 @@ class progress {
 	radius: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		x: number;
 		y: number;
 		width: number;
@@ -227,7 +227,7 @@ class progress {
 class text {
 	debug: boolean;
 
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	x: number;
 	y: number;
@@ -241,7 +241,7 @@ class text {
 	shadow_blur: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		x: number;
 		y: number;
 		text: string;
@@ -317,7 +317,7 @@ class text {
 export class gui {
 	debug: boolean;
 
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	canvas_width: number;
 	canvas_height: number;
 
@@ -327,7 +327,7 @@ export class gui {
 	box: box[] = [];
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		canvas_width: number;
 		canvas_height: number;
 		debug?: boolean;

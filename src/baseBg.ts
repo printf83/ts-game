@@ -1,11 +1,11 @@
 import { layer } from "./layer.js";
 
 export class baseBg {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
-	width: number;
-	height: number;
 	ground: number;
+	img_width: number;
+	img_height: number;
 	canvas_width: number;
 	canvas_height: number;
 
@@ -18,18 +18,18 @@ export class baseBg {
 	bg_list: layer[] = [];
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 		img: { url: string; speed_modifier: number }[];
+		ground: number;
+		img_width: number;
+		img_height: number;
 		canvas_width: number;
 		canvas_height: number;
-		width: number;
-		height: number;
-		ground: number;
 	}) {
 		this.ctx = opt.ctx;
 
-		this.width = opt.width;
-		this.height = opt.height;
+		this.img_width = opt.img_width;
+		this.img_height = opt.img_height;
 		this.ground = opt.ground;
 
 		this.canvas_width = opt.canvas_width;
@@ -41,8 +41,8 @@ export class baseBg {
 					ctx: this.ctx,
 					img: this.img_setup(i.url),
 					canvas_height: this.canvas_height,
-					width: this.width,
-					height: this.height,
+					img_width: this.img_width,
+					img_height: this.img_height,
 					speed_modifier: i.speed_modifier,
 				})
 			);

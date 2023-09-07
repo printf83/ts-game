@@ -12,7 +12,11 @@ export class fire extends baseAnimation {
 	dy: number;
 	sx: number;
 
-	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number }) {
+	constructor(opt: {
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		x: number;
+		y: number;
+	}) {
 		const scale = MathRandom() * 0.5 + 0.5;
 		const sprite_length = 6;
 		const sprite_width = 100;

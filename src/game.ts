@@ -66,6 +66,9 @@ const enemy_type = [
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 export class game {
+	oscanvas_game: OffscreenCanvas;
+	osctx_game: OffscreenCanvasRenderingContext2D;
+
 	canvas_game: HTMLCanvasElement;
 	canvas_static: HTMLCanvasElement;
 	canvas_value: HTMLCanvasElement;
@@ -152,6 +155,9 @@ export class game {
 		this.canvas_width = opt.canvas_game.width;
 		this.canvas_height = opt.canvas_game.height;
 
+		this.oscanvas_game = new OffscreenCanvas(this.canvas_width, this.canvas_height);
+		this.osctx_game = this.oscanvas_game.getContext("2d", { alpha: false })!;
+
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
@@ -174,14 +180,14 @@ export class game {
 			debug: this.debug,
 		});
 		this.bg = new bg2({
-			ctx: this.ctx_game,
+			ctx: this.osctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.canvas_height,
 		});
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player = new player({
 			game: this,
-			ctx: this.ctx_game,
+			ctx: this.osctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.base_height,
 			x: isTouchDevice() ? this.canvas_width * 0.25 : this.canvas_width * 0.1,
@@ -380,7 +386,7 @@ export class game {
 	add_explosion(enemy: baseEnemy, play_sound: boolean) {
 		this.explosion_list.push(
 			new explosion({
-				ctx: this.ctx_game,
+				ctx: this.osctx_game,
 				x: enemy.x + enemy.width * 0.5,
 				y: enemy.y + enemy.height * 0.5,
 				scale: enemy.width * 0.008,
@@ -401,7 +407,7 @@ export class game {
 
 		this.score_list.push(
 			new score({
-				ctx: this.ctx_game,
+				ctx: this.osctx_game,
 				text: `${point > 0 ? "+" : ""}${point}`,
 				value: point,
 				x: enemy.x + enemy.width * 0.5,
@@ -639,7 +645,7 @@ export class game {
 				.forEach((_i) => {
 					this.fire_list.unshift(
 						new fire({
-							ctx: this.ctx_game,
+							ctx: this.osctx_game,
 							x: this.player.x + 50 + MathRandom() * 10 - 10,
 							y: this.player.y + 100 + MathRandom() * 10 - 10,
 						})
@@ -655,7 +661,7 @@ export class game {
 			//create new enemy
 			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
 			const new_enemy = new enemy_object({
-				ctx: this.ctx_game,
+				ctx: this.osctx_game,
 				canvas_width: this.canvas_width,
 				canvas_height: this.base_height,
 				debug: this.debug,
@@ -665,7 +671,7 @@ export class game {
 			if (new_enemy.explode_in) {
 				this.explosion_list.push(
 					new explosion({
-						ctx: this.ctx_game,
+						ctx: this.osctx_game,
 						x: new_enemy.x + new_enemy.width * 0.5,
 						y: new_enemy.y + new_enemy.height * 0.5,
 						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
@@ -725,7 +731,7 @@ export class game {
 			if (i.have_particle) {
 				this.dust_list.unshift(
 					new dust({
-						ctx: this.ctx_game,
+						ctx: this.osctx_game,
 						x: i.x + i.width * 0.5 + MathRandom() * 50 - 25,
 						y: i.y + i.height * 0.5 + MathRandom() * 30 - 15,
 						color: `rgba(${i.uid_number},0.2)`,
@@ -867,6 +873,7 @@ export class game {
 		if (this.debug) this.debug_info();
 
 		if (!this.game_over && !this.game_timeout && !this.game_pause && !this.game_up) {
+			this.ctx_game.drawImage(this.oscanvas_game, 0, 0);
 			requestAnimationFrame((timestamp) => {
 				this.animate(timestamp);
 			});

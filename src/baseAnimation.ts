@@ -1,7 +1,7 @@
 import { MathFloor } from "./util.js";
 
 export class baseAnimation {
-	ctx: CanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 	fps: number;
 	frame_x: number;
@@ -28,7 +28,7 @@ export class baseAnimation {
 	animation_repeat_index: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 
 		img: HTMLImageElement;
 
@@ -108,7 +108,7 @@ export class baseAnimation {
 		if (this.x < 0 - this.width) this.mark_delete = true;
 	}
 
-	img_sprite: HTMLCanvasElement[] = [];
+	img_sprite: OffscreenCanvas[] = [];
 	build_sprite() {
 		this.img_sprite = [];
 		this.frame_x = 0;
@@ -116,22 +116,22 @@ export class baseAnimation {
 		for (let x = 0; x < this.sprite_length; x++) {
 			const frame_x = x * this.sprite_width;
 
-			this.img_sprite.push(document.createElement("canvas"));
+			this.img_sprite.push(new OffscreenCanvas(this.width, this.height));
 			if (this.img_sprite[x]) {
-				this.img_sprite[x]!.width = this.width;
-				this.img_sprite[x]!.height = this.height;
 				const ctx = this.img_sprite[x]!.getContext("2d");
-				ctx?.drawImage(
-					this.img,
-					frame_x,
-					this.frame_y,
-					this.sprite_width,
-					this.sprite_height,
-					0,
-					0,
-					this.width,
-					this.height
-				);
+				if (ctx) {
+					ctx.drawImage(
+						this.img,
+						frame_x,
+						this.frame_y,
+						this.sprite_width,
+						this.sprite_height,
+						0,
+						0,
+						this.width,
+						this.height
+					);
+				}
 			}
 		}
 	}
