@@ -85,10 +85,11 @@ export class baseAnimation {
 					this.animation_repeat_index++;
 					if (this.animation_repeat_index >= this.animation_repeat) {
 						if (opt.onframecomplete) opt.onframecomplete();
+						else this.mark_delete = true;
 					} else {
 						this.frame_x = 0;
 					}
-				} else this.mark_delete = true;
+				}
 			} else {
 				this.frame_x++;
 				if (opt.onframechange) opt.onframechange();
