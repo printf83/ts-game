@@ -106,14 +106,14 @@ export class state {
 	}
 
 	enter() {
-		this.player.frame = 0;
-		this.player.frame_x = 0;
 		this.player.animation_repeat_index = 0;
 		this.player.collision_adjust_x = state_list[this.current_state].collision_adjust_x;
 		this.player.collision_adjust_y = state_list[this.current_state].collision_adjust_y;
 		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
 		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
 		this.player.animation_repeat = state_list[this.current_state].animation_repeat;
+
+		this.player.build_sprite();
 	}
 	exit() {}
 	update() {}

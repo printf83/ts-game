@@ -640,8 +640,8 @@ export class game {
 					this.fire_list.unshift(
 						new fire({
 							ctx: this.ctx_game,
-							x: this.player.x - 40 + MathRandom() * 10 - 10,
-							y: this.player.y + 25 + MathRandom() * 10 - 10,
+							x: this.player.x + 50 + MathRandom() * 10 - 10,
+							y: this.player.y + 100 + MathRandom() * 10 - 10,
 						})
 					);
 				});

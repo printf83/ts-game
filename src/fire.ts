@@ -1,29 +1,57 @@
 import { ASSET } from "./asset.js";
-import { particle } from "./particle.js";
+import { baseAnimation } from "./baseAnimation.js";
 import { MathFloor, MathRandom } from "./util.js";
 
 const imgFire = new Image();
 imgFire.src = ASSET.fire;
 
-export class fire extends particle {
-	img: HTMLImageElement;
-	img_size: number;
+export class fire extends baseAnimation {
+	angle: number;
+
+	dx: number;
+	dy: number;
+	sx: number;
+
 	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number }) {
+		const scale = MathRandom() * 0.5 + 0.5;
+		const sprite_length = 6;
+		const sprite_width = 100;
+		const sprite_height = 90;
+		const width = sprite_width * scale;
+		const height = sprite_height * scale;
+
 		super({
+			img: imgFire,
+
 			ctx: opt.ctx,
+
 			x: opt.x,
 			y: opt.y,
-			size: MathRandom() * 100 + 50,
+			width,
+			height,
+
+			sprite_width,
+			sprite_height,
+			sprite_length,
+
+			fps: 30,
+			animation_repeat: 1,
 		});
 
-		this.img = imgFire;
-		this.img_size = -this.size * 0.5;
+		this.angle = MathRandom() * 180;
+		this.dx = 0 - this.width * 0.5;
+		this.dy = 0 - this.height * 0.5;
+		this.sx = 0;
 	}
-	update() {
-		super.update();
-		this.img_size = -this.size * 0.5;
-	}
-	draw(): void {
-		this.ctx.drawImage(this.img, MathFloor(this.x), MathFloor(this.y), this.size, this.size);
+
+	draw() {
+		this.ctx.save();
+
+		this.ctx.translate(MathFloor(this.x), MathFloor(this.y));
+		this.ctx.rotate(this.angle);
+
+		this.ctx.drawImage(this.img_sprite[this.frame_x]!, MathFloor(this.dx), MathFloor(this.dy));
+
+		this.ctx.restore();
 	}
 }

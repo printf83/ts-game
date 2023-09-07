@@ -23,7 +23,7 @@ export class explosion extends baseAnimation {
 		scale: number;
 		play_sound?: boolean;
 	}) {
-		const sprite_length = 5;
+		const sprite_length = 6;
 		const sprite_width = 200;
 		const sprite_height = 179;
 		const width = sprite_width * opt.scale;
@@ -68,27 +68,15 @@ export class explosion extends baseAnimation {
 
 		super.update({
 			delta_time: opt.delta_time,
-			onframechange: () => {
-				this.sx = this.sprite_width * this.frame;
-			},
 		});
 	}
 	draw() {
 		this.ctx.save();
 
-		this.ctx.translate(this.x, this.y);
+		this.ctx.translate(MathFloor(this.x), MathFloor(this.y));
 		this.ctx.rotate(this.angle);
-		this.ctx.drawImage(
-			this.img,
-			MathFloor(this.sx),
-			0,
-			this.sprite_width,
-			this.sprite_width,
-			MathFloor(this.dx),
-			MathFloor(this.dy),
-			this.width,
-			this.height
-		);
+
+		this.ctx.drawImage(this.img_sprite[this.frame_x]!, MathFloor(this.dx), MathFloor(this.dy));
 
 		this.ctx.restore();
 	}

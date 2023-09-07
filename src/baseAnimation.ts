@@ -4,12 +4,12 @@ export class baseAnimation {
 	ctx: CanvasRenderingContext2D;
 
 	fps: number;
-	frame: number;
+	frame_x: number;
 	frame_timer: number;
 	frame_interval: number;
 
 	frame_y: number;
-	frame_x: number;
+	// frame_x: number;
 
 	mark_delete: boolean;
 
@@ -50,12 +50,11 @@ export class baseAnimation {
 		this.ctx = opt.ctx;
 
 		this.fps = opt.fps;
-		this.frame = 0;
 		this.frame_timer = 0;
 		this.frame_interval = 1000 / this.fps;
 
-		this.frame_y = 0;
 		this.frame_x = 0;
+		this.frame_y = 0;
 
 		this.mark_delete = false;
 
@@ -72,26 +71,26 @@ export class baseAnimation {
 
 		this.animation_repeat = opt.animation_repeat;
 		this.animation_repeat_index = 0;
+
+		this.build_sprite();
 	}
 
 	update(opt: { delta_time: number; onframechange?: () => void; onframecomplete?: () => void }) {
 		if (this.frame_timer >= this.frame_interval) {
 			this.frame_timer = 0;
 
-			if (this.frame >= this.sprite_length) {
-				if (this.animation_repeat === 0) this.frame = 0;
+			if (this.frame_x >= this.sprite_length - 1) {
+				if (this.animation_repeat === 0) this.frame_x = 0;
 				else if (this.animation_repeat > 0) {
 					this.animation_repeat_index++;
 					if (this.animation_repeat_index >= this.animation_repeat) {
 						if (opt.onframecomplete) opt.onframecomplete();
 					} else {
-						this.frame = 0;
+						this.frame_x = 0;
 					}
 				} else this.mark_delete = true;
 			} else {
-				this.frame++;
-				this.frame_x = this.frame * this.sprite_width;
-
+				this.frame_x++;
 				if (opt.onframechange) opt.onframechange();
 			}
 		} else {
@@ -100,21 +99,39 @@ export class baseAnimation {
 	}
 
 	draw() {
-		this.ctx.drawImage(
-			this.img,
-			this.frame_x,
-			this.frame_y,
-			this.sprite_width,
-			this.sprite_height,
-			MathFloor(this.x),
-			MathFloor(this.y),
-			this.width,
-			this.height
-		);
+		this.ctx.drawImage(this.img_sprite[this.frame_x]!, MathFloor(this.x), MathFloor(this.y));
 	}
 
 	set_position(opt: { game_speed: number }) {
 		this.x -= opt.game_speed;
 		if (this.x < 0 - this.width) this.mark_delete = true;
+	}
+
+	img_sprite: HTMLCanvasElement[] = [];
+	build_sprite() {
+		this.img_sprite = [];
+		this.frame_x = 0;
+
+		for (let x = 0; x < this.sprite_length; x++) {
+			const frame_x = x * this.sprite_width;
+
+			this.img_sprite.push(document.createElement("canvas"));
+			if (this.img_sprite[x]) {
+				this.img_sprite[x]!.width = this.width;
+				this.img_sprite[x]!.height = this.height;
+				const ctx = this.img_sprite[x]!.getContext("2d");
+				ctx?.drawImage(
+					this.img,
+					frame_x,
+					this.frame_y,
+					this.sprite_width,
+					this.sprite_height,
+					0,
+					0,
+					this.width,
+					this.height
+				);
+			}
+		}
 	}
 }
