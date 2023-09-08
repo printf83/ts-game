@@ -1,7 +1,7 @@
 import { layer } from "./layer.js";
 
 export class baseBg {
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D;
 
 	ground: number;
 	img_width: number;
@@ -18,7 +18,7 @@ export class baseBg {
 	bg_list: layer[] = [];
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		img: { url: string; speed_modifier: number }[];
 		ground: number;
 		img_width: number;

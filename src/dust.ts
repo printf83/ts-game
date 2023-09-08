@@ -4,12 +4,7 @@ import { MathFloor, MathPI2 } from "./util.js";
 export class dust extends particle {
 	color: string;
 
-	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		x: number;
-		y: number;
-		color: string;
-	}) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number; color: string }) {
 		super({ ctx: opt.ctx, x: opt.x, y: opt.y });
 		this.color = opt.color;
 	}

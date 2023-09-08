@@ -8,11 +8,7 @@ imgFire.src = ASSET.fire;
 export class fire extends particle {
 	img: HTMLImageElement;
 	img_size: number;
-	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		x: number;
-		y: number;
-	}) {
+	constructor(opt: { ctx: CanvasRenderingContext2D; x: number; y: number }) {
 		super({
 			ctx: opt.ctx,
 			x: opt.x,

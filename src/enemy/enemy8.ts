@@ -13,7 +13,7 @@ export class enemy8 extends baseEnemy {
 	string_y: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		canvas_width: number;
 		canvas_height: number;
 		debug?: boolean;

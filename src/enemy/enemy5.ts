@@ -10,7 +10,7 @@ export class enemy5 extends baseEnemy {
 	direction_y: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		canvas_width: number;
 		canvas_height: number;
 		debug?: boolean;

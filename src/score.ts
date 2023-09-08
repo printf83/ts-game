@@ -1,8 +1,8 @@
 import { COLOR, MathFloor, draw_text } from "./util.js";
 
 export class score {
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-	img: HTMLCanvasElement | OffscreenCanvas;
+	ctx: CanvasRenderingContext2D
+	img: ImageBitmap;
 
 	text: string;
 	value: number;
@@ -15,7 +15,7 @@ export class score {
 	mark_delete: boolean;
 	timer: number;
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D
 		text: string;
 		value: number;
 		x: number;
@@ -36,17 +36,19 @@ export class score {
 		this.timer = 100;
 
 		//draw the text into offscreen canvas
-		this.img = new OffscreenCanvas(100, 50);
-		const img_ctx = this.img.getContext("2d")!;
+		const canvas = new OffscreenCanvas(100, 50);
+		const ctx = canvas.getContext("2d")!;
 
 		draw_text({
 			text_color: this.value <= 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
-			ctx: img_ctx,
+			ctx: ctx,
 			x: 50,
 			y: 25,
 			text: this.text,
 			font_weight: 30,
 		});
+
+		this.img = canvas.transferToImageBitmap();
 	}
 	update() {
 		this.x += this.speed_x;

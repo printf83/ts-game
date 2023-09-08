@@ -1,7 +1,7 @@
 import { MathFloor } from "./util.js";
 
 export class baseAnimation {
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D;
 
 	fps: number;
 	frame_x: number;
@@ -27,7 +27,7 @@ export class baseAnimation {
 	animation_repeat_index: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 
 		img: HTMLImageElement;
 
@@ -107,7 +107,7 @@ export class baseAnimation {
 		if (this.x < 0 - this.width) this.mark_delete = true;
 	}
 
-	img_sprite: OffscreenCanvas[] = [];
+	img_sprite: ImageBitmap[] = [];
 	build_sprite() {
 		this.img_sprite = [];
 		this.frame_x = 0;
@@ -115,9 +115,9 @@ export class baseAnimation {
 		for (let x = 0; x < this.sprite_length; x++) {
 			const frame_x = x * this.sprite_width;
 
-			this.img_sprite.push(new OffscreenCanvas(this.width, this.height));
-			if (this.img_sprite[x]) {
-				const ctx = this.img_sprite[x]!.getContext("2d");
+			const canvas = new OffscreenCanvas(this.width, this.height);
+			if (canvas) {
+				const ctx = canvas.getContext("2d");
 				if (ctx) {
 					ctx.drawImage(
 						this.img,
@@ -130,6 +130,7 @@ export class baseAnimation {
 						this.width,
 						this.height
 					);
+					this.img_sprite.push(canvas.transferToImageBitmap());
 				}
 			}
 		}

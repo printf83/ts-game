@@ -9,7 +9,7 @@ export class baseEnemy extends baseAnimation {
 	uid_text: string;
 	uid_number: string;
 
-	ctx_collision?: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx_collision?: CanvasRenderingContext2D;
 
 	canvas_width: number;
 	canvas_height: number;
@@ -27,8 +27,8 @@ export class baseEnemy extends baseAnimation {
 	collision_scale: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		ctx_collision?: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
+		ctx_collision?: CanvasRenderingContext2D;
 
 		img: HTMLImageElement;
 

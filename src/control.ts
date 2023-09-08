@@ -15,8 +15,8 @@ const BTN_COLOR = {
 class button {
 	debug: boolean;
 
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-	ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D;
+	ctx_mark: CanvasRenderingContext2D;
 
 	name: string;
 
@@ -39,8 +39,8 @@ class button {
 	line_width: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
 		name: string;
 		img: string;
 		x: number;
@@ -156,8 +156,8 @@ class button {
 class arrow {
 	debug: boolean;
 
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-	ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D;
+	ctx_mark: CanvasRenderingContext2D;
 
 	name: string;
 
@@ -185,8 +185,8 @@ class arrow {
 	end_degree: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
 		name: string;
 		img: string;
 		img_width?: number;
@@ -362,7 +362,7 @@ class arrow {
 		return MathPI * (angle_degree * two_360);
 	}
 	private draw_fill(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
 		hole_width: number;
@@ -403,7 +403,7 @@ class arrow {
 	}
 
 	private draw_line(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
 		hole_width: number;
@@ -446,7 +446,7 @@ class arrow {
 	}
 
 	private draw_clear(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
 		hole_width: number;
@@ -500,7 +500,7 @@ class arrow {
 	}
 
 	private draw_img(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
 		hole_width: number;
@@ -565,18 +565,18 @@ export class control {
 	canvas_control: HTMLCanvasElement;
 	canvas_pointer: HTMLCanvasElement;
 
-	ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-	ctx_control: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-	ctx_pointer: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx_mark: CanvasRenderingContext2D;
+	ctx_control: CanvasRenderingContext2D;
+	ctx_pointer: CanvasRenderingContext2D;
 
 	constructor(opt: {
 		canvas_mark: HTMLCanvasElement;
 		canvas_control: HTMLCanvasElement;
 		canvas_pointer: HTMLCanvasElement;
 
-		ctx_mark: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		ctx_control: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		ctx_pointer: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx_mark: CanvasRenderingContext2D;
+		ctx_control: CanvasRenderingContext2D;
+		ctx_pointer: CanvasRenderingContext2D;
 
 		canvas_width: number;
 		canvas_height: number;
@@ -899,9 +899,9 @@ export class control {
 	}
 	attach_mouse(opt: {
 		canvas_mark: HTMLCanvasElement;
-		marker_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		pointer_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		control_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
 		debug?: boolean;
 	}) {
 		opt.canvas_mark.addEventListener("mousedown", (event: MouseEvent) => {
@@ -1040,9 +1040,9 @@ export class control {
 
 	attach_touch(opt: {
 		canvas_mark: HTMLCanvasElement;
-		marker_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		pointer_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
-		control_ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		marker_ctx: CanvasRenderingContext2D;
+		pointer_ctx: CanvasRenderingContext2D;
+		control_ctx: CanvasRenderingContext2D;
 		debug?: boolean;
 	}) {
 		opt.canvas_mark.addEventListener("touchstart", (event: TouchEvent) => {

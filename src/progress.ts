@@ -1,7 +1,7 @@
 import { COLOR, MathFloor } from "./util.js";
 
 export class progress {
-	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+	ctx: CanvasRenderingContext2D;
 
 	x: number;
 	y: number;
@@ -25,7 +25,7 @@ export class progress {
 	padding: number;
 
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
 		min?: number;

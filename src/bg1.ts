@@ -3,7 +3,7 @@ import { baseBg } from "./baseBg.js";
 
 export class bg1 extends baseBg {
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
+		ctx: CanvasRenderingContext2D;
 		canvas_width: number;
 		canvas_height: number;
 	}) {
