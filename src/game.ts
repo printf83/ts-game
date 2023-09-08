@@ -837,7 +837,7 @@ export class game {
 		callback: (timestamp: number, animation_id: number) => void
 	) {
 		const last_second = timestamp - 1000;
-		if (this.game_fps_list.length > this.fps_min)
+		if (this.game_fps_list.length > 0)
 			this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
 		this.game_fps_list.push(timestamp);
 		this.game_fps = this.game_fps_list.length;
