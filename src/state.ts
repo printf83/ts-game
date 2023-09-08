@@ -116,6 +116,8 @@ export class state {
 
 	enter() {
 		if (state_list[this.current_state]) {
+			this.player.frame_x = 0;
+			this.player.img_sprite = [];
 			this.player.animation_repeat_index = 0;
 			this.player.collision_adjust_x = state_list[this.current_state]!.collision_adjust_x;
 			this.player.collision_adjust_y = state_list[this.current_state]!.collision_adjust_y;
@@ -125,7 +127,7 @@ export class state {
 			this.player.animation_repeat = state_list[this.current_state]!.animation_repeat;
 
 			if (
-				state_list[this.current_state]!.img_sprite &&
+				state_list[this.current_state]!.img_sprite !== undefined &&
 				state_list[this.current_state]!.img_sprite!.length > 0
 			) {
 				this.player.img_sprite = state_list[this.current_state]!.img_sprite!;
