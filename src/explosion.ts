@@ -43,7 +43,7 @@ export class explosion extends baseAnimation {
 			sprite_height,
 			sprite_length,
 
-			fps: 30,
+			fps: 24,
 			animation_repeat: 1,
 		});
 

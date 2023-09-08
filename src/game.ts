@@ -21,6 +21,7 @@ import {
 	COLOR,
 	MathFloor,
 	MathRandom,
+	clearArray,
 	clear_text,
 	draw_clear_text,
 	draw_text,
@@ -105,7 +106,7 @@ export class game {
 
 	dust_max: number = 50;
 	fire_max: number = 50;
-	fps_min: number = 30;
+	fps_min: number = 24;
 	debug: boolean = false;
 
 	game_up: boolean = false;
@@ -279,11 +280,16 @@ export class game {
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list = [];
-		this.explosion_list = [];
-		this.dust_list = [];
-		this.fire_list = [];
-		this.score_list = [];
+		// this.enemy_list = [];
+		// this.explosion_list = [];
+		// this.dust_list = [];
+		// this.fire_list = [];
+		// this.score_list = [];
+		clearArray(this.enemy_list);
+		clearArray(this.explosion_list);
+		clearArray(this.dust_list);
+		clearArray(this.fire_list);
+		clearArray(this.score_list);
 
 		this.player.set_state("idle");
 		this.player.life = 100;
@@ -330,10 +336,14 @@ export class game {
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		this.enemy_list = [];
-		this.explosion_list = [];
-		this.dust_list = [];
-		this.fire_list = [];
+		// this.enemy_list = [];
+		// this.explosion_list = [];
+		// this.dust_list = [];
+		// this.fire_list = [];
+		clearArray(this.enemy_list);
+		clearArray(this.explosion_list);
+		clearArray(this.dust_list);
+		clearArray(this.fire_list);
 
 		this.player.set_state("idle");
 		this.player.life += 10;
@@ -574,7 +584,7 @@ export class game {
 		//game timeout message
 		if (this.game_timeout)
 			this.draw_message(
-				"Time up!",
+				"Times up!",
 				isTouchDevice() ? "Press START to try again." : "Press START/ENTER to try again.",
 				`rgb(${COLOR.red})`
 			);
@@ -604,6 +614,18 @@ export class game {
 		//update game progress
 		this.progress_index += this.player.speed * 0.1;
 		if (this.progress_index >= this.progress_max) {
+			this.score_list.push(
+				new score({
+					ctx: this.ctx_game,
+					text: `+${this.progress_timer_index.toString().padStart(2, "0")}`,
+					value: this.progress_timer_index,
+					x: (this.canvas_width + this.prg_game.width) * 0.5 - 120,
+					y: 25,
+					destination_x: 90,
+					destination_y: 60,
+				})
+			);
+
 			this.ctl.clear_control();
 			this.ctl.clear_arrow();
 			this.ctl.draw_start();

@@ -35,6 +35,9 @@ export const isFullscreen = () => window.innerHeight === screen.height;
 
 export const DPI = window.devicePixelRatio;
 
+export const clearArray = (arr: unknown[]) => {
+	while (arr.length > 0) arr.pop();
+};
 export const measure_text = (opt: {
 	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	text: string;

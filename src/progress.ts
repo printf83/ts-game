@@ -112,11 +112,7 @@ export class progress {
 			);
 			this.ctx.fill();
 		} else {
-			this.ctx.fillStyle = this.gradient_bar_color(
-				this.bar_color,
-				MathFloor(this.bar_x),
-				MathFloor(this.bar_max_width)
-			);
+			this.ctx.fillStyle = this.generated_bar_color;
 			this.ctx.fillRect(
 				MathFloor(this.bar_x),
 				MathFloor(this.bar_y),
