@@ -156,6 +156,8 @@ class button {
 class arrow {
 	debug: boolean;
 
+	wm: WeakMap<object, ImageBitmap>;
+
 	ctx: CanvasRenderingContext2D;
 	ctx_mark: CanvasRenderingContext2D;
 
@@ -246,6 +248,8 @@ class arrow {
 		this.color = opt.color;
 		this.padding = opt.padding;
 		this.line_width = opt.line_width;
+
+		this.wm = new WeakMap<object, ImageBitmap>();
 	}
 	clear() {
 		this.draw_clear({
@@ -261,7 +265,6 @@ class arrow {
 	}
 	draw() {
 		this.clear();
-
 		this.draw_fill({
 			ctx: this.ctx,
 			x: this.x,
@@ -361,6 +364,8 @@ class arrow {
 		const two_360 = 0.00555555555; //2/360
 		return MathPI * (angle_degree * two_360);
 	}
+
+	scale_wm = 1.5;
 	private draw_fill(opt: {
 		ctx: CanvasRenderingContext2D;
 		x: number;
@@ -371,35 +376,50 @@ class arrow {
 		end_degree: number;
 		color: string;
 	}) {
-		opt.ctx.save();
-		opt.ctx.beginPath();
-		opt.ctx.fillStyle = opt.color;
+		if (!this.wm.has(opt)) {
+			const w = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const h = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const x = w * 0.5;
+			const y = h * 0.5;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.fillStyle = opt.color;
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.hole_width,
-			this.angle_degree_for_arc(opt.start_degree),
-			this.angle_degree_for_arc(opt.end_degree)
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.hole_width,
+					this.angle_degree_for_arc(opt.start_degree),
+					this.angle_degree_for_arc(opt.end_degree)
+				);
 
-		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
-		opt.ctx.lineTo(c1.x, c1.y);
+				let c1 = this.get_angle_position(x, y, opt.btn_width, opt.end_degree);
+				ctx.lineTo(c1.x, c1.y);
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.btn_width,
-			this.angle_degree_for_arc(opt.end_degree),
-			this.angle_degree_for_arc(opt.start_degree),
-			true
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.btn_width,
+					this.angle_degree_for_arc(opt.end_degree),
+					this.angle_degree_for_arc(opt.start_degree),
+					true
+				);
 
-		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
-		opt.ctx.lineTo(c2.x, c2.y);
+				let c2 = this.get_angle_position(x, y, opt.hole_width, opt.start_degree);
+				ctx.lineTo(c2.x, c2.y);
 
-		opt.ctx.fill();
-		opt.ctx.restore();
+				ctx.fill();
+				ctx.restore();
+				this.wm.set(opt, canvas.transferToImageBitmap());
+			}
+		}
+
+		if (this.wm.has(opt)) {
+			opt.ctx.drawImage(this.wm.get(opt)!, opt.x, opt.y);
+		}
 	}
 
 	private draw_line(opt: {
@@ -413,36 +433,51 @@ class arrow {
 		color: string;
 		line_width: number;
 	}) {
-		opt.ctx.save();
-		opt.ctx.beginPath();
-		opt.ctx.strokeStyle = opt.color;
-		opt.ctx.lineWidth = opt.line_width;
+		if (!this.wm.has(opt)) {
+			const w = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const h = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const x = w * 0.5;
+			const y = h * 0.5;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.strokeStyle = opt.color;
+				ctx.lineWidth = opt.line_width;
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.hole_width,
-			this.angle_degree_for_arc(opt.start_degree),
-			this.angle_degree_for_arc(opt.end_degree)
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.hole_width,
+					this.angle_degree_for_arc(opt.start_degree),
+					this.angle_degree_for_arc(opt.end_degree)
+				);
 
-		let c1 = this.get_angle_position(opt.x, opt.y, opt.btn_width, opt.end_degree);
-		opt.ctx.lineTo(c1.x, c1.y);
+				let c1 = this.get_angle_position(x, y, opt.btn_width, opt.end_degree);
+				ctx.lineTo(c1.x, c1.y);
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.btn_width,
-			this.angle_degree_for_arc(opt.end_degree),
-			this.angle_degree_for_arc(opt.start_degree),
-			true
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.btn_width,
+					this.angle_degree_for_arc(opt.end_degree),
+					this.angle_degree_for_arc(opt.start_degree),
+					true
+				);
 
-		let c2 = this.get_angle_position(opt.x, opt.y, opt.hole_width, opt.start_degree);
-		opt.ctx.lineTo(c2.x, c2.y);
+				let c2 = this.get_angle_position(x, y, opt.hole_width, opt.start_degree);
+				ctx.lineTo(c2.x, c2.y);
 
-		opt.ctx.stroke();
-		opt.ctx.restore();
+				ctx.stroke();
+				ctx.restore();
+				this.wm.set(opt, canvas.transferToImageBitmap());
+			}
+		}
+
+		if (this.wm.has(opt)) {
+			opt.ctx.drawImage(this.wm.get(opt)!, opt.x, opt.y);
+		}
 	}
 
 	private draw_clear(opt: {
@@ -455,48 +490,67 @@ class arrow {
 		end_degree: number;
 		line_width: number;
 	}) {
-		opt.ctx.save();
-		opt.ctx.globalCompositeOperation = "destination-out";
-		opt.ctx.beginPath();
-		opt.ctx.fillStyle = "black";
-		opt.ctx.strokeStyle = "black";
-		opt.ctx.lineWidth = opt.line_width;
+		if (!this.wm.has(opt)) {
+			const w = (opt.hole_width + opt.btn_width + opt.line_width) * this.scale_wm;
+			const h = (opt.hole_width + opt.btn_width + opt.line_width) * this.scale_wm;
+			const x = w * 0.5;
+			const y = h * 0.5;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.fillStyle = "black";
+				ctx.strokeStyle = "black";
+				ctx.lineWidth = opt.line_width;
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.hole_width - opt.line_width,
-			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
-			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2))
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.hole_width - opt.line_width,
+					this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
+					this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2))
+				);
 
-		let c1 = this.get_angle_position(
-			opt.x,
-			opt.y,
-			opt.btn_width + opt.line_width * 2,
-			this.calc_degree(opt.end_degree + opt.line_width * 2)
-		);
-		opt.ctx.lineTo(c1.x, c1.y);
+				let c1 = this.get_angle_position(
+					x,
+					y,
+					opt.btn_width + opt.line_width * 2,
+					this.calc_degree(opt.end_degree + opt.line_width * 2)
+				);
+				ctx.lineTo(c1.x, c1.y);
 
-		opt.ctx.arc(
-			opt.x,
-			opt.y,
-			opt.btn_width + opt.line_width * 2,
-			this.angle_degree_for_arc(this.calc_degree(opt.end_degree + opt.line_width * 2)),
-			this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
-			true
-		);
+				ctx.arc(
+					x,
+					y,
+					opt.btn_width + opt.line_width * 2,
+					this.angle_degree_for_arc(
+						this.calc_degree(opt.end_degree + opt.line_width * 2)
+					),
+					this.angle_degree_for_arc(this.calc_degree(opt.start_degree - opt.line_width)),
+					true
+				);
 
-		let c2 = this.get_angle_position(
-			opt.x,
-			opt.y,
-			opt.hole_width - opt.line_width,
-			this.calc_degree(opt.start_degree - opt.line_width)
-		);
-		opt.ctx.lineTo(c2.x, c2.y);
+				let c2 = this.get_angle_position(
+					x,
+					y,
+					opt.hole_width - opt.line_width,
+					this.calc_degree(opt.start_degree - opt.line_width)
+				);
+				ctx.lineTo(c2.x, c2.y);
 
-		opt.ctx.fill();
-		opt.ctx.restore();
+				ctx.fill();
+				ctx.restore();
+				this.wm.set(opt, canvas.transferToImageBitmap());
+			}
+		}
+
+		if (this.wm.has(opt)) {
+			opt.ctx.save();
+			opt.ctx.globalCompositeOperation = "destination-out";
+			opt.ctx.drawImage(this.wm.get(opt)!, opt.x, opt.y);
+			opt.ctx.restore();
+		}
 	}
 
 	private draw_img(opt: {
@@ -508,32 +562,47 @@ class arrow {
 		start_degree: number;
 		end_degree: number;
 	}) {
-		opt.ctx.save();
+		if (!this.wm.has(opt)) {
+			const w = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const h = (opt.hole_width + opt.btn_width) * this.scale_wm;
+			const x = w * 0.5;
+			const y = h * 0.5;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
 
-		const mid_degree = this.calc_middle_degree(opt.start_degree, opt.end_degree);
-		const mid_coord = this.get_angle_position(
-			this.x,
-			this.y,
-			this.btn_width - this.hole_width,
-			mid_degree
-		);
+				const mid_degree = this.calc_middle_degree(opt.start_degree, opt.end_degree);
+				const mid_coord = this.get_angle_position(
+					x,
+					y,
+					opt.btn_width - opt.hole_width,
+					mid_degree
+				);
 
-		let img_x = mid_coord.x - this.width * 0.5;
-		let img_y = mid_coord.y - this.height * 0.5;
+				let img_x = mid_coord.x - this.width * 0.5;
+				let img_y = mid_coord.y - this.height * 0.5;
 
-		opt.ctx.drawImage(
-			this.img,
-			0,
-			0,
-			this.img_width,
-			this.img_height,
-			img_x + (this.width - (this.width - this.padding)) * 0.5,
-			img_y + (this.height - (this.height - this.padding)) * 0.5,
-			this.width - this.padding,
-			this.height - this.padding
-		);
+				ctx.drawImage(
+					this.img,
+					0,
+					0,
+					this.img_width,
+					this.img_height,
+					img_x + (this.width - (this.width - this.padding)) * 0.5,
+					img_y + (this.height - (this.height - this.padding)) * 0.5,
+					this.width - this.padding,
+					this.height - this.padding
+				);
 
-		opt.ctx.restore();
+				ctx.restore();
+				this.wm.set(opt, canvas.transferToImageBitmap());
+			}
+		}
+
+		if (this.wm.has(opt)) {
+			opt.ctx.drawImage(this.wm.get(opt)!, opt.x, opt.y);
+		}
 	}
 }
 
@@ -600,8 +669,8 @@ export class control {
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
-		const arrow_x = 70 * DPI;
-		const arrow_y = this.canvas_height - 70 * DPI;
+		const arrow_x = 20 * DPI;
+		const arrow_y = this.canvas_height - 120 * DPI;
 		const arrow_padding = 3 * DPI;
 
 		this.arrow_right = new arrow({
