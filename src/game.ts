@@ -66,6 +66,8 @@ const enemy_type = [
 // const enemy_type = ["enemy9", "enemy10", "enemy11"];
 
 export class game {
+	CURRENT_ANIMATION_ID = MathRandom();
+
 	canvas_game: HTMLCanvasElement;
 	canvas_static: HTMLCanvasElement;
 	canvas_value: HTMLCanvasElement;
@@ -311,7 +313,7 @@ export class game {
 		this.player.set_state("run");
 
 		requestAnimationFrame((timestamp) => {
-			this.animate(timestamp);
+			this.animate(timestamp, this.CURRENT_ANIMATION_ID);
 		});
 	}
 
@@ -357,7 +359,7 @@ export class game {
 		this.player.set_state("run");
 
 		requestAnimationFrame((timestamp) => {
-			this.animate(timestamp);
+			this.animate(timestamp, this.CURRENT_ANIMATION_ID);
 		});
 	}
 
@@ -373,7 +375,7 @@ export class game {
 		this.game_pause = false;
 		this.clean_ctx_value_message();
 		requestAnimationFrame((timestamp) => {
-			this.animate(timestamp);
+			this.animate(timestamp, this.CURRENT_ANIMATION_ID);
 		});
 	}
 
@@ -807,17 +809,22 @@ export class game {
 		}
 	};
 
-	is_enough_fps(timestamp: number, callback: (timestamp: number) => void) {
+	is_enough_fps(
+		timestamp: number,
+		animation_id: number,
+		callback: (timestamp: number, animation_id: number) => void
+	) {
 		const last_second = timestamp - 1000;
 		if (this.game_fps_list.length > this.fps_min)
 			this.game_fps_list = this.game_fps_list.filter((i) => i > last_second);
 		this.game_fps_list.push(timestamp);
 		this.game_fps = this.game_fps_list.length;
 
-		if (this.game_fps >= this.fps_min) callback(timestamp);
+		if (this.game_fps >= this.fps_min) callback(timestamp, animation_id);
 		else {
 			requestAnimationFrame((timestamp) => {
-				this.is_enough_fps(timestamp, callback);
+				if (this.CURRENT_ANIMATION_ID === animation_id)
+					this.is_enough_fps(timestamp, animation_id, callback);
 			});
 		}
 	}
@@ -853,7 +860,7 @@ export class game {
 		gen_text(115, `${read_random_index()}`);
 	}
 
-	do_animate = (timestamp: number) => {
+	do_animate = (timestamp: number, animation_id: number) => {
 		//update object
 		this.update(timestamp);
 
@@ -868,13 +875,22 @@ export class game {
 
 		if (!this.game_over && !this.game_timeout && !this.game_pause && !this.game_up) {
 			requestAnimationFrame((timestamp) => {
-				this.animate(timestamp);
+				if (this.CURRENT_ANIMATION_ID === animation_id)
+					this.animate(timestamp, animation_id);
+				else {
+					console.log({
+						animation_id1: this.CURRENT_ANIMATION_ID,
+						animation_id2: animation_id,
+					});
+				}
 			});
+		} else {
+			this.CURRENT_ANIMATION_ID = MathRandom();
 		}
 	};
 
-	animate(timestamp: number) {
-		if (this.debug) this.is_enough_fps(timestamp, this.do_animate);
-		else this.do_animate(timestamp);
+	animate(timestamp: number, animation_id: number) {
+		if (this.debug) this.is_enough_fps(timestamp, animation_id, this.do_animate);
+		else this.do_animate(timestamp, animation_id);
 	}
 }

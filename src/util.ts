@@ -35,7 +35,7 @@ export const isFullscreen = () => window.innerHeight === screen.height;
 
 export const DPI = window.devicePixelRatio;
 
-const measure_text = (opt: {
+export const measure_text = (opt: {
 	ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 	text: string;
 	font_weight?: number;
