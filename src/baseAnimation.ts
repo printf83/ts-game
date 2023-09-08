@@ -134,5 +134,7 @@ export class baseAnimation {
 				}
 			}
 		}
+
+		return this.img_sprite;
 	}
 }

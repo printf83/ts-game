@@ -1,7 +1,15 @@
 import { input } from "./input.js";
 import { player } from "./player.js";
 
-export const state_list = {
+interface state_item {
+	frame_y: number;
+	sprite_length: number;
+	animation_repeat: number;
+	collision_adjust_x: number;
+	collision_adjust_y: number;
+	img_sprite?: ImageBitmap[];
+}
+export const state_list: { [key: string]: state_item } = {
 	idle: {
 		frame_y: 0,
 		sprite_length: 7,
@@ -98,6 +106,7 @@ export const state_list = {
 export type state_type = keyof typeof state_list;
 
 export class state {
+	img_sprite?: ImageBitmap[];
 	current_state: state_type;
 	player: player;
 	constructor(current_state: state_type, player: player) {
@@ -106,14 +115,24 @@ export class state {
 	}
 
 	enter() {
-		this.player.animation_repeat_index = 0;
-		this.player.collision_adjust_x = state_list[this.current_state].collision_adjust_x;
-		this.player.collision_adjust_y = state_list[this.current_state].collision_adjust_y;
-		this.player.frame_y = state_list[this.current_state].frame_y * this.player.sprite_height;
-		this.player.sprite_length = state_list[this.current_state].sprite_length - 1;
-		this.player.animation_repeat = state_list[this.current_state].animation_repeat;
+		if (state_list[this.current_state]) {
+			this.player.animation_repeat_index = 0;
+			this.player.collision_adjust_x = state_list[this.current_state]!.collision_adjust_x;
+			this.player.collision_adjust_y = state_list[this.current_state]!.collision_adjust_y;
+			this.player.frame_y =
+				state_list[this.current_state]!.frame_y * this.player.sprite_height;
+			this.player.sprite_length = state_list[this.current_state]!.sprite_length - 1;
+			this.player.animation_repeat = state_list[this.current_state]!.animation_repeat;
 
-		this.player.build_sprite();
+			if (
+				state_list[this.current_state]!.img_sprite &&
+				state_list[this.current_state]!.img_sprite!.length > 0
+			) {
+				this.player.img_sprite = state_list[this.current_state]!.img_sprite!;
+			} else {
+				state_list[this.current_state]!.img_sprite = this.player.build_sprite();
+			}
+		}
 	}
 	exit() {}
 	update() {}
