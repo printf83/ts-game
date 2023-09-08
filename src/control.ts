@@ -156,7 +156,7 @@ class button {
 class arrow {
 	debug: boolean;
 
-	wm: WeakMap<object, ImageBitmap>;
+	wm: { [key: string]: ImageBitmap } = {};
 
 	ctx: CanvasRenderingContext2D;
 	ctx_mark: CanvasRenderingContext2D;
@@ -248,68 +248,29 @@ class arrow {
 		this.color = opt.color;
 		this.padding = opt.padding;
 		this.line_width = opt.line_width;
-
-		this.wm = new WeakMap<object, ImageBitmap>();
 	}
 	clear() {
 		this.draw_clear({
 			ctx: this.ctx,
-			x: this.x,
-			y: this.y,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
-			line_width: this.line_width,
 		});
 	}
 	draw() {
 		this.clear();
 		this.draw_fill({
 			ctx: this.ctx,
-			x: this.x,
-			y: this.y,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
 			color: this.color,
 		});
 
 		this.draw_line({
 			ctx: this.ctx,
-			x: this.x,
-			y: this.y,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
-			color: this.color,
-			line_width: this.line_width,
 		});
 		this.draw_img({
 			ctx: this.ctx,
-			x: this.x,
-			y: this.y,
-			height: this.height,
-			width: this.width,
-			padding: this.padding,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
 		});
 	}
 	clear_mark() {
 		this.draw_clear({
 			ctx: this.ctx_mark,
-			x: this.x,
-			y: this.y,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
-			line_width: this.line_width,
 		});
 	}
 
@@ -317,12 +278,6 @@ class arrow {
 		this.clear_mark();
 		this.draw_fill({
 			ctx: this.ctx_mark,
-			x: this.x,
-			y: this.y,
-			hole_width: this.hole_width,
-			btn_width: this.btn_width,
-			start_degree: this.start_degree,
-			end_degree: this.end_degree,
 			color: this.uid_text,
 		});
 	}
@@ -369,9 +324,10 @@ class arrow {
 	}
 
 	scale_wm = 2;
-	private draw_fill(opt: { ctx: CanvasRenderingContext2D }) {
-		const wm_name = "fill";
-		if (!this.wm.has(wm_name)) {
+	private draw_fill(opt: { ctx: CanvasRenderingContext2D; color: string }) {
+		const wm_name = `fill_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${opt.color}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
 			const h = (this.hole_width + this.btn_width) * this.scale_wm;
 			const x = w * 0.5;
@@ -381,7 +337,7 @@ class arrow {
 			if (ctx) {
 				ctx.save();
 				ctx.beginPath();
-				ctx.fillStyle = this.color;
+				ctx.fillStyle = opt.color;
 
 				ctx.arc(
 					x,
@@ -408,28 +364,19 @@ class arrow {
 
 				ctx.fill();
 				ctx.restore();
-				this.wm.set(wm_name, canvas.transferToImageBitmap());
+				this.wm[wm_name] = canvas.transferToImageBitmap();
 			}
 		}
 
-		if (this.wm.has(wm_name)) {
-			opt.ctx.drawImage(this.wm.get(wm_name)!, this.x, this.y);
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
 		}
 	}
 
-	private draw_line(opt: {
-		ctx: CanvasRenderingContext2D;
-		// x: number;
-		// y: number;
-		// hole_width: number;
-		// btn_width: number;
-		// start_degree: number;
-		// end_degree: number;
-		// color: string;
-		// line_width: number;
-	}) {
-		const wm_name = "line";
-		if (!this.wm.has(wm_name)) {
+	private draw_line(opt: { ctx: CanvasRenderingContext2D }) {
+		const wm_name = `line_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${this.color}_${this.line_width}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
 			console.log("build wm line");
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
 			const h = (this.hole_width + this.btn_width) * this.scale_wm;
@@ -468,18 +415,19 @@ class arrow {
 
 				ctx.stroke();
 				ctx.restore();
-				this.wm.set(wm_name, canvas.transferToImageBitmap());
+				this.wm[wm_name] = canvas.transferToImageBitmap();
 			}
 		}
 
-		if (this.wm.has(wm_name)) {
-			opt.ctx.drawImage(this.wm.get(wm_name)!, this.x, this.y);
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
 		}
 	}
 
 	private draw_clear(opt: { ctx: CanvasRenderingContext2D }) {
-		const wm_name = "clear";
-		if (!this.wm.has(wm_name)) {
+		const wm_name = `clear_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${this.line_width}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
 			const w = (this.hole_width + this.btn_width + this.line_width) * this.scale_wm;
 			const h = (this.hole_width + this.btn_width + this.line_width) * this.scale_wm;
 			const x = w * 0.5;
@@ -491,7 +439,7 @@ class arrow {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width;
+				ctx.lineWidth = this.line_width * 4;
 
 				ctx.arc(
 					x,
@@ -529,32 +477,22 @@ class arrow {
 				ctx.fill();
 				ctx.stroke();
 				ctx.restore();
-				this.wm.set(wm_name, canvas.transferToImageBitmap());
+				this.wm[wm_name] = canvas.transferToImageBitmap();
 			}
 		}
 
-		if (this.wm.has(wm_name)) {
+		if (typeof this.wm[wm_name] !== "undefined") {
 			opt.ctx.save();
 			opt.ctx.globalCompositeOperation = "destination-out";
-			opt.ctx.drawImage(this.wm.get(wm_name)!, this.x, this.y);
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
 			opt.ctx.restore();
 		}
 	}
 
-	private draw_img(opt: {
-		ctx: CanvasRenderingContext2D;
-		// x: number;
-		// y: number;
+	private draw_img(opt: { ctx: CanvasRenderingContext2D }) {
+		const wm_name = `clear_${this.img_width}_${this.img_height}_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${this.padding}`;
 
-		// width: number;
-		// height: number;
-		// padding: number;
-		// hole_width: number;
-		// btn_width: number;
-		// start_degree: number;
-		// end_degree: number;
-	}) {
-		if (!this.wm.has(opt)) {
+		if (typeof this.wm[wm_name] === "undefined") {
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
 			const h = (this.hole_width + this.btn_width) * this.scale_wm;
 			const x = w * 0.5;
@@ -588,12 +526,12 @@ class arrow {
 				);
 
 				ctx.restore();
-				this.wm.set(opt, canvas.transferToImageBitmap());
+				this.wm[wm_name] = canvas.transferToImageBitmap();
 			}
 		}
 
-		if (this.wm.has(opt)) {
-			opt.ctx.drawImage(this.wm.get(opt)!, opt.x, opt.y);
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
 		}
 	}
 }
