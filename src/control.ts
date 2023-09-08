@@ -291,6 +291,9 @@ class arrow {
 			ctx: this.ctx,
 			x: this.x,
 			y: this.y,
+			height: this.height,
+			width: this.width,
+			padding: this.padding,
 			hole_width: this.hole_width,
 			btn_width: this.btn_width,
 			start_degree: this.start_degree,
@@ -365,7 +368,7 @@ class arrow {
 		return MathPI * (angle_degree * two_360);
 	}
 
-	scale_wm = 1.5;
+	scale_wm = 2;
 	private draw_fill(opt: {
 		ctx: CanvasRenderingContext2D;
 		x: number;
@@ -434,6 +437,7 @@ class arrow {
 		line_width: number;
 	}) {
 		if (!this.wm.has(opt)) {
+			console.log("build wm line");
 			const w = (opt.hole_width + opt.btn_width) * this.scale_wm;
 			const h = (opt.hole_width + opt.btn_width) * this.scale_wm;
 			const x = w * 0.5;
@@ -557,6 +561,10 @@ class arrow {
 		ctx: CanvasRenderingContext2D;
 		x: number;
 		y: number;
+
+		width: number;
+		height: number;
+		padding: number;
 		hole_width: number;
 		btn_width: number;
 		start_degree: number;
@@ -580,8 +588,8 @@ class arrow {
 					mid_degree
 				);
 
-				let img_x = mid_coord.x - this.width * 0.5;
-				let img_y = mid_coord.y - this.height * 0.5;
+				let img_x = mid_coord.x - opt.width * 0.5;
+				let img_y = mid_coord.y - opt.height * 0.5;
 
 				ctx.drawImage(
 					this.img,
@@ -589,10 +597,10 @@ class arrow {
 					0,
 					this.img_width,
 					this.img_height,
-					img_x + (this.width - (this.width - this.padding)) * 0.5,
-					img_y + (this.height - (this.height - this.padding)) * 0.5,
-					this.width - this.padding,
-					this.height - this.padding
+					img_x + (opt.width - (opt.width - opt.padding)) * 0.5,
+					img_y + (opt.height - (opt.height - opt.padding)) * 0.5,
+					opt.width - opt.padding,
+					opt.height - opt.padding
 				);
 
 				ctx.restore();
@@ -669,8 +677,8 @@ export class control {
 
 		this.canvas_rect = this.canvas_mark.getBoundingClientRect();
 
-		const arrow_x = 20 * DPI;
-		const arrow_y = this.canvas_height - 120 * DPI;
+		const arrow_x = 1 * DPI;
+		const arrow_y = this.canvas_height - 135 * DPI;
 		const arrow_padding = 3 * DPI;
 
 		this.arrow_right = new arrow({
