@@ -1,7 +1,7 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
 import { game } from "./game.js";
-const DEBUG = true;
+const DEBUG = false;
 const canvas_game = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const canvas_static = document.getElementById("guiCanvas") as HTMLCanvasElement;
 const canvas_value = document.getElementById("valueCanvas") as HTMLCanvasElement;
