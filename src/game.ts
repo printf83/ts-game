@@ -267,23 +267,31 @@ export class game {
 		return this.enemy_interval_max - this.game_level * 10;
 	}
 
-	game_start() {
-		this.game_level = 1;
+	game_start(opt?: {
+		game_score: number;
+		game_level: number;
+		player_life: number;
+		player_power: number;
+	}) {
+		opt ??= {
+			game_score: 0,
+			game_level: 1,
+			player_life: 100,
+			player_power: 0,
+		};
+
+		this.game_level = opt.game_level;
 
 		this.progress_index = 0;
-		this.progress_max = 1000;
+		this.progress_max = 1000 + this.game_level * 100;
 		this.progress_timer = performance.now() + 60000;
 		this.progress_timer_index = 60;
 
 		this.enemy_index = 0;
+
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		// this.enemy_list = [];
-		// this.explosion_list = [];
-		// this.dust_list = [];
-		// this.fire_list = [];
-		// this.score_list = [];
 		clearArray(this.enemy_list);
 		clearArray(this.explosion_list);
 		clearArray(this.dust_list);
@@ -291,8 +299,9 @@ export class game {
 		clearArray(this.score_list);
 
 		this.player.set_state("idle");
-		this.player.life = 100;
-		this.player.power = 0;
+		this.player.life = opt.player_life;
+		if (this.player.life > 100) this.player.life = 100;
+		this.player.power = opt.player_power;
 		this.player.speed = 0;
 		this.player.max_speed = 14 + this.game_level;
 		this.player.weight = 1;
@@ -301,8 +310,8 @@ export class game {
 		this.player.powered = false;
 		this.player.invulnerable = false;
 
-		this.score_value = 0;
-		this.score_text = "0";
+		this.score_value = opt.game_score;
+		this.score_text = opt.game_score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 		this.ctl.draw_pause();
 
@@ -335,10 +344,6 @@ export class game {
 		let tmp_enemy_interval = this.gen_enemy_interval();
 		this.enemy_interval = MathRandom() * tmp_enemy_interval + tmp_enemy_interval;
 
-		// this.enemy_list = [];
-		// this.explosion_list = [];
-		// this.dust_list = [];
-		// this.fire_list = [];
 		clearArray(this.enemy_list);
 		clearArray(this.explosion_list);
 		clearArray(this.dust_list);
@@ -448,11 +453,7 @@ export class game {
 								this.player.set_state("ko");
 
 								setTimeout(() => {
-									this.ctl.clear_control();
-									this.ctl.clear_arrow();
-									this.ctl.draw_start();
-
-									this.game_over = true;
+									this.set_game_over();
 								}, 500);
 							}
 						}
@@ -606,6 +607,40 @@ export class game {
 			);
 	}
 
+	set_game_over() {
+		this.ctl.clear_control();
+		this.ctl.clear_arrow();
+		this.ctl.draw_start();
+
+		this.game_over = true;
+		this.canvas_game.dispatchEvent(new CustomEvent("game_over"));
+	}
+
+	set_game_up() {
+		this.ctl.clear_control();
+		this.ctl.clear_arrow();
+		this.ctl.draw_start();
+
+		this.game_up = true;
+
+		//get score
+		let fly_score = 0;
+		this.score_list.forEach((i) => {
+			fly_score += i.value;
+		});
+
+		this.canvas_game.dispatchEvent(
+			new CustomEvent("game_up", {
+				detail: {
+					game_score: this.score_value + fly_score,
+					game_level: this.game_level++,
+					player_life: this.player.life + 10,
+					player_power: this.player.power,
+				},
+			})
+		);
+	}
+
 	last_timestamp: number = 0;
 	update(timestamp: number) {
 		const delta_time = timestamp - this.last_timestamp;
@@ -626,11 +661,7 @@ export class game {
 				})
 			);
 
-			this.ctl.clear_control();
-			this.ctl.clear_arrow();
-			this.ctl.draw_start();
-
-			this.game_up = true;
+			this.set_game_up();
 		}
 
 		//update game timeout

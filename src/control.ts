@@ -15,6 +15,8 @@ const BTN_COLOR = {
 class button {
 	debug: boolean;
 
+	wm: { [key: string]: ImageBitmap } = {};
+
 	ctx: CanvasRenderingContext2D;
 	ctx_mark: CanvasRenderingContext2D;
 
@@ -88,68 +90,213 @@ class button {
 		this.line_width = opt.line_width;
 	}
 	clear() {
-		this.ctx.clearRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
-		if (this.debug) this.ctx.strokeRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
+		// this.ctx.clearRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
+		// if (this.debug) this.ctx.strokeRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
+		this.draw_clear({ ctx: this.ctx });
 	}
 	draw() {
 		this.clear();
 
-		this.ctx.save();
-		this.ctx.fillStyle = this.color;
-		this.ctx.strokeStyle = this.color;
-		this.ctx.lineWidth = this.line_width;
-		this.ctx.beginPath();
-		this.ctx.arc(
-			this.x + this.width * 0.5,
-			this.y + this.width * 0.5,
-			BTN_SIZE * 0.5,
-			0,
-			MathPI2
-		);
-		this.ctx.fill();
-		this.ctx.stroke();
-		this.ctx.restore();
+		// this.ctx.save();
+		// this.ctx.fillStyle = this.color;
+		// this.ctx.strokeStyle = this.color;
+		// this.ctx.lineWidth = this.line_width;
+		// this.ctx.beginPath();
+		// this.ctx.arc(
+		// 	this.x + this.width * 0.5,
+		// 	this.y + this.width * 0.5,
+		// 	BTN_SIZE * 0.5,
+		// 	0,
+		// 	MathPI2
+		// );
+		// this.ctx.fill();
+		// this.ctx.stroke();
+		// this.ctx.restore();
 
-		this.ctx.drawImage(
-			this.img,
-			0,
-			0,
-			this.img_width,
-			this.img_height,
-			this.x + (this.width - (this.width - this.padding)) * 0.5,
-			this.y + (this.height - (this.height - this.padding)) * 0.5,
-			this.width - this.padding,
-			this.height - this.padding
-		);
+		// this.ctx.drawImage(
+		// 	this.img,
+		// 	0,
+		// 	0,
+		// 	this.img_width,
+		// 	this.img_height,
+		// 	this.x + (this.width - (this.width - this.padding)) * 0.5,
+		// 	this.y + (this.height - (this.height - this.padding)) * 0.5,
+		// 	this.width - this.padding,
+		// 	this.height - this.padding
+		// );
+
+		this.draw_fill({ ctx: this.ctx, color: this.color });
+		this.draw_line({ ctx: this.ctx });
+		this.draw_img({ ctx: this.ctx });
 	}
 	clear_mark() {
-		this.ctx_mark.clearRect(
-			this.x - BTN_SIZE * 0.25 - 2,
-			this.y - BTN_SIZE * 0.25 - 2,
-			BTN_SIZE * 1.5 + 4,
-			BTN_SIZE * 1.5 + 4
-		);
-		if (this.debug)
-			this.ctx_mark.strokeRect(
-				this.x - BTN_SIZE * 0.25 - 2,
-				this.y - BTN_SIZE * 0.25 - 2,
-				BTN_SIZE * 1.5 + 4,
-				BTN_SIZE * 1.5 + 4
-			);
+		// this.ctx_mark.clearRect(
+		// 	this.x - BTN_SIZE * 0.25 - 2,
+		// 	this.y - BTN_SIZE * 0.25 - 2,
+		// 	BTN_SIZE * 1.5 + 4,
+		// 	BTN_SIZE * 1.5 + 4
+		// );
+		// if (this.debug)
+		// 	this.ctx_mark.strokeRect(
+		// 		this.x - BTN_SIZE * 0.25 - 2,
+		// 		this.y - BTN_SIZE * 0.25 - 2,
+		// 		BTN_SIZE * 1.5 + 4,
+		// 		BTN_SIZE * 1.5 + 4
+		// 	);
+		this.draw_clear({ ctx: this.ctx_mark });
 	}
 	draw_mark() {
 		this.clear_mark();
 
-		this.ctx_mark.fillStyle = this.uid_text;
-		this.ctx_mark.beginPath();
-		this.ctx_mark.arc(
-			this.x + this.width * 0.5,
-			this.y + this.width * 0.5,
-			BTN_SIZE * 0.75,
-			0,
-			MathPI2
-		);
-		this.ctx_mark.fill();
+		// this.ctx_mark.fillStyle = this.uid_text;
+		// this.ctx_mark.beginPath();
+		// this.ctx_mark.arc(
+		// 	this.x + this.width * 0.5,
+		// 	this.y + this.width * 0.5,
+		// 	BTN_SIZE * 0.75,
+		// 	0,
+		// 	MathPI2
+		// );
+		// this.ctx_mark.fill();
+
+		this.draw_fill({ ctx: this.ctx_mark, color: this.uid_text });
+	}
+
+	scale_wm = 2;
+	private draw_fill(opt: { ctx: CanvasRenderingContext2D; color: string }) {
+		const wm_name = `fill_${this.width}_${this.height}_${this.line_width}_${opt.color}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
+			const w = this.width + this.line_width * this.scale_wm;
+			const h = this.height + this.line_width * this.scale_wm;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.fillStyle = opt.color;
+				ctx.strokeStyle = opt.color;
+				ctx.lineWidth = this.line_width;
+				ctx.arc(
+					this.line_width + this.width * 0.5,
+					this.line_width + this.height * 0.5,
+					this.width * 0.5,
+					0,
+					MathPI2
+				);
+				ctx.fill();
+				ctx.stroke();
+				ctx.restore();
+				this.wm[wm_name] = canvas.transferToImageBitmap();
+			}
+		}
+
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
+		}
+	}
+
+	private draw_line(opt: { ctx: CanvasRenderingContext2D }) {
+		const wm_name = `line_${this.width}_${this.height}_${this.line_width}_${this.color}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
+			const w = this.width + this.line_width * this.scale_wm;
+			const h = this.height + this.line_width * this.scale_wm;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.strokeStyle = this.color;
+				ctx.lineWidth = this.line_width;
+				ctx.arc(
+					this.line_width + this.width * 0.5,
+					this.line_width + this.height * 0.5,
+					this.width * 0.5,
+					0,
+					MathPI2
+				);
+				ctx.stroke();
+				ctx.restore();
+				this.wm[wm_name] = canvas.transferToImageBitmap();
+			}
+		}
+
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
+		}
+	}
+
+	private draw_clear(opt: { ctx: CanvasRenderingContext2D }) {
+		const wm_name = `clear_${this.width}_${this.height}_${this.line_width}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
+			const w = this.width + this.line_width * this.scale_wm;
+			const h = this.height + this.line_width * this.scale_wm;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.save();
+				ctx.beginPath();
+				ctx.fillStyle = "black";
+				ctx.strokeStyle = "black";
+				ctx.lineWidth = this.line_width;
+				ctx.arc(
+					this.line_width + this.width * 0.5,
+					this.line_width + this.height * 0.5,
+					this.width * 0.5,
+					0,
+					MathPI2
+				);
+				ctx.fill();
+				ctx.stroke();
+				ctx.restore();
+				this.wm[wm_name] = canvas.transferToImageBitmap();
+			}
+		}
+
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.save();
+			opt.ctx.globalCompositeOperation = "destination-out";
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
+			opt.ctx.restore();
+		}
+	}
+
+	private draw_img(opt: { ctx: CanvasRenderingContext2D }) {
+		const wm_name = `img_${this.width}_${this.height}_${this.padding}_${this.img_width}_${
+			this.img_height
+		}_${this.img.src.replace(/[\W_]+/g, "_")}`;
+
+		if (typeof this.wm[wm_name] === "undefined") {
+			const w = this.width + this.padding * this.scale_wm;
+			const h = this.height + this.padding * this.scale_wm;
+			const canvas = new OffscreenCanvas(w, h);
+			const ctx = canvas.getContext("2d");
+			if (ctx) {
+				ctx.drawImage(
+					this.img,
+					0,
+					0,
+					this.img_width,
+					this.img_height,
+					this.padding * 0.05,
+					this.padding * 0.05,
+					this.width - this.padding,
+					this.height - this.padding
+				);
+
+				this.wm[wm_name] = canvas.transferToImageBitmap();
+			}
+		}
+
+		if (typeof this.wm[wm_name] !== "undefined") {
+			opt.ctx.drawImage(
+				this.wm[wm_name]!,
+				this.x + (this.width - (this.width - this.padding)) * 0.5,
+				this.y + (this.height - (this.height - this.padding)) * 0.5
+			);
+		}
 	}
 }
 
@@ -325,7 +472,7 @@ class arrow {
 
 	scale_wm = 2;
 	private draw_fill(opt: { ctx: CanvasRenderingContext2D; color: string }) {
-		const wm_name = `fill_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${opt.color}`;
+		const wm_name = `fill_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${opt.color}_${this.line_width}`;
 
 		if (typeof this.wm[wm_name] === "undefined") {
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
@@ -338,6 +485,8 @@ class arrow {
 				ctx.save();
 				ctx.beginPath();
 				ctx.fillStyle = opt.color;
+				ctx.strokeStyle = opt.color;
+				ctx.lineWidth = this.line_width;
 
 				ctx.arc(
 					x,
@@ -363,6 +512,7 @@ class arrow {
 				ctx.lineTo(c2.x, c2.y);
 
 				ctx.fill();
+				ctx.stroke();
 				ctx.restore();
 				this.wm[wm_name] = canvas.transferToImageBitmap();
 			}
@@ -377,7 +527,6 @@ class arrow {
 		const wm_name = `line_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${this.color}_${this.line_width}`;
 
 		if (typeof this.wm[wm_name] === "undefined") {
-			console.log("build wm line");
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
 			const h = (this.hole_width + this.btn_width) * this.scale_wm;
 			const x = w * 0.5;
@@ -490,7 +639,12 @@ class arrow {
 	}
 
 	private draw_img(opt: { ctx: CanvasRenderingContext2D }) {
-		const wm_name = `clear_${this.img_width}_${this.img_height}_${this.hole_width}_${this.btn_width}_${this.start_degree}_${this.end_degree}_${this.padding}`;
+		const wm_name = `img_${this.img_width}_${this.img_height}_${this.hole_width}_${
+			this.btn_width
+		}_${this.start_degree}_${this.end_degree}_${this.padding}_${this.img.src.replace(
+			/[\W_]+/g,
+			"_"
+		)}`;
 
 		if (typeof this.wm[wm_name] === "undefined") {
 			const w = (this.hole_width + this.btn_width) * this.scale_wm;
