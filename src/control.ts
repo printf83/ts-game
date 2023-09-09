@@ -88,6 +88,11 @@ class button {
 		this.padding = opt.padding;
 		this.color = opt.color;
 		this.line_width = opt.line_width;
+
+		console.log({
+			width: this.width,
+			padding: this.padding,
+		});
 	}
 	clear() {
 		// this.ctx.clearRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
@@ -280,8 +285,8 @@ class button {
 					0,
 					this.img_width,
 					this.img_height,
-					this.padding * 0.05,
-					this.padding * 0.05,
+					0,
+					0,
 					this.width - this.padding,
 					this.height - this.padding
 				);
@@ -293,8 +298,10 @@ class button {
 		if (typeof this.wm[wm_name] !== "undefined") {
 			opt.ctx.drawImage(
 				this.wm[wm_name]!,
-				this.x + (this.width - (this.width - this.padding)) * 0.5,
-				this.y + (this.height - (this.height - this.padding)) * 0.5
+				this.x + (this.width - this.padding - this.line_width) * 0.5,
+				this.y + (this.height - this.padding - this.line_width) * 0.5
+				// this.x + (this.width - (this.width - this.padding)) * 0.5,
+				// this.y + (this.height - (this.height - this.padding)) * 0.5
 			);
 		}
 	}
