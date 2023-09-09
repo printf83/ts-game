@@ -1,5 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
+import { cookie } from "./cookie.js";
 import { game } from "./game.js";
 const DEBUG = false;
 const canvas_game = document.getElementById("gameCanvas") as HTMLCanvasElement;
@@ -39,6 +40,15 @@ const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement
 				canvas_pointer.classList.add("hide");
 			}
 
+			canvas_game.addEventListener("game_up", (e) => {
+				const detail = (e as CustomEvent).detail;
+				cookie.set("data", JSON.stringify(detail));
+			});
+
+			canvas_game.addEventListener("game_over", () => {
+				cookie.delete("data");
+			});
+
 			const d = new game({
 				canvas_game: canvas_game,
 				canvas_static: canvas_static,
@@ -51,7 +61,12 @@ const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement
 			});
 
 			setTimeout(() => {
-				d.game_start();
+				const data = cookie.get("data");
+				if (data) {
+					d.game_start(JSON.parse(data));
+				} else {
+					d.game_start();
+				}
 			}, 1000);
 
 			window.addEventListener("resize", () => {

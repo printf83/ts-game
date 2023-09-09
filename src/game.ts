@@ -633,7 +633,7 @@ export class game {
 			new CustomEvent("game_up", {
 				detail: {
 					game_score: this.score_value + fly_score,
-					game_level: this.game_level++,
+					game_level: this.game_level + 1,
 					player_life: this.player.life + 10,
 					player_power: this.player.power,
 				},
