@@ -91,7 +91,7 @@ GAME */
     white-space: nowrap;
     font-family: "Creepster", Arial, Helvetica, sans-serif;
     text-align: center;
-
+    line-height: 0.5em;
     -webkit-user-select: none;
     /* Safari */
     -ms-user-select: none;
