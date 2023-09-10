@@ -809,7 +809,7 @@ export class game {
 			if (i.mark_delete) {
 				this.score_value += i.value;
 				this.score_text = this.score_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-				this.draw_level();
+				this.draw_score();
 			}
 		});
 
