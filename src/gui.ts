@@ -1,4 +1,4 @@
-import { ASSET } from "./asset.js";
+import { ASSET, ASSETSVG } from "./asset.js";
 import { COLOR, clear_text, draw_text } from "./util.js";
 
 class box {
@@ -358,7 +358,7 @@ export class gui {
 		this.image.push(
 			new image({
 				ctx: this.ctx,
-				img: ASSET.ctl.life_icon,
+				img: ASSETSVG("life", `rgb(${COLOR.red})`),
 				img_width: 16,
 				img_height: 16,
 				x: this.canvas_width - 165,
@@ -373,7 +373,7 @@ export class gui {
 		this.image.push(
 			new image({
 				ctx: this.ctx,
-				img: ASSET.ctl.power_icon,
+				img: ASSETSVG("lightning", `rgb(${COLOR.yellow})`),
 				img_width: 16,
 				img_height: 16,
 				x: this.canvas_width - 165,

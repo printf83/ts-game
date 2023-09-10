@@ -1,4 +1,4 @@
-import { ASSET } from "./asset.js";
+import { ASSET, ASSETSVG } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { game } from "./game.js";
 import { input } from "./input.js";
@@ -92,28 +92,28 @@ export class player extends baseAnimation {
 		this.game = opt.game;
 
 		this.img_life = new Image();
-		this.img_life.src = ASSET.ctl.life_icon;
+		this.img_life.src = ASSETSVG("life", `rgb(${COLOR.red})`);
 
 		this.img_power = new Image();
-		this.img_power.src = ASSET.ctl.power_icon;
+		this.img_power.src = ASSETSVG("lightning", `rgb(${COLOR.yellow})`);
 
 		this.img_stopwatch = new Image();
-		this.img_stopwatch.src = ASSET.ctl.stopwatch_icon;
+		this.img_stopwatch.src = ASSETSVG("stopwatch", `rgb(${COLOR.blue})`);
 
 		this.img_shield = new Image();
-		this.img_shield.src = ASSET.ctl.shield_icon;
+		this.img_shield.src = ASSETSVG("shield", `rgb(${COLOR.green})`);
 
 		this.img_life_inactive = new Image();
-		this.img_life_inactive.src = ASSET.ctl.life_icon_inactive;
+		this.img_life_inactive.src = ASSETSVG("life", `rgb(${COLOR.medium})`);
 
 		this.img_power_inactive = new Image();
-		this.img_power_inactive.src = ASSET.ctl.power_icon_inactive;
+		this.img_power_inactive.src = ASSETSVG("lightning", `rgb(${COLOR.medium})`);
 
 		this.img_stopwatch_inactive = new Image();
-		this.img_stopwatch_inactive.src = ASSET.ctl.stopwatch_icon_inactive;
+		this.img_stopwatch_inactive.src = ASSETSVG("stopwatch", `rgb(${COLOR.medium})`);
 
 		this.img_shield_inactive = new Image();
-		this.img_shield_inactive.src = ASSET.ctl.shield_icon_inactive;
+		this.img_shield_inactive.src = ASSETSVG("shield", `rgb(${COLOR.medium})`);
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;

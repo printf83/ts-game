@@ -1,4 +1,4 @@
-import { ASSET } from "./asset.js";
+import { ASSETSVG } from "./asset.js";
 import { MathPI2, DPI, genUID, COLOR, MathPI } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
@@ -6,10 +6,14 @@ const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
 const BTN_COLOR = {
-	normal: `rgba(${COLOR.dark}, 0.3)`,
+	normal: `rgba(${COLOR.light}, 0.3)`,
+	normal_icon: `rgba(${COLOR.light}, 0.5)`,
 	highlight: `rgba(${COLOR.blue}, 0.5)`,
+	highlight_icon: `rgba(${COLOR.blue}, 1)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
+	click_icon: `rgba(${COLOR.blue}, 1)`,
 	active: `rgba(${COLOR.blue}, 0.5)`,
+	active_icon: `rgba(${COLOR.blue}, 1)`,
 };
 
 class button {
@@ -704,7 +708,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowRight",
-			img: ASSET.ctl.right,
+			img: ASSETSVG("right", BTN_COLOR.normal_icon),
 
 			x: arrow_x + arrow_padding,
 			y: arrow_y - arrow_padding,
@@ -719,7 +723,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowDown",
-			img: ASSET.ctl.down,
+			img: ASSETSVG("down", BTN_COLOR.normal_icon),
 
 			x: arrow_x,
 			y: arrow_y,
@@ -733,7 +737,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowLeft",
-			img: ASSET.ctl.left,
+			img: ASSETSVG("left", BTN_COLOR.normal_icon),
 
 			x: arrow_x - arrow_padding,
 			y: arrow_y - arrow_padding,
@@ -747,7 +751,7 @@ export class control {
 			debug: this.debug,
 
 			name: "ArrowUp",
-			img: ASSET.ctl.up,
+			img: ASSETSVG("up", BTN_COLOR.normal_icon),
 
 			x: arrow_x,
 			y: arrow_y - arrow_padding * 2,
@@ -762,7 +766,7 @@ export class control {
 			debug: this.debug,
 
 			name: "F11",
-			img: ASSET.ctl.full_screen,
+			img: ASSETSVG("full_screen", BTN_COLOR.normal_icon),
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: 110,
 		});
@@ -773,7 +777,7 @@ export class control {
 			debug: this.debug,
 
 			name: "Enter",
-			img: ASSET.ctl.pause,
+			img: ASSETSVG("pause", BTN_COLOR.normal_icon),
 			x: this.canvas_width - BTN_SIZE - BTN_MARGIN,
 			y: this.button_fullscreen.y + BTN_SIZE + BTN_PADDING,
 		});
@@ -784,7 +788,7 @@ export class control {
 			debug: this.debug,
 
 			name: "Control",
-			img: ASSET.ctl.power2,
+			img: ASSETSVG("lightning", BTN_COLOR.normal_icon),
 			x: this.canvas_width - BTN_MARGIN - BTN_SIZE,
 			y: this.canvas_height - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 		});
@@ -794,7 +798,7 @@ export class control {
 			debug: this.debug,
 
 			name: " ",
-			img: ASSET.ctl.power1,
+			img: ASSETSVG("record", BTN_COLOR.normal_icon),
 			x: this.canvas_width - BTN_PADDING - BTN_MARGIN - BTN_SIZE * 2,
 			y: this.canvas_height - BTN_MARGIN - BTN_SIZE,
 		});
@@ -817,22 +821,34 @@ export class control {
 	}
 
 	draw_fullscreen() {
-		this.redraw_button({ btn: this.button_fullscreen, img: ASSET.ctl.full_screen });
+		this.redraw_button({
+			btn: this.button_fullscreen,
+			img: ASSETSVG("full_screen", BTN_COLOR.normal_icon),
+		});
 		this.button_fullscreen.draw_mark();
 	}
 
 	draw_normalscreen() {
-		this.redraw_button({ btn: this.button_fullscreen, img: ASSET.ctl.normal_screen });
+		this.redraw_button({
+			btn: this.button_fullscreen,
+			img: ASSETSVG("normal_screen", BTN_COLOR.normal_icon),
+		});
 		this.button_fullscreen.draw_mark();
 	}
 
 	draw_pause() {
-		this.redraw_button({ btn: this.button_pause, img: ASSET.ctl.pause });
+		this.redraw_button({
+			btn: this.button_pause,
+			img: ASSETSVG("pause", BTN_COLOR.normal_icon),
+		});
 		this.button_pause.draw_mark();
 	}
 
 	draw_start() {
-		this.redraw_button({ btn: this.button_pause, img: ASSET.ctl.start });
+		this.redraw_button({
+			btn: this.button_pause,
+			img: ASSETSVG("start", BTN_COLOR.normal_icon),
+		});
 		this.button_pause.draw_mark();
 	}
 
@@ -885,13 +901,17 @@ export class control {
 		if (opt.btn) {
 			if (opt.img || opt.color) {
 				if (opt.img) {
-					opt.btn.img = new Image();
+					if (opt.color) opt.btn.color = opt.color;
 					opt.btn.img.src = opt.img;
+					opt.btn.draw();
+
+					setTimeout(() => {
+						opt.btn.draw();
+					}, 1000);
+				} else {
+					if (opt.color) opt.btn.color = opt.color;
+					opt.btn.draw();
 				}
-
-				if (opt.color) opt.btn.color = opt.color;
-
-				opt.btn.draw();
 			}
 		}
 	}
@@ -900,13 +920,17 @@ export class control {
 		if (opt.arr) {
 			if (opt.img || opt.color) {
 				if (opt.img) {
-					opt.arr.img = new Image();
+					if (opt.color) opt.arr.color = opt.color;
 					opt.arr.img.src = opt.img;
+					opt.arr.draw();
+
+					setTimeout(() => {
+						opt.arr.draw();
+					}, 1000);
+				} else {
+					if (opt.color) opt.arr.color = opt.color;
+					opt.arr.draw();
 				}
-
-				if (opt.color) opt.arr.color = opt.color;
-
-				opt.arr.draw();
 			}
 		}
 	}
@@ -938,6 +962,110 @@ export class control {
 		return { x: x, y: y };
 	}
 
+	private redraw_button_by_event(event: string, key: string, btn: button) {
+		if (event === "keydown") {
+			if (key === "Control")
+				this.redraw_button({
+					btn: btn,
+					img: ASSETSVG("lightning", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+			else if (key === " ")
+				this.redraw_button({
+					btn: btn,
+					img: ASSETSVG("record", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+			else if (key === "Enter")
+				this.redraw_button({
+					btn: btn,
+					color: BTN_COLOR.click,
+				});
+			else if (key === "F11")
+				this.redraw_button({
+					btn: btn,
+					color: BTN_COLOR.click,
+				});
+		} else {
+			if (key === "Control")
+				this.redraw_button({
+					btn: btn,
+					img: ASSETSVG("lightning", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+			else if (key === " ")
+				this.redraw_button({
+					btn: btn,
+					img: ASSETSVG("record", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+			else if (key === "Enter")
+				this.redraw_button({
+					btn: btn,
+					color: BTN_COLOR.normal,
+				});
+			else if (key === "F11")
+				this.redraw_button({
+					btn: btn,
+					color: BTN_COLOR.normal,
+				});
+		}
+	}
+
+	private redraw_arrow_by_event(event: string, key: string, arr: arrow) {
+		if (event === "keydown") {
+			if (key === "ArrowUp")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("up", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+			else if (key === "ArrowDown")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("down", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+			else if (key === "ArrowLeft")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("left", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+			else if (key === "ArrowRight")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("right", BTN_COLOR.click_icon),
+					color: BTN_COLOR.click,
+				});
+		} else if (event === "keyup") {
+			if (key === "ArrowUp")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("up", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+			else if (key === "ArrowDown")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("down", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+			else if (key === "ArrowLeft")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("left", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+			else if (key === "ArrowRight")
+				this.redraw_arrow({
+					arr: arr,
+					img: ASSETSVG("right", BTN_COLOR.normal_icon),
+					color: BTN_COLOR.normal,
+				});
+		}
+	}
+
 	private mouse_event(opt: { event_name: string; event: MouseEvent; debug?: boolean }) {
 		let { x, y } = this.get_mouse_location(this.canvas_mark, opt.event);
 
@@ -959,10 +1087,7 @@ export class control {
 					if (btn && btn.length > 0 && btn[0]) {
 						const key = btn[0].name;
 
-						if (opt.event_name === "keydown")
-							this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
-						else if (opt.event_name === "keyup")
-							this.redraw_button({ btn: btn[0], color: BTN_COLOR.normal });
+						this.redraw_button_by_event(opt.event_name, key, btn[0]);
 
 						window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 					} else {
@@ -975,10 +1100,7 @@ export class control {
 						if (arr && arr.length > 0 && arr[0]) {
 							const key = arr[0].name;
 
-							if (opt.event_name === "keydown")
-								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.click });
-							else if (opt.event_name === "keyup")
-								this.redraw_arrow({ arr: arr[0], color: BTN_COLOR.normal });
+							this.redraw_arrow_by_event(opt.event_name, key, arr[0]);
 
 							window.dispatchEvent(new KeyboardEvent(opt.event_name, { key: key }));
 						}
@@ -1081,13 +1203,7 @@ export class control {
 								if (btn && btn.length > 0 && btn[0]) {
 									const key = btn[0].name;
 
-									if (opt.event_name === "keydown")
-										this.redraw_button({ btn: btn[0], color: BTN_COLOR.click });
-									else if (opt.event_name === "keyup")
-										this.redraw_button({
-											btn: btn[0],
-											color: BTN_COLOR.normal,
-										});
+									this.redraw_button_by_event(opt.event_name, key, btn[0]);
 
 									window.dispatchEvent(
 										new KeyboardEvent(opt.event_name, { key: key })
@@ -1104,16 +1220,7 @@ export class control {
 									if (arr && arr.length > 0 && arr[0]) {
 										const key = arr[0].name;
 
-										if (opt.event_name === "keydown")
-											this.redraw_arrow({
-												arr: arr[0],
-												color: BTN_COLOR.click,
-											});
-										else if (opt.event_name === "keyup")
-											this.redraw_arrow({
-												arr: arr[0],
-												color: BTN_COLOR.normal,
-											});
+										this.redraw_arrow_by_event(opt.event_name, key, arr[0]);
 
 										window.dispatchEvent(
 											new KeyboardEvent(opt.event_name, { key: key })
