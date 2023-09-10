@@ -123,34 +123,100 @@ export const ASSET = {
 	},
 };
 
-type svg_key = keyof typeof ASSET.svg;
-const ASSETSVGDATA: { [key: string]: HTMLImageElement } = {};
-const LOADASSETSVG = (key: svg_key, color: string, callback: Function) => {
-	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
-	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
-	const data_str = data.replace(/[\W_]+/g, "_");
+const asset_img_data: { [key: string]: HTMLImageElement } = {};
+const load_asset_img = (url: string, callback: Function) => {
+	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
 
-	if (data_str in ASSETSVGDATA) {
+	if (url_str in asset_img_data) {
 		callback();
 	} else {
 		const img = new Image();
 		img.onload = (e) => {
 			const elem = (e as Event).target as HTMLImageElement;
-			ASSETSVGDATA[data_str] = elem;
+			asset_img_data[url_str] = elem;
+			callback();
+		};
+		img.src = url;
+	}
+};
+const do_load_img = (img_list: string[], index: number, callback: Function) => {
+	if (index < img_list.length) {
+		load_asset_img(img_list[index]!, () => {
+			do_load_img(img_list, index + 1, callback);
+		});
+	} else {
+		callback();
+	}
+};
+export const LOAD_ALL_IMG_ASSET = (callback: Function) => {
+	do_load_img(
+		[
+			ASSET.bg1.layer1,
+			ASSET.bg1.layer2,
+			ASSET.bg1.layer3,
+			ASSET.bg1.layer4,
+			ASSET.bg1.layer5,
+			ASSET.bg2.layer1,
+			ASSET.bg2.layer2,
+			ASSET.bg2.layer3,
+			ASSET.bg2.layer4,
+			ASSET.bg2.layer5,
+			ASSET.ctl.icon_png,
+			ASSET.ctl.life_icon_png,
+			ASSET.ctl.power_icon_png,
+			ASSET.ctl.shield_icon_png,
+			ASSET.ctl.stopwatch_icon_png,
+			ASSET.ctl.life_icon_inactive_png,
+			ASSET.ctl.power_icon_inactive_png,
+			ASSET.ctl.shield_icon_inactive_png,
+			ASSET.ctl.stopwatch_icon_inactive_png,
+			ASSET.enemy.enemy1,
+			ASSET.enemy.enemy2,
+			ASSET.enemy.enemy3,
+			ASSET.enemy.enemy4,
+			ASSET.enemy.enemy5,
+			ASSET.enemy.enemy6,
+			ASSET.enemy.enemy7,
+			ASSET.enemy.enemy8,
+			ASSET.enemy.enemy9,
+			ASSET.enemy.enemy10,
+			ASSET.enemy.enemy11,
+			ASSET.boom,
+			ASSET.fire,
+			ASSET.player,
+		],
+		0,
+		callback
+	);
+};
+
+type svg_key = keyof typeof ASSET.svg;
+const asset_svg_data: { [key: string]: HTMLImageElement } = {};
+const load_asset_svg = (key: svg_key, color: string, callback: Function) => {
+	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
+	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+	const data_str = data.replace(/[\W_]+/g, "_");
+
+	if (data_str in asset_svg_data) {
+		callback();
+	} else {
+		const img = new Image();
+		img.onload = (e) => {
+			const elem = (e as Event).target as HTMLImageElement;
+			asset_svg_data[data_str] = elem;
 			callback();
 		};
 		img.src = data;
 	}
 };
-
-const do_load = (
+const do_load_svg = (
 	svg_list: { key: svg_key; color: string }[],
 	index: number,
 	callback: Function
 ) => {
 	if (index < svg_list.length) {
-		LOADASSETSVG(svg_list[index]!.key, svg_list[index]!.color, () => {
-			do_load(svg_list, index + 1, callback);
+		load_asset_svg(svg_list[index]!.key, svg_list[index]!.color, () => {
+			do_load_svg(svg_list, index + 1, callback);
 		});
 	} else {
 		callback();
@@ -158,7 +224,7 @@ const do_load = (
 };
 
 export const LOAD_ALL_SVG_ASSET = (callback: Function) => {
-	do_load(
+	do_load_svg(
 		[
 			{ key: "right", color: BTN_COLOR.normal_icon },
 			{ key: "down", color: BTN_COLOR.normal_icon },
@@ -199,7 +265,7 @@ export const ASSETSVG = (key: svg_key, color: string) => {
 	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 	const data_str = data.replace(/[\W_]+/g, "_");
 
-	if (data_str in ASSETSVGDATA) {
+	if (data_str in asset_svg_data) {
 		return data;
 	} else {
 		console.warn("svg asset not loaded", svg);
