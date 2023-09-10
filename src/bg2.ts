@@ -20,7 +20,7 @@ export class bg2 extends baseBg {
 			canvas_height: opt.canvas_height,
 			img_width: 1667,
 			img_height: 500,
-			ground: 50,
+			ground: 500 * 0.1,
 		});
 	}
 }

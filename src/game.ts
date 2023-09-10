@@ -1,5 +1,5 @@
-// import { bg1 } from "./bg1.js";
 import { baseBg } from "./baseBg.js";
+import { bg1 } from "./bg1.js";
 import { bg2 } from "./bg2.js";
 import { baseEnemy } from "./enemy/baseEnemy.js";
 import { enemy1 } from "./enemy/enemy1.js";
@@ -175,7 +175,7 @@ export class game {
 			canvas_height: this.canvas_height,
 			debug: this.debug,
 		});
-		this.bg = new bg2({
+		this.bg = new bg1({
 			ctx: this.ctx_game,
 			canvas_width: this.canvas_width,
 			canvas_height: this.canvas_height,
@@ -223,6 +223,7 @@ export class game {
 		window.addEventListener("keyup", this.game_halt_listener);
 
 		//draw control
+
 		this.draw_gui();
 	}
 
@@ -282,10 +283,27 @@ export class game {
 
 		this.game_level = opt.game_level;
 
+		if (this.game_level % 2 === 0) {
+			this.bg = new bg1({
+				ctx: this.ctx_game,
+				canvas_width: this.canvas_width,
+				canvas_height: this.canvas_height,
+			});
+		} else {
+			this.bg = new bg2({
+				ctx: this.ctx_game,
+				canvas_width: this.canvas_width,
+				canvas_height: this.canvas_height,
+			});
+		}
+
+		this.base_height = this.canvas_height - this.bg.ground;
+		this.player.canvas_height = this.base_height;
+
 		this.progress_index = 0;
 		this.progress_max = 1000 + this.game_level * 100;
-		this.progress_timer = performance.now() + 60000;
-		this.progress_timer_index = 60;
+		this.progress_timer = performance.now() + 120000;
+		this.progress_timer_index = 120;
 
 		this.enemy_index = 0;
 
@@ -313,6 +331,10 @@ export class game {
 		this.score_value = opt.game_score;
 		this.score_text = opt.game_score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
+		this.draw_life();
+		this.draw_timer();
+		this.draw_score();
+		this.draw_level();
 		this.ctl.draw_pause();
 
 		if (isTouchDevice() || this.debug) {
@@ -334,10 +356,29 @@ export class game {
 	game_level_up() {
 		this.game_level++;
 
+		this.clean_ctx_value_message();
+
+		if (this.game_level % 2 === 0) {
+			this.bg = new bg1({
+				ctx: this.ctx_game,
+				canvas_width: this.canvas_width,
+				canvas_height: this.canvas_height,
+			});
+		} else {
+			this.bg = new bg2({
+				ctx: this.ctx_game,
+				canvas_width: this.canvas_width,
+				canvas_height: this.canvas_height,
+			});
+		}
+
+		this.base_height = this.canvas_height - this.bg.ground;
+		this.player.canvas_height = this.base_height;
+
 		this.progress_index = 0;
 		this.progress_max = 1000 + this.game_level * 100;
-		this.progress_timer = performance.now() + 60000;
-		this.progress_timer_index = 60;
+		this.progress_timer = performance.now() + 120000;
+		this.progress_timer_index = 120;
 
 		this.enemy_index = 0;
 
@@ -360,6 +401,9 @@ export class game {
 		this.player.powered = false;
 		this.player.invulnerable = false;
 
+		this.draw_life();
+		this.draw_timer();
+		this.draw_level();
 		this.ctl.draw_pause();
 
 		if (isTouchDevice() || this.debug) {
@@ -369,7 +413,6 @@ export class game {
 
 		this.check_fps(24, 0, this.CURRENT_ANIMATION_ID, (timestamp, animation_id) => {
 			this.game_up = false;
-			this.clean_ctx_value_message();
 
 			this.player.set_state("run");
 
@@ -446,12 +489,13 @@ export class game {
 							if (this.player.life > 30) {
 								this.player.life -= 10;
 								this.player.set_state("gethit");
+								this.draw_life();
 							} else if (this.player.life > 0) {
 								this.player.life -= 10;
 								this.player.set_state("dizzy");
+								this.draw_life();
 							} else {
 								this.player.set_state("ko");
-
 								setTimeout(() => {
 									this.set_game_over();
 								}, 500);
@@ -526,18 +570,7 @@ export class game {
 		this.clear_message(this.last_draw_message_title, this.last_draw_message_message);
 	}
 
-	draw_status() {
-		//score
-		draw_clear_text({
-			ctx: this.ctx_value,
-			x: 90,
-			y: 80,
-			text: `${this.score_text}`,
-			text_color: this.score_value < 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
-			font_weight: 60,
-			debug: this.debug,
-		});
-
+	draw_level() {
 		//level
 		draw_clear_text({
 			ctx: this.ctx_value,
@@ -548,31 +581,57 @@ export class game {
 			font_weight: 25,
 			debug: this.debug,
 		});
+	}
 
+	draw_timer() {
 		//timer
 		draw_clear_text({
 			ctx: this.ctx_value,
 			x: (this.canvas_width + this.prg_game.width) * 0.5,
 			y: 50,
-			text: `0:${this.progress_timer_index.toString().padStart(2, "0")}`,
+			text: `${new Date(this.progress_timer_index * 1000).toISOString().substring(15, 19)}`,
 			text_align: "end",
 			text_color:
 				this.progress_timer_index < 20 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
 			font_weight: 25,
 			debug: this.debug,
 		});
+	}
 
-		//progress
-		this.prg_game.update(this.progress_index, 0, this.progress_max);
+	draw_score() {
+		//score
+		draw_clear_text({
+			ctx: this.ctx_value,
+			x: 90,
+			y: 80,
+			text: `${this.score_text}`,
+			text_color: this.score_value < 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
+			font_weight: 60,
+			debug: this.debug,
+		});
+	}
 
+	draw_life() {
 		//life
 		this.prg_life.update(this.player.life);
+		this.prg_life.draw();
+	}
 
-		//power
+	draw_power() {
+		//life
 		this.prg_power.update(this.player.power);
+		this.prg_power.draw();
+	}
 
-		//draw progress bar
-		[this.prg_game, this.prg_life, this.prg_power].forEach((i) => i.draw());
+	draw_progress() {
+		//life
+		this.prg_game.update(this.progress_index, 0, this.progress_max);
+		this.prg_game.draw();
+	}
+
+	draw_status() {
+		this.draw_progress();
+		this.draw_power();
 
 		//game over message
 		if (this.game_over)
@@ -672,6 +731,8 @@ export class game {
 			this.ctl.draw_start();
 
 			this.game_timeout = true;
+		} else {
+			this.draw_timer();
 		}
 
 		//update player power
@@ -759,6 +820,7 @@ export class game {
 			if (i.mark_delete) {
 				this.score_value += i.value;
 				this.score_text = this.score_value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+				this.draw_level();
 			}
 		});
 
