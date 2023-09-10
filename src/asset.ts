@@ -123,10 +123,54 @@ export const ASSET = {
 	},
 };
 
+//sound
+const asset_sound_data: { [key: string]: HTMLAudioElement } = {};
+const load_asset_sound = (url: string, callback: Function) => {
+	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
+	if (url_str in asset_sound_data) {
+		callback();
+	} else {
+		const sound = new Audio();
+
+		sound.oncanplaythrough = (e) => {
+			const elem = (e as Event).target as HTMLAudioElement;
+			asset_sound_data[url_str] = elem;
+			callback();
+		};
+		sound.src = url;
+		// sound.load();
+
+		// sound.oncanplay = (e) => {
+		// 	const elem = (e as Event).target as HTMLAudioElement;
+		// 	asset_sound_data[url_str] = elem;
+		// 	callback();
+		// };
+		// sound.src = url;
+	}
+};
+const do_load_sound = (
+	sound_list: string[],
+	index: number,
+	onchange: Function,
+	callback: Function
+) => {
+	if (index < sound_list.length) {
+		load_asset_sound(sound_list[index]!, () => {
+			onchange();
+			do_load_sound(sound_list, index + 1, onchange, callback);
+		});
+	} else {
+		callback();
+	}
+};
+export const LOAD_ALL_SOUND_ASSET = (onchange: Function, callback: Function) => {
+	do_load_sound([ASSET.boom_wav], 0, onchange, callback);
+};
+
+//image
 const asset_img_data: { [key: string]: HTMLImageElement } = {};
 const load_asset_img = (url: string, callback: Function) => {
 	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
-
 	if (url_str in asset_img_data) {
 		callback();
 	} else {
@@ -139,16 +183,17 @@ const load_asset_img = (url: string, callback: Function) => {
 		img.src = url;
 	}
 };
-const do_load_img = (img_list: string[], index: number, callback: Function) => {
+const do_load_img = (img_list: string[], index: number, onchange: Function, callback: Function) => {
 	if (index < img_list.length) {
 		load_asset_img(img_list[index]!, () => {
-			do_load_img(img_list, index + 1, callback);
+			onchange();
+			do_load_img(img_list, index + 1, onchange, callback);
 		});
 	} else {
 		callback();
 	}
 };
-export const LOAD_ALL_IMG_ASSET = (callback: Function) => {
+export const LOAD_ALL_IMG_ASSET = (onchange: Function, callback: Function) => {
 	do_load_img(
 		[
 			ASSET.bg1.layer1,
@@ -186,10 +231,12 @@ export const LOAD_ALL_IMG_ASSET = (callback: Function) => {
 			ASSET.player,
 		],
 		0,
+		onchange,
 		callback
 	);
 };
 
+//svg
 type svg_key = keyof typeof ASSET.svg;
 const asset_svg_data: { [key: string]: HTMLImageElement } = {};
 const load_asset_svg = (key: svg_key, color: string, callback: Function) => {
@@ -212,18 +259,20 @@ const load_asset_svg = (key: svg_key, color: string, callback: Function) => {
 const do_load_svg = (
 	svg_list: { key: svg_key; color: string }[],
 	index: number,
+	onchange: Function,
 	callback: Function
 ) => {
 	if (index < svg_list.length) {
 		load_asset_svg(svg_list[index]!.key, svg_list[index]!.color, () => {
-			do_load_svg(svg_list, index + 1, callback);
+			onchange();
+			do_load_svg(svg_list, index + 1, onchange, callback);
 		});
 	} else {
 		callback();
 	}
 };
 
-export const LOAD_ALL_SVG_ASSET = (callback: Function) => {
+export const LOAD_ALL_SVG_ASSET = (onchange: Function, callback: Function) => {
 	do_load_svg(
 		[
 			{ key: "right", color: BTN_COLOR.normal_icon },
@@ -256,6 +305,7 @@ export const LOAD_ALL_SVG_ASSET = (callback: Function) => {
 			{ key: "shield", color: `rgb(${COLOR.medium})` },
 		],
 		0,
+		onchange,
 		callback
 	);
 };
