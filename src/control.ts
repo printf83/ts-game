@@ -60,7 +60,7 @@ class button {
 		opt.height ??= BTN_SIZE;
 		opt.img_width ??= 16;
 		opt.img_height ??= 16;
-		opt.padding ??= BTN_SIZE * 0.4;
+		opt.padding ??= BTN_PADDING * 0.5; //BTN_SIZE * 0.4;
 		opt.color ??= BTN_COLOR.normal;
 		opt.line_width ??= 2;
 		opt.debug ??= false;
@@ -88,81 +88,21 @@ class button {
 		this.padding = opt.padding;
 		this.color = opt.color;
 		this.line_width = opt.line_width;
-
-		console.log({
-			width: this.width,
-			padding: this.padding,
-		});
 	}
 	clear() {
-		// this.ctx.clearRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
-		// if (this.debug) this.ctx.strokeRect(this.x - 2, this.y - 2, BTN_SIZE + 4, BTN_SIZE + 4);
 		this.draw_clear({ ctx: this.ctx });
 	}
 	draw() {
 		this.clear();
-
-		// this.ctx.save();
-		// this.ctx.fillStyle = this.color;
-		// this.ctx.strokeStyle = this.color;
-		// this.ctx.lineWidth = this.line_width;
-		// this.ctx.beginPath();
-		// this.ctx.arc(
-		// 	this.x + this.width * 0.5,
-		// 	this.y + this.width * 0.5,
-		// 	BTN_SIZE * 0.5,
-		// 	0,
-		// 	MathPI2
-		// );
-		// this.ctx.fill();
-		// this.ctx.stroke();
-		// this.ctx.restore();
-
-		// this.ctx.drawImage(
-		// 	this.img,
-		// 	0,
-		// 	0,
-		// 	this.img_width,
-		// 	this.img_height,
-		// 	this.x + (this.width - (this.width - this.padding)) * 0.5,
-		// 	this.y + (this.height - (this.height - this.padding)) * 0.5,
-		// 	this.width - this.padding,
-		// 	this.height - this.padding
-		// );
-
 		this.draw_fill({ ctx: this.ctx, color: this.color });
 		this.draw_line({ ctx: this.ctx });
 		this.draw_img({ ctx: this.ctx });
 	}
 	clear_mark() {
-		// this.ctx_mark.clearRect(
-		// 	this.x - BTN_SIZE * 0.25 - 2,
-		// 	this.y - BTN_SIZE * 0.25 - 2,
-		// 	BTN_SIZE * 1.5 + 4,
-		// 	BTN_SIZE * 1.5 + 4
-		// );
-		// if (this.debug)
-		// 	this.ctx_mark.strokeRect(
-		// 		this.x - BTN_SIZE * 0.25 - 2,
-		// 		this.y - BTN_SIZE * 0.25 - 2,
-		// 		BTN_SIZE * 1.5 + 4,
-		// 		BTN_SIZE * 1.5 + 4
-		// 	);
 		this.draw_clear({ ctx: this.ctx_mark });
 	}
 	draw_mark() {
 		this.clear_mark();
-
-		// this.ctx_mark.fillStyle = this.uid_text;
-		// this.ctx_mark.beginPath();
-		// this.ctx_mark.arc(
-		// 	this.x + this.width * 0.5,
-		// 	this.y + this.width * 0.5,
-		// 	BTN_SIZE * 0.75,
-		// 	0,
-		// 	MathPI2
-		// );
-		// this.ctx_mark.fill();
 
 		this.draw_fill({ ctx: this.ctx_mark, color: this.uid_text });
 	}
@@ -205,6 +145,7 @@ class button {
 		const wm_name = `line_${this.width}_${this.height}_${this.line_width}_${this.color}`;
 
 		if (typeof this.wm[wm_name] === "undefined") {
+			console.log("draw line");
 			const w = this.width + this.line_width * this.scale_wm;
 			const h = this.height + this.line_width * this.scale_wm;
 			const canvas = new OffscreenCanvas(w, h);
@@ -245,7 +186,7 @@ class button {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width;
+				ctx.lineWidth = this.line_width * 2;
 				ctx.arc(
 					this.line_width + this.width * 0.5,
 					this.line_width + this.height * 0.5,
@@ -285,10 +226,10 @@ class button {
 					0,
 					this.img_width,
 					this.img_height,
-					0,
-					0,
-					this.width - this.padding,
-					this.height - this.padding
+					this.padding + this.line_width,
+					this.padding + this.line_width,
+					this.width - this.padding * 2,
+					this.height - this.padding * 2
 				);
 
 				this.wm[wm_name] = canvas.transferToImageBitmap();
@@ -296,13 +237,7 @@ class button {
 		}
 
 		if (typeof this.wm[wm_name] !== "undefined") {
-			opt.ctx.drawImage(
-				this.wm[wm_name]!,
-				this.x + (this.width - this.padding - this.line_width) * 0.5,
-				this.y + (this.height - this.padding - this.line_width) * 0.5
-				// this.x + (this.width - (this.width - this.padding)) * 0.5,
-				// this.y + (this.height - (this.height - this.padding)) * 0.5
-			);
+			opt.ctx.drawImage(this.wm[wm_name]!, this.x, this.y);
 		}
 	}
 }
