@@ -160,6 +160,7 @@ export class game {
 
 		this.input = new input();
 		this.ctl = new control({
+			game: this,
 			canvas_control: this.canvas_control,
 			canvas_mark: this.canvas_mark,
 			canvas_pointer: this.canvas_pointer,

@@ -1,19 +1,16 @@
 import { ASSETSVG } from "./asset.js";
-import { MathPI2, DPI, genUID, COLOR, MathPI } from "./util.js";
+import { game } from "./game.js";
+import { MathPI2, DPI, genUID, COLOR, MathPI, isFullscreen } from "./util.js";
 
 const BTN_SIZE = 35 * DPI;
 const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
 export const BTN_COLOR = {
-	normal: `rgba(${COLOR.light}, 0.3)`,
-	normal_icon: `rgba(${COLOR.light}, 0.5)`,
-	highlight: `rgba(${COLOR.blue}, 0.5)`,
-	highlight_icon: `rgba(${COLOR.blue}, 1)`,
+	normal: `rgba(${COLOR.dark}, 0.1)`,
+	normal_icon: `rgba(${COLOR.dark}, 0.3)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
-	click_icon: `rgba(${COLOR.blue}, 1)`,
-	active: `rgba(${COLOR.blue}, 0.5)`,
-	active_icon: `rgba(${COLOR.blue}, 1)`,
+	click_icon: `rgba(${COLOR.blue}, 0.5)`,
 };
 
 class button {
@@ -638,6 +635,8 @@ class arrow {
 export class control {
 	debug: boolean;
 
+	game: game;
+
 	canvas_width: number;
 	canvas_height: number;
 
@@ -668,6 +667,8 @@ export class control {
 	ctx_pointer: CanvasRenderingContext2D;
 
 	constructor(opt: {
+		game: game;
+
 		canvas_mark: HTMLCanvasElement;
 		canvas_control: HTMLCanvasElement;
 		canvas_pointer: HTMLCanvasElement;
@@ -684,6 +685,8 @@ export class control {
 		opt.debug ??= false;
 
 		this.debug = opt.debug;
+
+		this.game = opt.game;
 
 		this.canvas_mark = opt.canvas_mark;
 		this.canvas_control = opt.canvas_control;
@@ -958,51 +961,91 @@ export class control {
 
 	private redraw_button_by_event(event: string, key: string, btn: button) {
 		if (event === "keydown") {
-			if (key === "Control")
+			if (key === "Control") {
 				this.redraw_button({
 					btn: btn,
 					img: ASSETSVG("lightning", BTN_COLOR.click_icon),
 					color: BTN_COLOR.click,
 				});
-			else if (key === " ")
+			} else if (key === " ") {
 				this.redraw_button({
 					btn: btn,
 					img: ASSETSVG("record", BTN_COLOR.click_icon),
 					color: BTN_COLOR.click,
 				});
-			else if (key === "Enter")
-				this.redraw_button({
-					btn: btn,
-					color: BTN_COLOR.click,
-				});
-			else if (key === "F11")
-				this.redraw_button({
-					btn: btn,
-					color: BTN_COLOR.click,
-				});
+			} else if (key === "Enter") {
+				if (this.game.game_pause) {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("start", BTN_COLOR.click_icon),
+						color: BTN_COLOR.click,
+					});
+				} else {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("pause", BTN_COLOR.click_icon),
+						color: BTN_COLOR.click,
+					});
+				}
+			} else if (key === "F11") {
+				if (isFullscreen()) {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("normal_screen", BTN_COLOR.click_icon),
+						color: BTN_COLOR.click,
+					});
+				} else {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("full_screen", BTN_COLOR.click_icon),
+						color: BTN_COLOR.click,
+					});
+				}
+			}
 		} else {
-			if (key === "Control")
-				this.redraw_button({
-					btn: btn,
-					img: ASSETSVG("lightning", BTN_COLOR.normal_icon),
-					color: BTN_COLOR.normal,
-				});
-			else if (key === " ")
+			if (key === "Control") {
+				{
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("lightning", BTN_COLOR.normal_icon),
+						color: BTN_COLOR.normal,
+					});
+				}
+			} else if (key === " ") {
 				this.redraw_button({
 					btn: btn,
 					img: ASSETSVG("record", BTN_COLOR.normal_icon),
 					color: BTN_COLOR.normal,
 				});
-			else if (key === "Enter")
-				this.redraw_button({
-					btn: btn,
-					color: BTN_COLOR.normal,
-				});
-			else if (key === "F11")
-				this.redraw_button({
-					btn: btn,
-					color: BTN_COLOR.normal,
-				});
+			} else if (key === "Enter") {
+				if (this.game.game_pause) {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("start", BTN_COLOR.normal_icon),
+						color: BTN_COLOR.normal,
+					});
+				} else {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("pause", BTN_COLOR.normal_icon),
+						color: BTN_COLOR.normal,
+					});
+				}
+			} else if (key === "F11") {
+				if (isFullscreen()) {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("normal_screen", BTN_COLOR.normal_icon),
+						color: BTN_COLOR.normal,
+					});
+				} else {
+					this.redraw_button({
+						btn: btn,
+						img: ASSETSVG("full_screen", BTN_COLOR.normal_icon),
+						color: BTN_COLOR.normal,
+					});
+				}
+			}
 		}
 	}
 

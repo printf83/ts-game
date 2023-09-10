@@ -148,7 +148,7 @@ const do_load = (
 	index: number,
 	callback: Function
 ) => {
-	if (index < svg_list.length - 1) {
+	if (index < svg_list.length) {
 		LOADASSETSVG(svg_list[index]!.key, svg_list[index]!.color, () => {
 			do_load(svg_list, index + 1, callback);
 		});
