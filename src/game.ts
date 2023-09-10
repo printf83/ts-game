@@ -125,7 +125,7 @@ export class game {
 
 	enemy_index: number = 0;
 	enemy_interval: number = 0;
-	enemy_interval_max: number = 3000;
+	enemy_interval_max: number = 2000;
 
 	constructor(opt: {
 		canvas_game: HTMLCanvasElement;
@@ -265,23 +265,11 @@ export class game {
 	}
 
 	gen_enemy_interval() {
-		return this.enemy_interval_max - this.game_level * 10;
+		return this.enemy_interval_max - this.game_level * 100;
 	}
 
-	game_start(opt?: {
-		game_score: number;
-		game_level: number;
-		player_life: number;
-		player_power: number;
-	}) {
-		opt ??= {
-			game_score: 0,
-			game_level: 1,
-			player_life: 100,
-			player_power: 0,
-		};
-
-		this.game_level = opt.game_level;
+	game_bg() {
+		this.clean_ctx_value_message();
 
 		if (this.game_level % 2 === 0) {
 			this.bg = new bg1({
@@ -299,6 +287,24 @@ export class game {
 
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player.canvas_height = this.base_height;
+	}
+
+	game_start(opt?: {
+		game_score: number;
+		game_level: number;
+		player_life: number;
+		player_power: number;
+	}) {
+		opt ??= {
+			game_score: 0,
+			game_level: 1,
+			player_life: 100,
+			player_power: 0,
+		};
+
+		this.game_level = opt.game_level;
+
+		this.game_bg();
 
 		this.progress_index = 0;
 		this.progress_max = 1000 + this.game_level * 100;
@@ -356,24 +362,7 @@ export class game {
 	game_level_up() {
 		this.game_level++;
 
-		this.clean_ctx_value_message();
-
-		if (this.game_level % 2 === 0) {
-			this.bg = new bg1({
-				ctx: this.ctx_game,
-				canvas_width: this.canvas_width,
-				canvas_height: this.canvas_height,
-			});
-		} else {
-			this.bg = new bg2({
-				ctx: this.ctx_game,
-				canvas_width: this.canvas_width,
-				canvas_height: this.canvas_height,
-			});
-		}
-
-		this.base_height = this.canvas_height - this.bg.ground;
-		this.player.canvas_height = this.base_height;
+		this.game_bg();
 
 		this.progress_index = 0;
 		this.progress_max = 1000 + this.game_level * 100;

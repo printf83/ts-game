@@ -145,7 +145,6 @@ class button {
 		const wm_name = `line_${this.width}_${this.height}_${this.line_width}_${this.color}`;
 
 		if (typeof this.wm[wm_name] === "undefined") {
-			console.log("draw line");
 			const w = this.width + this.line_width * this.scale_wm;
 			const h = this.height + this.line_width * this.scale_wm;
 			const canvas = new OffscreenCanvas(w, h);
@@ -186,7 +185,7 @@ class button {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width * 2;
+				ctx.lineWidth = this.line_width * 10;
 				ctx.arc(
 					this.line_width + this.width * 0.5,
 					this.line_width + this.height * 0.5,
@@ -530,7 +529,7 @@ class arrow {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width * 4;
+				ctx.lineWidth = this.line_width * 10;
 
 				ctx.arc(
 					x,
@@ -947,8 +946,6 @@ export class control {
 				this.ctx_pointer.clearRect(x - 50, y - 50, 100, 100);
 				this.ctx_pointer.fillStyle = `rgba(${COLOR.red},0.5)`;
 				this.ctx_pointer.fillRect(x - 5, y - 5, 10, 10);
-
-				console.log({ x, y });
 			}
 
 			const data = this.ctx_mark.getImageData(x, y, 1, 1).data;
