@@ -123,6 +123,7 @@ export class game {
 	progress_timer_index: number = 0;
 	game_level: number = 1;
 
+	enemy_max: number = 5;
 	enemy_index: number = 0;
 	enemy_interval: number = 0;
 	enemy_interval_max: number = 2000;
@@ -754,36 +755,38 @@ export class game {
 
 		//add enemy
 		if (this.enemy_index >= this.enemy_interval) {
-			//choose enemy
-			const random_enemy_index = enemy_type[MathFloor(MathRandom() * enemy_type.length)];
+			if (this.enemy_list.length <= this.enemy_max) {
+				//choose enemy
+				const random_enemy_index = enemy_type[MathFloor(MathRandom() * enemy_type.length)];
 
-			//create new enemy
-			const enemy_object = enemyDB[random_enemy_index as enemyDBType];
-			const new_enemy = new enemy_object({
-				ctx: this.ctx_game,
-				canvas_width: this.canvas_width,
-				canvas_height: this.base_height,
-				debug: this.debug,
-			});
+				//create new enemy
+				const enemy_object = enemyDB[random_enemy_index as enemyDBType];
+				const new_enemy = new enemy_object({
+					ctx: this.ctx_game,
+					canvas_width: this.canvas_width,
+					canvas_height: this.base_height,
+					debug: this.debug,
+				});
 
-			//add explosion if explode in
-			if (new_enemy.explode_in) {
-				this.explosion_list.push(
-					new explosion({
-						ctx: this.ctx_game,
-						x: new_enemy.x + new_enemy.width * 0.5,
-						y: new_enemy.y + new_enemy.height * 0.5,
-						scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
-						play_sound: false,
-					})
-				);
+				//add explosion if explode in
+				if (new_enemy.explode_in) {
+					this.explosion_list.push(
+						new explosion({
+							ctx: this.ctx_game,
+							x: new_enemy.x + new_enemy.width * 0.5,
+							y: new_enemy.y + new_enemy.height * 0.5,
+							scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+							play_sound: false,
+						})
+					);
+				}
+
+				//add enemy to list
+				this.enemy_list.push(new_enemy);
+
+				//sort enemy base on width
+				this.enemy_list.sort((a, b) => a.width - b.width);
 			}
-
-			//add enemy to list
-			this.enemy_list.push(new_enemy);
-
-			//sort enemy base on width
-			this.enemy_list.sort((a, b) => a.width - b.width);
 
 			//reset timer
 			let tmp_enemy_interval = this.gen_enemy_interval();
