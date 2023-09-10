@@ -5,7 +5,7 @@ const BTN_SIZE = 35 * DPI;
 const BTN_PADDING = 20 * DPI;
 const BTN_MARGIN = 30;
 
-const BTN_COLOR = {
+export const BTN_COLOR = {
 	normal: `rgba(${COLOR.light}, 0.3)`,
 	normal_icon: `rgba(${COLOR.light}, 0.5)`,
 	highlight: `rgba(${COLOR.blue}, 0.5)`,
@@ -189,7 +189,7 @@ class button {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width * 10;
+				ctx.lineWidth = this.line_width * 2;
 				ctx.arc(
 					this.line_width + this.width * 0.5,
 					this.line_width + this.height * 0.5,
@@ -902,12 +902,9 @@ export class control {
 			if (opt.img || opt.color) {
 				if (opt.img) {
 					if (opt.color) opt.btn.color = opt.color;
+					opt.btn.img = new Image();
 					opt.btn.img.src = opt.img;
 					opt.btn.draw();
-
-					setTimeout(() => {
-						opt.btn.draw();
-					}, 1000);
 				} else {
 					if (opt.color) opt.btn.color = opt.color;
 					opt.btn.draw();
@@ -921,12 +918,9 @@ export class control {
 			if (opt.img || opt.color) {
 				if (opt.img) {
 					if (opt.color) opt.arr.color = opt.color;
+					opt.arr.img = new Image();
 					opt.arr.img.src = opt.img;
 					opt.arr.draw();
-
-					setTimeout(() => {
-						opt.arr.draw();
-					}, 1000);
 				} else {
 					if (opt.color) opt.arr.color = opt.color;
 					opt.arr.draw();

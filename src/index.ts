@@ -1,5 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
+import { LOAD_ALL_SVG_ASSET } from "./asset.js";
 import { cookie } from "./cookie.js";
 import { game } from "./game.js";
 const DEBUG = false;
@@ -12,66 +13,68 @@ const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement
 
 (function () {
 	window.addEventListener("load", () => {
-		if (
-			canvas_game &&
-			canvas_static &&
-			canvas_value &&
-			canvas_control &&
-			canvas_pointer &&
-			canvas_mark
-		) {
-			[
-				canvas_game,
-				canvas_static,
-				canvas_value,
-				canvas_control,
-				canvas_pointer,
-				canvas_mark,
-			].forEach((i) => {
-				i.width = 1300;
-				i.height = 700;
-			});
+		LOAD_ALL_SVG_ASSET(() => {
+			if (
+				canvas_game &&
+				canvas_static &&
+				canvas_value &&
+				canvas_control &&
+				canvas_pointer &&
+				canvas_mark
+			) {
+				[
+					canvas_game,
+					canvas_static,
+					canvas_value,
+					canvas_control,
+					canvas_pointer,
+					canvas_mark,
+				].forEach((i) => {
+					i.width = 1300;
+					i.height = 700;
+				});
 
-			if (DEBUG) {
-				canvas_mark.classList.remove("hide");
-				canvas_pointer.classList.remove("hide");
-			} else {
-				canvas_mark.classList.add("hide");
-				canvas_pointer.classList.add("hide");
-			}
-
-			canvas_game.addEventListener("game_up", (e) => {
-				const detail = (e as CustomEvent).detail;
-				cookie.set("data", JSON.stringify(detail));
-			});
-
-			canvas_game.addEventListener("game_over", () => {
-				cookie.delete("data");
-			});
-
-			const d = new game({
-				canvas_game: canvas_game,
-				canvas_static: canvas_static,
-				canvas_value: canvas_value,
-				canvas_control: canvas_control,
-				canvas_pointer: canvas_pointer,
-				canvas_mark: canvas_mark,
-
-				debug: DEBUG,
-			});
-
-			setTimeout(() => {
-				const data = cookie.get("data");
-				if (data) {
-					d.game_start(JSON.parse(data));
+				if (DEBUG) {
+					canvas_mark.classList.remove("hide");
+					canvas_pointer.classList.remove("hide");
 				} else {
-					d.game_start();
+					canvas_mark.classList.add("hide");
+					canvas_pointer.classList.add("hide");
 				}
-			}, 1000);
 
-			window.addEventListener("resize", () => {
-				d.resize();
-			});
-		} else console.error("gameCanvas not found");
+				canvas_game.addEventListener("game_up", (e) => {
+					const detail = (e as CustomEvent).detail;
+					cookie.set("data", JSON.stringify(detail));
+				});
+
+				canvas_game.addEventListener("game_over", () => {
+					cookie.delete("data");
+				});
+
+				const d = new game({
+					canvas_game: canvas_game,
+					canvas_static: canvas_static,
+					canvas_value: canvas_value,
+					canvas_control: canvas_control,
+					canvas_pointer: canvas_pointer,
+					canvas_mark: canvas_mark,
+
+					debug: DEBUG,
+				});
+
+				setTimeout(() => {
+					const data = cookie.get("data");
+					if (data) {
+						d.game_start(JSON.parse(data));
+					} else {
+						d.game_start();
+					}
+				}, 1000);
+
+				window.addEventListener("resize", () => {
+					d.resize();
+				});
+			} else console.error("gameCanvas not found");
+		});
 	});
 })();

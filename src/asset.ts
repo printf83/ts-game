@@ -1,3 +1,6 @@
+import { BTN_COLOR } from "./control.js";
+import { COLOR } from "./util.js";
+
 export const ASSET = {
 	bg1: {
 		layer1: "./res/bg1/layer-1.png",
@@ -121,8 +124,85 @@ export const ASSET = {
 };
 
 type svg_key = keyof typeof ASSET.svg;
+const ASSETSVGDATA: { [key: string]: HTMLImageElement } = {};
+const LOADASSETSVG = (key: svg_key, color: string, callback: Function) => {
+	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
+	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+	const data_str = data.replace(/[\W_]+/g, "_");
+
+	if (data_str in ASSETSVGDATA) {
+		callback();
+	} else {
+		const img = new Image();
+		img.onload = (e) => {
+			const elem = (e as Event).target as HTMLImageElement;
+			ASSETSVGDATA[data_str] = elem;
+			callback();
+		};
+		img.src = data;
+	}
+};
+
+const do_load = (
+	svg_list: { key: svg_key; color: string }[],
+	index: number,
+	callback: Function
+) => {
+	if (index < svg_list.length - 1) {
+		LOADASSETSVG(svg_list[index]!.key, svg_list[index]!.color, () => {
+			do_load(svg_list, index + 1, callback);
+		});
+	} else {
+		callback();
+	}
+};
+
+export const LOAD_ALL_SVG_ASSET = (callback: Function) => {
+	do_load(
+		[
+			{ key: "right", color: BTN_COLOR.normal_icon },
+			{ key: "down", color: BTN_COLOR.normal_icon },
+			{ key: "left", color: BTN_COLOR.normal_icon },
+			{ key: "up", color: BTN_COLOR.normal_icon },
+			{ key: "full_screen", color: BTN_COLOR.normal_icon },
+			{ key: "normal_screen", color: BTN_COLOR.normal_icon },
+			{ key: "lightning", color: BTN_COLOR.normal_icon },
+			{ key: "record", color: BTN_COLOR.normal_icon },
+			{ key: "pause", color: BTN_COLOR.normal_icon },
+			{ key: "start", color: BTN_COLOR.normal_icon },
+			{ key: "right", color: BTN_COLOR.click_icon },
+			{ key: "down", color: BTN_COLOR.click_icon },
+			{ key: "left", color: BTN_COLOR.click_icon },
+			{ key: "up", color: BTN_COLOR.click_icon },
+			{ key: "full_screen", color: BTN_COLOR.click_icon },
+			{ key: "normal_screen", color: BTN_COLOR.click_icon },
+			{ key: "lightning", color: BTN_COLOR.click_icon },
+			{ key: "record", color: BTN_COLOR.click_icon },
+			{ key: "pause", color: BTN_COLOR.click_icon },
+			{ key: "start", color: BTN_COLOR.click_icon },
+			{ key: "life", color: `rgb(${COLOR.red})` },
+			{ key: "lightning", color: `rgb(${COLOR.yellow})` },
+			{ key: "stopwatch", color: `rgb(${COLOR.blue})` },
+			{ key: "shield", color: `rgb(${COLOR.green})` },
+			{ key: "life", color: `rgb(${COLOR.medium})` },
+			{ key: "lightning", color: `rgb(${COLOR.medium})` },
+			{ key: "stopwatch", color: `rgb(${COLOR.medium})` },
+			{ key: "shield", color: `rgb(${COLOR.medium})` },
+		],
+		0,
+		callback
+	);
+};
 
 export const ASSETSVG = (key: svg_key, color: string) => {
 	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
-	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+	const data_str = data.replace(/[\W_]+/g, "_");
+
+	if (data_str in ASSETSVGDATA) {
+		return data;
+	} else {
+		console.warn("svg asset not loaded", svg);
+		return data;
+	}
 };
