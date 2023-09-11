@@ -1,9 +1,6 @@
-import { ASSET } from "../asset.js";
+import { ASSET, ASSETIMG } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
-
-const imgEnemy6 = new Image();
-imgEnemy6.src = ASSET.enemy.enemy6;
 
 export class enemy6 extends baseEnemy {
 	speed: number;
@@ -26,7 +23,7 @@ export class enemy6 extends baseEnemy {
 		super({
 			...opt,
 
-			img: imgEnemy6,
+			img: ASSETIMG(ASSET.enemy.enemy6),
 
 			x: opt.canvas_width,
 			y: MathRandom() * opt.canvas_height * 0.5,

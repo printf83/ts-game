@@ -1,4 +1,4 @@
-import { ASSET, ASSETSVG } from "./asset.js";
+import { ASSET, ASSETIMG, ASSETSVG } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { game } from "./game.js";
 import { input } from "./input.js";
@@ -64,16 +64,13 @@ export class player extends baseAnimation {
 		canvas_height: number;
 		debug?: boolean;
 	}) {
-		const img = new Image();
-		img.src = ASSET.player;
-
 		const sprite_width = 575;
 		const sprite_height = 523;
 		const width = sprite_width * 0.25;
 		const height = sprite_height * 0.25;
 
 		super({
-			img,
+			img: ASSETIMG(ASSET.player),
 
 			ctx: opt.ctx,
 			x: opt.x,
@@ -91,29 +88,21 @@ export class player extends baseAnimation {
 
 		this.game = opt.game;
 
-		this.img_life = new Image();
-		this.img_life.src = ASSETSVG("life", `rgb(${COLOR.red})`);
+		this.img_life = ASSETSVG("life", `rgb(${COLOR.red})`);
 
-		this.img_power = new Image();
-		this.img_power.src = ASSETSVG("lightning", `rgb(${COLOR.yellow})`);
+		this.img_power = ASSETSVG("lightning", `rgb(${COLOR.yellow})`);
 
-		this.img_stopwatch = new Image();
-		this.img_stopwatch.src = ASSETSVG("stopwatch", `rgb(${COLOR.blue})`);
+		this.img_stopwatch = ASSETSVG("stopwatch", `rgb(${COLOR.blue})`);
 
-		this.img_shield = new Image();
-		this.img_shield.src = ASSETSVG("shield", `rgb(${COLOR.green})`);
+		this.img_shield = ASSETSVG("shield", `rgb(${COLOR.green})`);
 
-		this.img_life_inactive = new Image();
-		this.img_life_inactive.src = ASSETSVG("life", `rgb(${COLOR.medium})`);
+		this.img_life_inactive = ASSETSVG("life", `rgb(${COLOR.medium})`);
 
-		this.img_power_inactive = new Image();
-		this.img_power_inactive.src = ASSETSVG("lightning", `rgb(${COLOR.medium})`);
+		this.img_power_inactive = ASSETSVG("lightning", `rgb(${COLOR.medium})`);
 
-		this.img_stopwatch_inactive = new Image();
-		this.img_stopwatch_inactive.src = ASSETSVG("stopwatch", `rgb(${COLOR.medium})`);
+		this.img_stopwatch_inactive = ASSETSVG("stopwatch", `rgb(${COLOR.medium})`);
 
-		this.img_shield_inactive = new Image();
-		this.img_shield_inactive.src = ASSETSVG("shield", `rgb(${COLOR.medium})`);
+		this.img_shield_inactive = ASSETSVG("shield", `rgb(${COLOR.medium})`);
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;

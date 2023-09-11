@@ -1,15 +1,9 @@
-import { ASSET } from "./asset.js";
+import { ASSET, ASSETIMG, ASSETSOUND } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { MathFloor, MathRandom } from "./util.js";
 
-const imgExplosion = new Image();
-imgExplosion.src = ASSET.boom;
-
-const soundExplosion = ASSET.boom_wav;
-
 export class explosion extends baseAnimation {
 	sound_played?: boolean;
-	sound?: string;
 	angle: number;
 
 	dx: number;
@@ -30,7 +24,7 @@ export class explosion extends baseAnimation {
 		const height = sprite_height * opt.scale;
 
 		super({
-			img: imgExplosion,
+			img: ASSETIMG(ASSET.boom),
 
 			ctx: opt.ctx,
 
@@ -51,7 +45,6 @@ export class explosion extends baseAnimation {
 
 		if (opt.play_sound) {
 			this.sound_played = false;
-			this.sound = soundExplosion;
 		}
 
 		this.angle = MathRandom() * 180;
@@ -61,9 +54,10 @@ export class explosion extends baseAnimation {
 	}
 
 	update(opt: { delta_time: number }) {
-		if (this.sound && !this.sound_played) {
+		if (this.sound_played === false) {
 			this.sound_played = true;
-			new Audio(this.sound).play();
+			const sound = ASSETSOUND(ASSET.boom_wav);
+			sound.play();
 		}
 
 		super.update({

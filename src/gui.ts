@@ -1,4 +1,4 @@
-import { ASSET, ASSETSVG } from "./asset.js";
+import { ASSET, ASSETIMG, ASSETSVG } from "./asset.js";
 import { COLOR, clear_text, draw_text } from "./util.js";
 
 class box {
@@ -57,7 +57,7 @@ class image {
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
 
-		img: string;
+		img: HTMLImageElement;
 		img_width: number;
 		img_height: number;
 
@@ -73,8 +73,7 @@ class image {
 
 		this.ctx = opt.ctx;
 
-		this.img = new Image();
-		this.img.src = opt.img;
+		this.img = opt.img;
 		this.img_width = opt.img_width;
 		this.img_height = opt.img_height;
 
@@ -344,7 +343,7 @@ export class gui {
 		this.image.push(
 			new image({
 				ctx: this.ctx,
-				img: ASSET.ctl.icon_png,
+				img: ASSETIMG(ASSET.ctl.icon_png),
 				img_width: 72,
 				img_height: 72,
 				x: 20,

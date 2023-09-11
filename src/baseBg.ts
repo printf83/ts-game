@@ -9,17 +9,11 @@ export class baseBg {
 	canvas_width: number;
 	canvas_height: number;
 
-	private img_setup = (src: string) => {
-		const result = new Image();
-		result.src = src;
-		return result;
-	};
-
 	bg_list: layer[] = [];
 
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
-		img: { url: string; speed_modifier: number }[];
+		img_list: { img: HTMLImageElement; speed_modifier: number }[];
 		ground: number;
 		img_width: number;
 		img_height: number;
@@ -35,11 +29,11 @@ export class baseBg {
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
 
-		opt.img.forEach((i) => {
+		opt.img_list.forEach((i) => {
 			this.bg_list.push(
 				new layer({
 					ctx: this.ctx,
-					img: this.img_setup(i.url),
+					img: i.img,
 					canvas_height: this.canvas_height,
 					img_width: this.img_width,
 					img_height: this.img_height,

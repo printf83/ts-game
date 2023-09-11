@@ -45,7 +45,7 @@ class button {
 		ctx: CanvasRenderingContext2D;
 		ctx_mark: CanvasRenderingContext2D;
 		name: string;
-		img: string;
+		img: HTMLImageElement;
 		x: number;
 		y: number;
 		img_width?: number;
@@ -77,9 +77,8 @@ class button {
 
 		this.name = opt.name;
 
-		this.img = new Image();
-		this.img.src = opt.img;
-		this.img_url = opt.img;
+		this.img = opt.img;
+		this.img_url = this.img.src;
 		this.img_width = opt.img_width;
 		this.img_height = opt.img_height;
 		this.x = opt.x;
@@ -279,7 +278,7 @@ class arrow {
 		ctx: CanvasRenderingContext2D;
 		ctx_mark: CanvasRenderingContext2D;
 		name: string;
-		img: string;
+		img: HTMLImageElement;
 		img_width?: number;
 		img_height?: number;
 		width?: number;
@@ -319,9 +318,8 @@ class arrow {
 
 		this.name = opt.name;
 
-		this.img = new Image();
-		this.img.src = opt.img;
-		this.img_url = opt.img;
+		this.img = opt.img;
+		this.img_url = this.img.src;
 		this.img_width = opt.img_width;
 		this.img_height = opt.img_height;
 		this.width = opt.width;
@@ -900,13 +898,12 @@ export class control {
 		});
 	}
 
-	redraw_button(opt: { btn: button; img?: string; color?: string }) {
+	redraw_button(opt: { btn: button; img?: HTMLImageElement; color?: string }) {
 		if (opt.btn) {
 			if (opt.img || opt.color) {
 				if (opt.img) {
 					if (opt.color) opt.btn.color = opt.color;
-					opt.btn.img = new Image();
-					opt.btn.img.src = opt.img;
+					opt.btn.img = opt.img;
 					opt.btn.draw();
 				} else {
 					if (opt.color) opt.btn.color = opt.color;
@@ -916,13 +913,12 @@ export class control {
 		}
 	}
 
-	redraw_arrow(opt: { arr: arrow; img?: string; color?: string }) {
+	redraw_arrow(opt: { arr: arrow; img?: HTMLImageElement; color?: string }) {
 		if (opt.arr) {
 			if (opt.img || opt.color) {
 				if (opt.img) {
 					if (opt.color) opt.arr.color = opt.color;
-					opt.arr.img = new Image();
-					opt.arr.img.src = opt.img;
+					opt.arr.img = opt.img;
 					opt.arr.draw();
 				} else {
 					if (opt.color) opt.arr.color = opt.color;

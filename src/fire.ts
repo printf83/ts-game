@@ -1,9 +1,6 @@
-import { ASSET } from "./asset.js";
+import { ASSET, ASSETIMG } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { MathFloor, MathRandom } from "./util.js";
-
-const imgFire = new Image();
-imgFire.src = ASSET.fire;
 
 export class fire extends baseAnimation {
 	angle: number;
@@ -21,7 +18,7 @@ export class fire extends baseAnimation {
 		const height = sprite_height * scale;
 
 		super({
-			img: imgFire,
+			img: ASSETIMG(ASSET.fire),
 
 			ctx: opt.ctx,
 

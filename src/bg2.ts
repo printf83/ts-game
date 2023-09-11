@@ -1,4 +1,4 @@
-import { ASSET } from "./asset.js";
+import { ASSET, ASSETIMG } from "./asset.js";
 import { baseBg } from "./baseBg.js";
 
 export class bg2 extends baseBg {
@@ -9,12 +9,12 @@ export class bg2 extends baseBg {
 	}) {
 		super({
 			ctx: opt.ctx,
-			img: [
-				{ url: ASSET.bg2.layer1, speed_modifier: 0.2 },
-				{ url: ASSET.bg2.layer2, speed_modifier: 0.4 },
-				{ url: ASSET.bg2.layer3, speed_modifier: 0.6 },
-				{ url: ASSET.bg2.layer4, speed_modifier: 0.8 },
-				{ url: ASSET.bg2.layer5, speed_modifier: 1 },
+			img_list: [
+				{ img: ASSETIMG(ASSET.bg2.layer1), speed_modifier: 0.2 },
+				{ img: ASSETIMG(ASSET.bg2.layer2), speed_modifier: 0.4 },
+				{ img: ASSETIMG(ASSET.bg2.layer3), speed_modifier: 0.6 },
+				{ img: ASSETIMG(ASSET.bg2.layer4), speed_modifier: 0.8 },
+				{ img: ASSETIMG(ASSET.bg2.layer5), speed_modifier: 1 },
 			],
 			canvas_width: opt.canvas_width,
 			canvas_height: opt.canvas_height,

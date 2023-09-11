@@ -12,13 +12,24 @@ const canvas_control = document.getElementById("controlCanvas") as HTMLCanvasEle
 const canvas_pointer = document.getElementById("pointerCanvas") as HTMLCanvasElement;
 const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement;
 
+const loading_text = document.getElementById("loading_text") as HTMLElement;
 const loading_counter = document.getElementById("loading_counter") as HTMLElement;
 
 let total_size_downloaded = 0;
-const LOAD_CHANGE = (size: number) => {
-	total_size_downloaded += size;
-	// console.log(total_size_downloaded);
-	loading_counter.innerText = `${MathFloor((total_size_downloaded / 3462356) * 100)}% Complete`;
+const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number) => {
+	if (size_downloaded > 0) {
+		total_size_downloaded += size_downloaded;
+		// console.log(total_size_downloaded);
+		loading_counter.innerText = `${MathFloor(
+			(total_size_downloaded / 3462356) * 100
+		)}% Complete`;
+	} else if (name && file_size) {
+		if (file_size > 1000000) {
+			loading_text.innerText = `Download ${(file_size / 1000000).toFixed(2)}Mb - ${name}`;
+		} else {
+			loading_text.innerText = `Download ${(file_size / 1000).toFixed(2)}Kb - ${name}`;
+		}
+	}
 };
 
 (function () {

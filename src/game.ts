@@ -355,9 +355,9 @@ export class game {
 			this.game_timeout = false;
 			this.clean_ctx_value_message();
 
-			this.player.set_state("run");
-
 			this.animate(timestamp, animation_id);
+
+			this.game_pause = true;
 		});
 	}
 

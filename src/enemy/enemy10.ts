@@ -1,9 +1,6 @@
-import { ASSET } from "../asset.js";
+import { ASSET, ASSETIMG } from "../asset.js";
 import { MathRandom } from "../util.js";
 import { baseEnemy } from "./baseEnemy.js";
-
-const imgEnemy10 = new Image();
-imgEnemy10.src = ASSET.enemy.enemy10;
 
 export class enemy10 extends baseEnemy {
 	constructor(opt: {
@@ -22,7 +19,7 @@ export class enemy10 extends baseEnemy {
 		super({
 			...opt,
 
-			img: imgEnemy10,
+			img: ASSETIMG(ASSET.enemy.enemy10),
 
 			x: opt.canvas_width + width,
 			y: opt.canvas_height - height,

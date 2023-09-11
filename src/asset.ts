@@ -232,6 +232,7 @@ const do_load_font = (
 	callback: Function
 ) => {
 	if (index < font_list.length) {
+		onchange(0, font_list[index]!.name, font_list[index]!.size);
 		load_asset_font(font_list[index]!.name, font_list[index]!.url, () => {
 			onchange(font_list[index]!.size);
 			do_load_font(font_list, index + 1, onchange, callback);
@@ -273,12 +274,13 @@ const load_asset_sound = (url: string, callback: Function) => {
 	}
 };
 const do_load_sound = (
-	sound_list: { url: string; size: number }[],
+	sound_list: { name: string; url: string; size: number }[],
 	index: number,
 	onchange: Function,
 	callback: Function
 ) => {
 	if (index < sound_list.length) {
+		onchange(0, sound_list[index]!.name, sound_list[index]!.size);
 		load_asset_sound(sound_list[index]!.url, () => {
 			onchange(sound_list[index]!.size);
 			do_load_sound(sound_list, index + 1, onchange, callback);
@@ -288,7 +290,12 @@ const do_load_sound = (
 	}
 };
 const load_all_sound_asset = (onchange: Function, callback: Function) => {
-	do_load_sound([{ url: ASSET.boom_wav, size: ASSET_SIZE.boom_wav }], 0, onchange, callback);
+	do_load_sound(
+		[{ name: "ASSET.boom_wav", url: ASSET.boom_wav, size: ASSET_SIZE.boom_wav }],
+		0,
+		onchange,
+		callback
+	);
 };
 
 //image
@@ -308,12 +315,13 @@ const load_asset_img = (url: string, callback: Function) => {
 	}
 };
 const do_load_img = (
-	img_list: { url: string; size: number }[],
+	img_list: { name: string; url: string; size: number }[],
 	index: number,
 	onchange: Function,
 	callback: Function
 ) => {
 	if (index < img_list.length) {
+		onchange(0, img_list[index]!.name, img_list[index]!.size);
 		load_asset_img(img_list[index]!.url, () => {
 			onchange(img_list[index]!.size);
 			do_load_img(img_list, index + 1, onchange, callback);
@@ -325,48 +333,79 @@ const do_load_img = (
 const load_all_img_asset = (onchange: Function, callback: Function) => {
 	do_load_img(
 		[
-			{ url: ASSET.bg1.layer1, size: ASSET_SIZE.bg1.layer1 },
-			{ url: ASSET.bg1.layer2, size: ASSET_SIZE.bg1.layer2 },
-			{ url: ASSET.bg1.layer3, size: ASSET_SIZE.bg1.layer3 },
-			{ url: ASSET.bg1.layer4, size: ASSET_SIZE.bg1.layer4 },
-			{ url: ASSET.bg1.layer5, size: ASSET_SIZE.bg1.layer5 },
-			{ url: ASSET.bg2.layer1, size: ASSET_SIZE.bg2.layer1 },
-			{ url: ASSET.bg2.layer2, size: ASSET_SIZE.bg2.layer2 },
-			{ url: ASSET.bg2.layer3, size: ASSET_SIZE.bg2.layer3 },
-			{ url: ASSET.bg2.layer4, size: ASSET_SIZE.bg2.layer4 },
-			{ url: ASSET.bg2.layer5, size: ASSET_SIZE.bg2.layer5 },
-			{ url: ASSET.ctl.icon_png, size: ASSET_SIZE.ctl.icon_png },
-			{ url: ASSET.ctl.life_icon_png, size: ASSET_SIZE.ctl.life_icon_png },
-			{ url: ASSET.ctl.power_icon_png, size: ASSET_SIZE.ctl.power_icon_png },
-			{ url: ASSET.ctl.shield_icon_png, size: ASSET_SIZE.ctl.shield_icon_png },
-			{ url: ASSET.ctl.stopwatch_icon_png, size: ASSET_SIZE.ctl.stopwatch_icon_png },
-			{ url: ASSET.ctl.life_icon_inactive_png, size: ASSET_SIZE.ctl.life_icon_inactive_png },
+			{ name: "ASSET.player", url: ASSET.player, size: ASSET_SIZE.player },
+			{ name: "ASSET.boom", url: ASSET.boom, size: ASSET_SIZE.boom },
+			{ name: "ASSET.fire", url: ASSET.fire, size: ASSET_SIZE.fire },
+			{ name: "ASSET.bg1.layer1", url: ASSET.bg1.layer1, size: ASSET_SIZE.bg1.layer1 },
+			{ name: "ASSET.bg1.layer2", url: ASSET.bg1.layer2, size: ASSET_SIZE.bg1.layer2 },
+			{ name: "ASSET.bg1.layer3", url: ASSET.bg1.layer3, size: ASSET_SIZE.bg1.layer3 },
+			{ name: "ASSET.bg1.layer4", url: ASSET.bg1.layer4, size: ASSET_SIZE.bg1.layer4 },
+			{ name: "ASSET.bg1.layer5", url: ASSET.bg1.layer5, size: ASSET_SIZE.bg1.layer5 },
+			{ name: "ASSET.bg2.layer1", url: ASSET.bg2.layer1, size: ASSET_SIZE.bg2.layer1 },
+			{ name: "ASSET.bg2.layer2", url: ASSET.bg2.layer2, size: ASSET_SIZE.bg2.layer2 },
+			{ name: "ASSET.bg2.layer3", url: ASSET.bg2.layer3, size: ASSET_SIZE.bg2.layer3 },
+			{ name: "ASSET.bg2.layer4", url: ASSET.bg2.layer4, size: ASSET_SIZE.bg2.layer4 },
+			{ name: "ASSET.bg2.layer5", url: ASSET.bg2.layer5, size: ASSET_SIZE.bg2.layer5 },
+			{ name: "ASSET.ctl.", url: ASSET.ctl.icon_png, size: ASSET_SIZE.ctl.icon_png },
 			{
+				name: "ASSET.ctl.life_icon_png",
+				url: ASSET.ctl.life_icon_png,
+				size: ASSET_SIZE.ctl.life_icon_png,
+			},
+			{
+				name: "ASSET.ctl.power_icon_png",
+				url: ASSET.ctl.power_icon_png,
+				size: ASSET_SIZE.ctl.power_icon_png,
+			},
+			{
+				name: "ASSET.ctl.shield_icon_png",
+				url: ASSET.ctl.shield_icon_png,
+				size: ASSET_SIZE.ctl.shield_icon_png,
+			},
+			{
+				name: "ASSET.ctl.stopwatch_icon_png",
+				url: ASSET.ctl.stopwatch_icon_png,
+				size: ASSET_SIZE.ctl.stopwatch_icon_png,
+			},
+			{
+				name: "ASSET.ctl.life_icon_inactive_png",
+				url: ASSET.ctl.life_icon_inactive_png,
+				size: ASSET_SIZE.ctl.life_icon_inactive_png,
+			},
+			{
+				name: "ASSET.ctl.power_icon_inactive_png",
 				url: ASSET.ctl.power_icon_inactive_png,
 				size: ASSET_SIZE.ctl.power_icon_inactive_png,
 			},
 			{
+				name: "ASSET.ctl.shield_icon_inactive_png",
 				url: ASSET.ctl.shield_icon_inactive_png,
 				size: ASSET_SIZE.ctl.shield_icon_inactive_png,
 			},
 			{
+				name: "ASSET.ctl.stopwatch_icon_inactive_png",
 				url: ASSET.ctl.stopwatch_icon_inactive_png,
 				size: ASSET_SIZE.ctl.stopwatch_icon_inactive_png,
 			},
-			{ url: ASSET.enemy.enemy1, size: ASSET_SIZE.enemy.enemy1 },
-			{ url: ASSET.enemy.enemy2, size: ASSET_SIZE.enemy.enemy2 },
-			{ url: ASSET.enemy.enemy3, size: ASSET_SIZE.enemy.enemy3 },
-			{ url: ASSET.enemy.enemy4, size: ASSET_SIZE.enemy.enemy4 },
-			{ url: ASSET.enemy.enemy5, size: ASSET_SIZE.enemy.enemy5 },
-			{ url: ASSET.enemy.enemy6, size: ASSET_SIZE.enemy.enemy6 },
-			{ url: ASSET.enemy.enemy7, size: ASSET_SIZE.enemy.enemy7 },
-			{ url: ASSET.enemy.enemy8, size: ASSET_SIZE.enemy.enemy8 },
-			{ url: ASSET.enemy.enemy9, size: ASSET_SIZE.enemy.enemy9 },
-			{ url: ASSET.enemy.enemy10, size: ASSET_SIZE.enemy.enemy10 },
-			{ url: ASSET.enemy.enemy11, size: ASSET_SIZE.enemy.enemy11 },
-			{ url: ASSET.boom, size: ASSET_SIZE.boom },
-			{ url: ASSET.fire, size: ASSET_SIZE.fire },
-			{ url: ASSET.player, size: ASSET_SIZE.player },
+			{ name: "ASSET.enemy.enemy1", url: ASSET.enemy.enemy1, size: ASSET_SIZE.enemy.enemy1 },
+			{ name: "ASSET.enemy.enemy2", url: ASSET.enemy.enemy2, size: ASSET_SIZE.enemy.enemy2 },
+			{ name: "ASSET.enemy.enemy3", url: ASSET.enemy.enemy3, size: ASSET_SIZE.enemy.enemy3 },
+			{ name: "ASSET.enemy.enemy4", url: ASSET.enemy.enemy4, size: ASSET_SIZE.enemy.enemy4 },
+			{ name: "ASSET.enemy.enemy5", url: ASSET.enemy.enemy5, size: ASSET_SIZE.enemy.enemy5 },
+			{ name: "ASSET.enemy.enemy6", url: ASSET.enemy.enemy6, size: ASSET_SIZE.enemy.enemy6 },
+			{ name: "ASSET.enemy.enemy7", url: ASSET.enemy.enemy7, size: ASSET_SIZE.enemy.enemy7 },
+			{ name: "ASSET.enemy.enemy8", url: ASSET.enemy.enemy8, size: ASSET_SIZE.enemy.enemy8 },
+			{ name: "ASSET.enemy.enemy9", url: ASSET.enemy.enemy9, size: ASSET_SIZE.enemy.enemy9 },
+			{
+				name: "ASSET.enemy.enemy10",
+				url: ASSET.enemy.enemy10,
+				size: ASSET_SIZE.enemy.enemy10,
+			},
+			{
+				name: "ASSET.enemy.enemy11",
+				url: ASSET.enemy.enemy11,
+				size: ASSET_SIZE.enemy.enemy11,
+			},
 		],
 		0,
 		onchange,
@@ -375,7 +414,7 @@ const load_all_img_asset = (onchange: Function, callback: Function) => {
 };
 
 //svg
-type svg_key = keyof typeof ASSET.svg;
+
 const asset_svg_data: { [key: string]: HTMLImageElement } = {};
 const load_asset_svg = (url: string, color: string, callback: Function) => {
 	const svg = url.replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
@@ -395,12 +434,13 @@ const load_asset_svg = (url: string, color: string, callback: Function) => {
 	}
 };
 const do_load_svg = (
-	svg_list: { url: string; size: number; color: string }[],
+	svg_list: { name: string; url: string; size: number; color: string }[],
 	index: number,
 	onchange: Function,
 	callback: Function
 ) => {
 	if (index < svg_list.length) {
+		onchange(0, svg_list[index]!.name, svg_list[index]!.size);
 		load_asset_svg(svg_list[index]!.url, svg_list[index]!.color, () => {
 			onchange(svg_list[index]!.size);
 			do_load_svg(svg_list, index + 1, onchange, callback);
@@ -413,74 +453,174 @@ const do_load_svg = (
 const load_all_svg_asset = (onchange: Function, callback: Function) => {
 	do_load_svg(
 		[
-			{ url: ASSET.svg.right, size: ASSET_SIZE.svg.right, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.down, size: ASSET_SIZE.svg.down, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.left, size: ASSET_SIZE.svg.left, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.up, size: ASSET_SIZE.svg.up, color: BTN_COLOR.normal_icon },
 			{
+				name: "ASSET.svg.right",
+				url: ASSET.svg.right,
+				size: ASSET_SIZE.svg.right,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.down",
+				url: ASSET.svg.down,
+				size: ASSET_SIZE.svg.down,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.left",
+				url: ASSET.svg.left,
+				size: ASSET_SIZE.svg.left,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.up",
+				url: ASSET.svg.up,
+				size: ASSET_SIZE.svg.up,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.full_screen",
 				url: ASSET.svg.full_screen,
 				size: ASSET_SIZE.svg.full_screen,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
+				name: "ASSET.svg.normal_screen",
 				url: ASSET.svg.normal_screen,
 				size: ASSET_SIZE.svg.normal_screen,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
+				name: "ASSET.svg.lightning",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: BTN_COLOR.normal_icon,
 			},
-			{ url: ASSET.svg.record, size: ASSET_SIZE.svg.record, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.pause, size: ASSET_SIZE.svg.pause, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.start, size: ASSET_SIZE.svg.start, color: BTN_COLOR.normal_icon },
-			{ url: ASSET.svg.right, size: ASSET_SIZE.svg.right, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.down, size: ASSET_SIZE.svg.down, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.left, size: ASSET_SIZE.svg.left, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.up, size: ASSET_SIZE.svg.up, color: BTN_COLOR.click_icon },
 			{
+				name: "ASSET.svg.record",
+				url: ASSET.svg.record,
+				size: ASSET_SIZE.svg.record,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.pause",
+				url: ASSET.svg.pause,
+				size: ASSET_SIZE.svg.pause,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.start",
+				url: ASSET.svg.start,
+				size: ASSET_SIZE.svg.start,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				name: "ASSET.svg.right (click)",
+				url: ASSET.svg.right,
+				size: ASSET_SIZE.svg.right,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.down (click)",
+				url: ASSET.svg.down,
+				size: ASSET_SIZE.svg.down,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.left (click)",
+				url: ASSET.svg.left,
+				size: ASSET_SIZE.svg.left,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.up (click)",
+				url: ASSET.svg.up,
+				size: ASSET_SIZE.svg.up,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.full_screen (click)",
 				url: ASSET.svg.full_screen,
 				size: ASSET_SIZE.svg.full_screen,
 				color: BTN_COLOR.click_icon,
 			},
 			{
+				name: "ASSET.svg.normal_screen (click)",
 				url: ASSET.svg.normal_screen,
 				size: ASSET_SIZE.svg.normal_screen,
 				color: BTN_COLOR.click_icon,
 			},
 			{
+				name: "ASSET.svg.lightning (click)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: BTN_COLOR.click_icon,
 			},
-			{ url: ASSET.svg.record, size: ASSET_SIZE.svg.record, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.pause, size: ASSET_SIZE.svg.pause, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.start, size: ASSET_SIZE.svg.start, color: BTN_COLOR.click_icon },
-			{ url: ASSET.svg.life, size: ASSET_SIZE.svg.life, color: `rgb(${COLOR.red})` },
 			{
+				name: "ASSET.svg.record (click)",
+				url: ASSET.svg.record,
+				size: ASSET_SIZE.svg.record,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.pause (click)",
+				url: ASSET.svg.pause,
+				size: ASSET_SIZE.svg.pause,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.start (click)",
+				url: ASSET.svg.start,
+				size: ASSET_SIZE.svg.start,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				name: "ASSET.svg.life (color)",
+				url: ASSET.svg.life,
+				size: ASSET_SIZE.svg.life,
+				color: `rgb(${COLOR.red})`,
+			},
+			{
+				name: "ASSET.svg.lightning (color)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: `rgb(${COLOR.yellow})`,
 			},
 			{
+				name: "ASSET.svg.stopwatch (color)",
 				url: ASSET.svg.stopwatch,
 				size: ASSET_SIZE.svg.stopwatch,
 				color: `rgb(${COLOR.blue})`,
 			},
-			{ url: ASSET.svg.shield, size: ASSET_SIZE.svg.shield, color: `rgb(${COLOR.green})` },
-			{ url: ASSET.svg.life, size: ASSET_SIZE.svg.life, color: `rgb(${COLOR.medium})` },
 			{
+				name: "ASSET.svg.shield (color)",
+				url: ASSET.svg.shield,
+				size: ASSET_SIZE.svg.shield,
+				color: `rgb(${COLOR.green})`,
+			},
+			{
+				name: "ASSET.svg.life (gray)",
+				url: ASSET.svg.life,
+				size: ASSET_SIZE.svg.life,
+				color: `rgb(${COLOR.medium})`,
+			},
+			{
+				name: "ASSET.svg.lightning (gray)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: `rgb(${COLOR.medium})`,
 			},
 			{
+				name: "ASSET.svg.stopwatch (gray)",
 				url: ASSET.svg.stopwatch,
 				size: ASSET_SIZE.svg.stopwatch,
 				color: `rgb(${COLOR.medium})`,
 			},
-			{ url: ASSET.svg.shield, size: ASSET_SIZE.svg.shield, color: `rgb(${COLOR.medium})` },
+			{
+				name: "ASSET.svg.shield (gray)",
+				url: ASSET.svg.shield,
+				size: ASSET_SIZE.svg.shield,
+				color: `rgb(${COLOR.medium})`,
+			},
 		],
 		0,
 		onchange,
@@ -488,16 +628,69 @@ const load_all_svg_asset = (onchange: Function, callback: Function) => {
 	);
 };
 
+type svg_key = keyof typeof ASSET.svg;
 export const ASSETSVG = (key: svg_key, color: string) => {
 	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
 	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 	const data_str = data.replace(/[\W_]+/g, "_");
 
 	if (data_str in asset_svg_data) {
-		return data;
+		const result = asset_svg_data[data_str];
+		if (result) {
+			return result;
+		} else {
+			console.warn("svg asset not loaded", svg);
+			const result = new Image();
+			result.src = data;
+			return result;
+		}
 	} else {
 		console.warn("svg asset not loaded", svg);
-		return data;
+		const result = new Image();
+		result.src = data;
+		return result;
+	}
+};
+
+export const ASSETIMG = (url: string) => {
+	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
+
+	if (url_str in asset_img_data) {
+		const result = asset_img_data[url_str];
+		if (result) {
+			return result;
+		} else {
+			console.warn("img asset not loaded", url);
+			const result = new Image();
+			result.src = url;
+			return result;
+		}
+	} else {
+		console.warn("img asset not loaded", url);
+		const result = new Image();
+		result.src = url;
+		return result;
+	}
+};
+
+export const ASSETSOUND = (url: string) => {
+	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
+
+	if (url_str in asset_sound_data) {
+		const result = asset_sound_data[url_str];
+		if (result) {
+			return result;
+		} else {
+			console.warn("sound asset not loaded", url);
+			const result = new Audio();
+			result.src = url;
+			return result;
+		}
+	} else {
+		console.warn("sound asset not loaded", url);
+		const result = new Audio();
+		result.src = url;
+		return result;
 	}
 };
 
