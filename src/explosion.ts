@@ -1,4 +1,4 @@
-import { ASSET, ASSETIMG, ASSETSOUND } from "./asset.js";
+import { ASSET, ASSETIMG } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { MathFloor, MathRandom } from "./util.js";
 
@@ -56,7 +56,7 @@ export class explosion extends baseAnimation {
 	update(opt: { delta_time: number }) {
 		if (this.sound_played === false) {
 			this.sound_played = true;
-			const sound = ASSETSOUND(ASSET.boom_wav);
+			const sound = new Audio(ASSET.boom_wav);
 			sound.play();
 		}
 

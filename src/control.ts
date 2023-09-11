@@ -970,7 +970,7 @@ export class control {
 					color: BTN_COLOR.click,
 				});
 			} else if (key === "Enter") {
-				if (this.game.game_pause) {
+				if (this.game.game_pause || this.game.game_ready) {
 					this.redraw_button({
 						btn: btn,
 						img: ASSETSVG("start", BTN_COLOR.click_icon),
@@ -1014,7 +1014,7 @@ export class control {
 					color: BTN_COLOR.normal,
 				});
 			} else if (key === "Enter") {
-				if (this.game.game_pause) {
+				if (this.game.game_pause || this.game.game_ready) {
 					this.redraw_button({
 						btn: btn,
 						img: ASSETSVG("start", BTN_COLOR.normal_icon),

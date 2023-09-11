@@ -112,6 +112,7 @@ export class game {
 	game_over: boolean = false;
 	game_timeout: boolean = false;
 	game_pause: boolean = false;
+	game_ready: boolean = false;
 	game_fps: number = 0;
 	game_fps_list: number[] = [];
 
@@ -353,11 +354,12 @@ export class game {
 		this.check_fps(24, 0, this.CURRENT_ANIMATION_ID, (timestamp, animation_id) => {
 			this.game_over = false;
 			this.game_timeout = false;
-			this.clean_ctx_value_message();
+			this.game_pause = false;
 
+			this.clean_ctx_value_message();
 			this.animate(timestamp, animation_id);
 
-			this.game_pause = true;
+			this.game_ready = true;
 		});
 	}
 
@@ -422,6 +424,7 @@ export class game {
 
 		this.check_fps(24, 0, this.CURRENT_ANIMATION_ID, (timestamp, animation_id) => {
 			this.game_pause = false;
+			this.game_ready = false;
 			this.clean_ctx_value_message();
 
 			this.animate(timestamp, animation_id);
@@ -655,6 +658,14 @@ export class game {
 				isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.",
 				`rgb(${COLOR.light})`
 			);
+
+		//ready
+		if (this.game_ready)
+			this.draw_message(
+				`Are you ready?`,
+				isTouchDevice() ? "Press START to continue." : "Press START/ENTER to continue.",
+				`rgb(${COLOR.green})`
+			);
 	}
 
 	set_game_over() {
@@ -880,10 +891,17 @@ export class game {
 			event.preventDefault();
 			event.stopPropagation();
 
-			if (this.game_up || this.game_over || this.game_timeout || this.game_pause) {
+			if (
+				this.game_up ||
+				this.game_over ||
+				this.game_timeout ||
+				this.game_pause ||
+				this.game_ready
+			) {
 				if (this.game_over || this.game_timeout) this.game_start();
 				if (this.game_up) this.game_level_up();
 				if (this.game_pause) this.game_continue();
+				if (this.game_ready) this.game_continue();
 			} else {
 				this.ctl.clear_control();
 				this.ctl.clear_arrow();
@@ -983,7 +1001,13 @@ export class game {
 		//count fps
 		if (this.debug) this.debug_info();
 
-		if (!this.game_over && !this.game_timeout && !this.game_pause && !this.game_up) {
+		if (
+			!this.game_over &&
+			!this.game_timeout &&
+			!this.game_pause &&
+			!this.game_ready &&
+			!this.game_up
+		) {
 			requestAnimationFrame((timestamp) => {
 				if (this.CURRENT_ANIMATION_ID === animation_id)
 					this.animate(timestamp, animation_id);

@@ -84,6 +84,7 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 				});
 
 				setTimeout(() => {
+					// console.log("game start");
 					const data = cookie.get("data");
 					if (data) {
 						d.game_start(JSON.parse(data));

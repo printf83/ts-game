@@ -265,12 +265,15 @@ const load_asset_sound = (url: string, callback: Function) => {
 	} else {
 		const sound = new Audio();
 
-		sound.oncanplaythrough = (e) => {
-			const elem = (e as Event).target as HTMLAudioElement;
-			asset_sound_data[url_str] = elem;
-			callback();
-		};
+		// sound.oncanplay = (e) => {
+		// 	const elem = (e as Event).target as HTMLAudioElement;
+		// 	asset_sound_data[url_str] = elem;
+		// 	callback();
+		// };
 		sound.src = url;
+
+		asset_sound_data[url_str] = sound;
+		callback();
 	}
 };
 const do_load_sound = (
@@ -642,12 +645,14 @@ export const ASSETSVG = (key: svg_key, color: string) => {
 			console.warn("svg asset not loaded", svg);
 			const result = new Image();
 			result.src = data;
+			asset_svg_data[data_str] = result;
 			return result;
 		}
 	} else {
 		console.warn("svg asset not loaded", svg);
 		const result = new Image();
 		result.src = data;
+		asset_svg_data[data_str] = result;
 		return result;
 	}
 };
@@ -663,12 +668,14 @@ export const ASSETIMG = (url: string) => {
 			console.warn("img asset not loaded", url);
 			const result = new Image();
 			result.src = url;
+			asset_img_data[url_str] = result;
 			return result;
 		}
 	} else {
 		console.warn("img asset not loaded", url);
 		const result = new Image();
 		result.src = url;
+		asset_img_data[url_str] = result;
 		return result;
 	}
 };
@@ -684,12 +691,14 @@ export const ASSETSOUND = (url: string) => {
 			console.warn("sound asset not loaded", url);
 			const result = new Audio();
 			result.src = url;
+			asset_sound_data[url_str] = result;
 			return result;
 		}
 	} else {
 		console.warn("sound asset not loaded", url);
 		const result = new Audio();
 		result.src = url;
+		asset_sound_data[url_str] = result;
 		return result;
 	}
 };
