@@ -18,7 +18,7 @@ let total_size_downloaded = 0;
 const LOAD_CHANGE = (size: number) => {
 	total_size_downloaded += size;
 	// console.log(total_size_downloaded);
-	loading_counter.innerText = `${MathFloor((total_size_downloaded / 3433256) * 100)}% Complete`;
+	loading_counter.innerText = `${MathFloor((total_size_downloaded / 3462356) * 100)}% Complete`;
 };
 
 (function () {

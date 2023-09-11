@@ -210,6 +210,50 @@ export const ASSET_SIZE = {
 		up: 288,
 	},
 };
+//font
+const asset_font_data: { [key: string]: FontFace } = {};
+const load_asset_font = (name: string, url: string, callback: Function) => {
+	const url_str = `url_${url.replace(/[\W_]+/g, "_")}`;
+	if (url_str in asset_font_data) {
+		callback();
+	} else {
+		const font = new FontFace(name, `url(${url})`);
+		font.load().then((loaded_font_face) => {
+			asset_font_data[url_str] = loaded_font_face;
+			document.fonts.add(loaded_font_face);
+			callback();
+		});
+	}
+};
+const do_load_font = (
+	font_list: { name: string; url: string; size: number }[],
+	index: number,
+	onchange: Function,
+	callback: Function
+) => {
+	if (index < font_list.length) {
+		load_asset_font(font_list[index]!.name, font_list[index]!.url, () => {
+			onchange(font_list[index]!.size);
+			do_load_font(font_list, index + 1, onchange, callback);
+		});
+	} else {
+		callback();
+	}
+};
+const load_all_font_asset = (onchange: Function, callback: Function) => {
+	do_load_font(
+		[
+			{
+				name: "Creepster",
+				url: ASSET.font.Creepster_woff2,
+				size: ASSET_SIZE.font.Creepster_woff2,
+			},
+		],
+		0,
+		onchange,
+		callback
+	);
+};
 
 //sound
 const asset_sound_data: { [key: string]: HTMLAudioElement } = {};
@@ -226,14 +270,6 @@ const load_asset_sound = (url: string, callback: Function) => {
 			callback();
 		};
 		sound.src = url;
-		// sound.load();
-
-		// sound.oncanplay = (e) => {
-		// 	const elem = (e as Event).target as HTMLAudioElement;
-		// 	asset_sound_data[url_str] = elem;
-		// 	callback();
-		// };
-		// sound.src = url;
 	}
 };
 const do_load_sound = (
@@ -466,10 +502,12 @@ export const ASSETSVG = (key: svg_key, color: string) => {
 };
 
 export const LOAD_ALL_ASSET = (onchange: Function, callback: Function) => {
-	load_all_img_asset(onchange, () => {
-		load_all_sound_asset(onchange, () => {
-			load_all_svg_asset(onchange, () => {
-				callback();
+	load_all_font_asset(onchange, () => {
+		load_all_img_asset(onchange, () => {
+			load_all_sound_asset(onchange, () => {
+				load_all_svg_asset(onchange, () => {
+					callback();
+				});
 			});
 		});
 	});
