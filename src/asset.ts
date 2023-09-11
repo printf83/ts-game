@@ -349,7 +349,7 @@ const load_all_img_asset = (onchange: Function, callback: Function) => {
 			{ name: "ASSET.bg2.layer3", url: ASSET.bg2.layer3, size: ASSET_SIZE.bg2.layer3 },
 			{ name: "ASSET.bg2.layer4", url: ASSET.bg2.layer4, size: ASSET_SIZE.bg2.layer4 },
 			{ name: "ASSET.bg2.layer5", url: ASSET.bg2.layer5, size: ASSET_SIZE.bg2.layer5 },
-			{ name: "ASSET.ctl.", url: ASSET.ctl.icon_png, size: ASSET_SIZE.ctl.icon_png },
+			{ name: "ASSET.ctl.icon_png", url: ASSET.ctl.icon_png, size: ASSET_SIZE.ctl.icon_png },
 			{
 				name: "ASSET.ctl.life_icon_png",
 				url: ASSET.ctl.life_icon_png,
