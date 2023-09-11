@@ -466,9 +466,9 @@ export const ASSETSVG = (key: svg_key, color: string) => {
 };
 
 export const LOAD_ALL_ASSET = (onchange: Function, callback: Function) => {
-	load_all_sound_asset(onchange, () => {
-		load_all_svg_asset(onchange, () => {
-			load_all_img_asset(onchange, () => {
+	load_all_img_asset(onchange, () => {
+		load_all_sound_asset(onchange, () => {
+			load_all_svg_asset(onchange, () => {
 				callback();
 			});
 		});
