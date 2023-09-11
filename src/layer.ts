@@ -63,7 +63,7 @@ export class layer {
 
 	update(game_speed: number) {
 		this.x -= game_speed * this.speed_modifier;
-		if (this.x < 0 - this.canvas_width) this.x = 0;
+		if (this.x < 0 - this.canvas_width - 1) this.x = 0;
 		this.x2 = this.x + this.canvas_width - game_speed - 1;
 	}
 	draw() {

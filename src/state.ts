@@ -258,9 +258,7 @@ export class state_dizzy extends state {
 		this.player.invulnerable = true;
 	}
 	exit(): void {
-		setTimeout(() => {
-			this.player.invulnerable = false;
-		}, 500);
+		this.player.invulnerable = false;
 	}
 	animation_end(player: player) {
 		player.set_state("idle");
@@ -383,10 +381,8 @@ export class state_bite extends state {
 		this.player.speed = 0;
 	}
 	exit(): void {
-		setTimeout(() => {
-			this.player.powered = false;
-			this.player.invulnerable = false;
-		}, 500);
+		this.player.powered = false;
+		this.player.invulnerable = false;
 	}
 	animation_end(player: player) {
 		player.set_state("idle");
@@ -413,9 +409,7 @@ export class state_gethit extends state {
 		this.player.speed = 0;
 	}
 	exit(): void {
-		setTimeout(() => {
-			this.player.invulnerable = false;
-		}, 500);
+		this.player.invulnerable = false;
 	}
 	animation_end(player: player) {
 		player.set_state("idle");

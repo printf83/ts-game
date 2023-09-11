@@ -5,6 +5,7 @@ import { cookie } from "./cookie.js";
 import { game } from "./game.js";
 import { MathFloor } from "./util.js";
 const DEBUG = false;
+
 const canvas_game = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const canvas_static = document.getElementById("guiCanvas") as HTMLCanvasElement;
 const canvas_value = document.getElementById("valueCanvas") as HTMLCanvasElement;
