@@ -122,6 +122,94 @@ export const ASSET = {
 </svg>`,
 	},
 };
+export const ASSET_SIZE = {
+	bg1: {
+		layer1: 88900,
+		layer2: 89900,
+		layer3: 112000,
+		layer4: 102000,
+		layer5: 18000,
+	},
+	bg2: {
+		layer1: 19300,
+		layer2: 42300,
+		layer3: 63200,
+		layer4: 55500,
+		layer5: 95800,
+	},
+	ctl: {
+		action: 246,
+		down: 286,
+		full_screen: 519,
+		icon: 604,
+		icon_png: 984,
+		info: 451,
+		left: 288,
+		life_icon_inactive: 538,
+		life_icon: 538,
+		life_icon_inactive_png: 5060,
+		life_icon_png: 791,
+		normal_screen: 518,
+		pause: 243,
+		power_icon_inactive: 277,
+		power_icon: 277,
+		power_icon_inactive_png: 4950,
+		power_icon_png: 753,
+		power1: 182,
+		power2: 277,
+		right: 288,
+		shield_icon_inactive: 521,
+		shield_icon: 521,
+		shield_icon_inactive_png: 5350,
+		shield_icon_png: 1040,
+		stopwatch_icon_inactive: 453,
+		stopwatch_icon: 453,
+		stopwatch_icon_inactive_png: 5590,
+		stopwatch_icon_png: 978,
+		up: 288,
+	},
+	enemy: {
+		enemy1: 65500,
+		enemy2: 67600,
+		enemy3: 35100,
+		enemy4: 61200,
+		enemy5: 35600,
+		enemy6: 65600,
+		enemy7: 54400,
+		enemy8: 77600,
+		enemy9: 17300,
+		enemy10: 29200,
+		enemy11: 13500,
+	},
+	font: {
+		Creepster_eot: 61400,
+		Creepster_svg: 250000,
+		Creepster_ttf: 59900,
+		Creepster_woff: 33900,
+		Creepster_woff2: 29100,
+	},
+	boom: 72200,
+	boom_wav: 318000,
+	fire: 38200,
+	player: 1760000,
+	svg: {
+		down: 286,
+		full_screen: 519,
+		trophy: 604,
+		info: 452,
+		left: 288,
+		life: 539,
+		normal_screen: 518,
+		pause: 243,
+		record: 182,
+		lightning: 277,
+		right: 288,
+		shield: 521,
+		start: 251,
+		stopwatch: 453,
+		up: 288,
+	},
+};
 
 //sound
 const asset_sound_data: { [key: string]: HTMLAudioElement } = {};
@@ -149,22 +237,22 @@ const load_asset_sound = (url: string, callback: Function) => {
 	}
 };
 const do_load_sound = (
-	sound_list: string[],
+	sound_list: { url: string; size: number }[],
 	index: number,
 	onchange: Function,
 	callback: Function
 ) => {
 	if (index < sound_list.length) {
-		load_asset_sound(sound_list[index]!, () => {
-			onchange();
+		load_asset_sound(sound_list[index]!.url, () => {
+			onchange(sound_list[index]!.size);
 			do_load_sound(sound_list, index + 1, onchange, callback);
 		});
 	} else {
 		callback();
 	}
 };
-export const LOAD_ALL_SOUND_ASSET = (onchange: Function, callback: Function) => {
-	do_load_sound([ASSET.boom_wav], 0, onchange, callback);
+const load_all_sound_asset = (onchange: Function, callback: Function) => {
+	do_load_sound([{ url: ASSET.boom_wav, size: ASSET_SIZE.boom_wav }], 0, onchange, callback);
 };
 
 //image
@@ -183,52 +271,66 @@ const load_asset_img = (url: string, callback: Function) => {
 		img.src = url;
 	}
 };
-const do_load_img = (img_list: string[], index: number, onchange: Function, callback: Function) => {
+const do_load_img = (
+	img_list: { url: string; size: number }[],
+	index: number,
+	onchange: Function,
+	callback: Function
+) => {
 	if (index < img_list.length) {
-		load_asset_img(img_list[index]!, () => {
-			onchange();
+		load_asset_img(img_list[index]!.url, () => {
+			onchange(img_list[index]!.size);
 			do_load_img(img_list, index + 1, onchange, callback);
 		});
 	} else {
 		callback();
 	}
 };
-export const LOAD_ALL_IMG_ASSET = (onchange: Function, callback: Function) => {
+const load_all_img_asset = (onchange: Function, callback: Function) => {
 	do_load_img(
 		[
-			ASSET.bg1.layer1,
-			ASSET.bg1.layer2,
-			ASSET.bg1.layer3,
-			ASSET.bg1.layer4,
-			ASSET.bg1.layer5,
-			ASSET.bg2.layer1,
-			ASSET.bg2.layer2,
-			ASSET.bg2.layer3,
-			ASSET.bg2.layer4,
-			ASSET.bg2.layer5,
-			ASSET.ctl.icon_png,
-			ASSET.ctl.life_icon_png,
-			ASSET.ctl.power_icon_png,
-			ASSET.ctl.shield_icon_png,
-			ASSET.ctl.stopwatch_icon_png,
-			ASSET.ctl.life_icon_inactive_png,
-			ASSET.ctl.power_icon_inactive_png,
-			ASSET.ctl.shield_icon_inactive_png,
-			ASSET.ctl.stopwatch_icon_inactive_png,
-			ASSET.enemy.enemy1,
-			ASSET.enemy.enemy2,
-			ASSET.enemy.enemy3,
-			ASSET.enemy.enemy4,
-			ASSET.enemy.enemy5,
-			ASSET.enemy.enemy6,
-			ASSET.enemy.enemy7,
-			ASSET.enemy.enemy8,
-			ASSET.enemy.enemy9,
-			ASSET.enemy.enemy10,
-			ASSET.enemy.enemy11,
-			ASSET.boom,
-			ASSET.fire,
-			ASSET.player,
+			{ url: ASSET.bg1.layer1, size: ASSET_SIZE.bg1.layer1 },
+			{ url: ASSET.bg1.layer2, size: ASSET_SIZE.bg1.layer2 },
+			{ url: ASSET.bg1.layer3, size: ASSET_SIZE.bg1.layer3 },
+			{ url: ASSET.bg1.layer4, size: ASSET_SIZE.bg1.layer4 },
+			{ url: ASSET.bg1.layer5, size: ASSET_SIZE.bg1.layer5 },
+			{ url: ASSET.bg2.layer1, size: ASSET_SIZE.bg2.layer1 },
+			{ url: ASSET.bg2.layer2, size: ASSET_SIZE.bg2.layer2 },
+			{ url: ASSET.bg2.layer3, size: ASSET_SIZE.bg2.layer3 },
+			{ url: ASSET.bg2.layer4, size: ASSET_SIZE.bg2.layer4 },
+			{ url: ASSET.bg2.layer5, size: ASSET_SIZE.bg2.layer5 },
+			{ url: ASSET.ctl.icon_png, size: ASSET_SIZE.ctl.icon_png },
+			{ url: ASSET.ctl.life_icon_png, size: ASSET_SIZE.ctl.life_icon_png },
+			{ url: ASSET.ctl.power_icon_png, size: ASSET_SIZE.ctl.power_icon_png },
+			{ url: ASSET.ctl.shield_icon_png, size: ASSET_SIZE.ctl.shield_icon_png },
+			{ url: ASSET.ctl.stopwatch_icon_png, size: ASSET_SIZE.ctl.stopwatch_icon_png },
+			{ url: ASSET.ctl.life_icon_inactive_png, size: ASSET_SIZE.ctl.life_icon_inactive_png },
+			{
+				url: ASSET.ctl.power_icon_inactive_png,
+				size: ASSET_SIZE.ctl.power_icon_inactive_png,
+			},
+			{
+				url: ASSET.ctl.shield_icon_inactive_png,
+				size: ASSET_SIZE.ctl.shield_icon_inactive_png,
+			},
+			{
+				url: ASSET.ctl.stopwatch_icon_inactive_png,
+				size: ASSET_SIZE.ctl.stopwatch_icon_inactive_png,
+			},
+			{ url: ASSET.enemy.enemy1, size: ASSET_SIZE.enemy.enemy1 },
+			{ url: ASSET.enemy.enemy2, size: ASSET_SIZE.enemy.enemy2 },
+			{ url: ASSET.enemy.enemy3, size: ASSET_SIZE.enemy.enemy3 },
+			{ url: ASSET.enemy.enemy4, size: ASSET_SIZE.enemy.enemy4 },
+			{ url: ASSET.enemy.enemy5, size: ASSET_SIZE.enemy.enemy5 },
+			{ url: ASSET.enemy.enemy6, size: ASSET_SIZE.enemy.enemy6 },
+			{ url: ASSET.enemy.enemy7, size: ASSET_SIZE.enemy.enemy7 },
+			{ url: ASSET.enemy.enemy8, size: ASSET_SIZE.enemy.enemy8 },
+			{ url: ASSET.enemy.enemy9, size: ASSET_SIZE.enemy.enemy9 },
+			{ url: ASSET.enemy.enemy10, size: ASSET_SIZE.enemy.enemy10 },
+			{ url: ASSET.enemy.enemy11, size: ASSET_SIZE.enemy.enemy11 },
+			{ url: ASSET.boom, size: ASSET_SIZE.boom },
+			{ url: ASSET.fire, size: ASSET_SIZE.fire },
+			{ url: ASSET.player, size: ASSET_SIZE.player },
 		],
 		0,
 		onchange,
@@ -239,8 +341,8 @@ export const LOAD_ALL_IMG_ASSET = (onchange: Function, callback: Function) => {
 //svg
 type svg_key = keyof typeof ASSET.svg;
 const asset_svg_data: { [key: string]: HTMLImageElement } = {};
-const load_asset_svg = (key: svg_key, color: string, callback: Function) => {
-	const svg = ASSET.svg[key].replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
+const load_asset_svg = (url: string, color: string, callback: Function) => {
+	const svg = url.replace(/fill\=\"currentColor\"/g, `fill="${color}"`);
 	const data = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 	const data_str = data.replace(/[\W_]+/g, "_");
 
@@ -257,14 +359,14 @@ const load_asset_svg = (key: svg_key, color: string, callback: Function) => {
 	}
 };
 const do_load_svg = (
-	svg_list: { key: svg_key; color: string }[],
+	svg_list: { url: string; size: number; color: string }[],
 	index: number,
 	onchange: Function,
 	callback: Function
 ) => {
 	if (index < svg_list.length) {
-		load_asset_svg(svg_list[index]!.key, svg_list[index]!.color, () => {
-			onchange();
+		load_asset_svg(svg_list[index]!.url, svg_list[index]!.color, () => {
+			onchange(svg_list[index]!.size);
 			do_load_svg(svg_list, index + 1, onchange, callback);
 		});
 	} else {
@@ -272,37 +374,77 @@ const do_load_svg = (
 	}
 };
 
-export const LOAD_ALL_SVG_ASSET = (onchange: Function, callback: Function) => {
+const load_all_svg_asset = (onchange: Function, callback: Function) => {
 	do_load_svg(
 		[
-			{ key: "right", color: BTN_COLOR.normal_icon },
-			{ key: "down", color: BTN_COLOR.normal_icon },
-			{ key: "left", color: BTN_COLOR.normal_icon },
-			{ key: "up", color: BTN_COLOR.normal_icon },
-			{ key: "full_screen", color: BTN_COLOR.normal_icon },
-			{ key: "normal_screen", color: BTN_COLOR.normal_icon },
-			{ key: "lightning", color: BTN_COLOR.normal_icon },
-			{ key: "record", color: BTN_COLOR.normal_icon },
-			{ key: "pause", color: BTN_COLOR.normal_icon },
-			{ key: "start", color: BTN_COLOR.normal_icon },
-			{ key: "right", color: BTN_COLOR.click_icon },
-			{ key: "down", color: BTN_COLOR.click_icon },
-			{ key: "left", color: BTN_COLOR.click_icon },
-			{ key: "up", color: BTN_COLOR.click_icon },
-			{ key: "full_screen", color: BTN_COLOR.click_icon },
-			{ key: "normal_screen", color: BTN_COLOR.click_icon },
-			{ key: "lightning", color: BTN_COLOR.click_icon },
-			{ key: "record", color: BTN_COLOR.click_icon },
-			{ key: "pause", color: BTN_COLOR.click_icon },
-			{ key: "start", color: BTN_COLOR.click_icon },
-			{ key: "life", color: `rgb(${COLOR.red})` },
-			{ key: "lightning", color: `rgb(${COLOR.yellow})` },
-			{ key: "stopwatch", color: `rgb(${COLOR.blue})` },
-			{ key: "shield", color: `rgb(${COLOR.green})` },
-			{ key: "life", color: `rgb(${COLOR.medium})` },
-			{ key: "lightning", color: `rgb(${COLOR.medium})` },
-			{ key: "stopwatch", color: `rgb(${COLOR.medium})` },
-			{ key: "shield", color: `rgb(${COLOR.medium})` },
+			{ url: ASSET.svg.right, size: ASSET_SIZE.svg.right, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.down, size: ASSET_SIZE.svg.down, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.left, size: ASSET_SIZE.svg.left, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.up, size: ASSET_SIZE.svg.up, color: BTN_COLOR.normal_icon },
+			{
+				url: ASSET.svg.full_screen,
+				size: ASSET_SIZE.svg.full_screen,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				url: ASSET.svg.normal_screen,
+				size: ASSET_SIZE.svg.normal_screen,
+				color: BTN_COLOR.normal_icon,
+			},
+			{
+				url: ASSET.svg.lightning,
+				size: ASSET_SIZE.svg.lightning,
+				color: BTN_COLOR.normal_icon,
+			},
+			{ url: ASSET.svg.record, size: ASSET_SIZE.svg.record, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.pause, size: ASSET_SIZE.svg.pause, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.start, size: ASSET_SIZE.svg.start, color: BTN_COLOR.normal_icon },
+			{ url: ASSET.svg.right, size: ASSET_SIZE.svg.right, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.down, size: ASSET_SIZE.svg.down, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.left, size: ASSET_SIZE.svg.left, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.up, size: ASSET_SIZE.svg.up, color: BTN_COLOR.click_icon },
+			{
+				url: ASSET.svg.full_screen,
+				size: ASSET_SIZE.svg.full_screen,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				url: ASSET.svg.normal_screen,
+				size: ASSET_SIZE.svg.normal_screen,
+				color: BTN_COLOR.click_icon,
+			},
+			{
+				url: ASSET.svg.lightning,
+				size: ASSET_SIZE.svg.lightning,
+				color: BTN_COLOR.click_icon,
+			},
+			{ url: ASSET.svg.record, size: ASSET_SIZE.svg.record, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.pause, size: ASSET_SIZE.svg.pause, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.start, size: ASSET_SIZE.svg.start, color: BTN_COLOR.click_icon },
+			{ url: ASSET.svg.life, size: ASSET_SIZE.svg.life, color: `rgb(${COLOR.red})` },
+			{
+				url: ASSET.svg.lightning,
+				size: ASSET_SIZE.svg.lightning,
+				color: `rgb(${COLOR.yellow})`,
+			},
+			{
+				url: ASSET.svg.stopwatch,
+				size: ASSET_SIZE.svg.stopwatch,
+				color: `rgb(${COLOR.blue})`,
+			},
+			{ url: ASSET.svg.shield, size: ASSET_SIZE.svg.shield, color: `rgb(${COLOR.green})` },
+			{ url: ASSET.svg.life, size: ASSET_SIZE.svg.life, color: `rgb(${COLOR.medium})` },
+			{
+				url: ASSET.svg.lightning,
+				size: ASSET_SIZE.svg.lightning,
+				color: `rgb(${COLOR.medium})`,
+			},
+			{
+				url: ASSET.svg.stopwatch,
+				size: ASSET_SIZE.svg.stopwatch,
+				color: `rgb(${COLOR.medium})`,
+			},
+			{ url: ASSET.svg.shield, size: ASSET_SIZE.svg.shield, color: `rgb(${COLOR.medium})` },
 		],
 		0,
 		onchange,
@@ -321,4 +463,14 @@ export const ASSETSVG = (key: svg_key, color: string) => {
 		console.warn("svg asset not loaded", svg);
 		return data;
 	}
+};
+
+export const LOAD_ALL_ASSET = (onchange: Function, callback: Function) => {
+	load_all_sound_asset(onchange, () => {
+		load_all_svg_asset(onchange, () => {
+			load_all_img_asset(onchange, () => {
+				callback();
+			});
+		});
+	});
 };
