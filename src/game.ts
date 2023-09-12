@@ -344,22 +344,29 @@ export class game {
 		this.draw_timer();
 		this.draw_score();
 		this.draw_level();
-		this.ctl.draw_pause();
+		// this.ctl.draw_pause();
 
-		if (isTouchDevice() || this.debug) {
-			this.ctl.draw_control();
-			this.ctl.draw_arrow();
-		}
+		// if (isTouchDevice() || this.debug) {
+		// 	this.ctl.draw_control();
+		// 	this.ctl.draw_arrow();
+		// }
 
 		this.check_fps(24, 0, this.CURRENT_ANIMATION_ID, (timestamp, animation_id) => {
 			this.game_over = false;
 			this.game_timeout = false;
 			this.game_pause = false;
 
+			this.ctl.clear_control();
+			this.ctl.clear_arrow();
+			this.ctl.draw_start();
+
 			this.clean_ctx_value_message();
 			this.animate(timestamp, animation_id);
 
 			this.game_ready = true;
+
+			// this.ctl.clear_control();
+			// this.ctl.clear_arrow();
 		});
 	}
 
