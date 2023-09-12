@@ -287,7 +287,7 @@ export class state_sit extends state {
 			input.last_key === "PRESS left"
 		)
 			this.player.set_state("idle");
-		if (input.last_key === "PRESS left") this.player.set_state("run");
+		if (input.last_key === "PRESS right") this.player.set_state("run");
 	}
 }
 export class state_roll extends state {

@@ -1,9 +1,13 @@
 export class input {
 	key_filter = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Control", "Enter"];
 
+	debug: boolean;
 	last_key: string;
 
-	constructor() {
+	constructor(opt: { debug?: boolean }) {
+		opt.debug ??= false;
+
+		this.debug = opt.debug;
 		this.last_key = "";
 
 		window.addEventListener("keydown", (e) => {
@@ -19,7 +23,9 @@ export class input {
 				if (e.key === "Control") this.last_key = "PRESS control";
 				if (e.key === "Enter") this.last_key = "PRESS enter";
 
-				// console.log(this.last_key);
+				if (this.debug) console.log(this.last_key);
+			} else {
+				if (this.debug) console.warn(e.key);
 			}
 		});
 
@@ -36,7 +42,7 @@ export class input {
 				if (e.key === "Control") this.last_key = "RELEASE control";
 				if (e.key === "Enter") this.last_key = "RELEASE enter";
 
-				// console.log(this.last_key);
+				if (this.debug) console.log(this.last_key);
 			}
 		});
 	}

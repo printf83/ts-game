@@ -159,7 +159,7 @@ export class game {
 		opt.debug ??= false;
 		this.debug = opt.debug;
 
-		this.input = new input();
+		this.input = new input({ debug: this.debug });
 		this.ctl = new control({
 			game: this,
 			canvas_control: this.canvas_control,
@@ -734,6 +734,8 @@ export class game {
 
 		//update game timeout
 		this.progress_timer_index = MathFloor((this.progress_timer - timestamp) * 0.001);
+		if (this.progress_timer_index > 120) this.progress_timer_index = 120;
+
 		if (this.progress_timer_index <= 0) {
 			this.ctl.clear_control();
 			this.ctl.clear_arrow();

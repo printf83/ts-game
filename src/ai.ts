@@ -37,9 +37,11 @@ export class ai {
 		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
 		if (this.state_check) {
-			this.detect_player();
-			this.detect_enemy();
-			this.detect_state();
+			if (!this.is_attack_enemy) {
+				this.detect_player();
+				this.detect_enemy();
+				this.detect_state();
+			}
 
 			requestIdleCallback(() => {
 				this.check();
@@ -47,9 +49,33 @@ export class ai {
 		}
 	}
 
+	is_detect_state: boolean = false;
 	detect_state() {
-		if (this.game.game_up || this.game.game_ready || this.game.game_pause) {
-			this.press_key("Enter");
+		if (!this.is_detect_state) {
+			this.is_detect_state = true;
+
+			if (this.game.game_up || this.game.game_ready || this.game.game_pause) {
+				this.press_key("Enter", 100, () => {
+					setTimeout(() => {
+						requestIdleCallback(() => {
+							this.is_detect_state = false;
+						});
+					}, 1000);
+				});
+			} else {
+				if (this.game.player.current_state?.current_state === "idle") {
+					this.press_key("ArrowRight");
+				} else if (
+					this.game.player.current_state?.current_state === "sit" &&
+					this.game.player.power >= 100
+				) {
+					this.press_key("ArrowRight");
+				}
+
+				requestIdleCallback(() => {
+					this.is_detect_state = false;
+				});
+			}
 		}
 	}
 
@@ -69,57 +95,87 @@ export class ai {
 		this.ctx.restore();
 	}
 
+	calc_distance(player: player, enemy: baseEnemy) {
+		const dx = enemy.collision_x - player.collision_x;
+		const dy = enemy.collision_y - player.collision_y;
+
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
 	detect_enemy() {
-		this.ctx.save();
+		let nearest_enemy: baseEnemy | null = null;
+		let nearest_distance = Number.MAX_VALUE;
 
 		this.game.enemy_list.forEach((i) => {
-			const is_near = this.is_emeny_near(this.game.player, i);
+			const distance = this.calc_distance(this.game.player, i);
+
+			const is_near =
+				distance <
+				i.width * i.collision_scale +
+					this.game.player.width * this.game.player.collision_scale +
+					200;
+
+			if (is_near) {
+				if (distance < nearest_distance) {
+					nearest_enemy = i;
+					nearest_distance = distance;
+				}
+			}
+
+			this.ctx.save();
 
 			this.ctx.fillStyle = is_near ? "red" : "yellow";
 
 			this.ctx.beginPath();
 			this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
 			this.ctx.fill();
-
-			if (is_near) {
-				this.attack_enemy(this.game.player, i);
-			}
+			this.ctx.restore();
 		});
 
-		this.ctx.restore();
+		if (nearest_enemy) {
+			this.attack_enemy(this.game.player, nearest_enemy);
+		}
 	}
 
-	is_emeny_near(player: player, enemy: baseEnemy) {
-		const dx = enemy.collision_x - player.collision_x;
-		const dy = enemy.collision_y - player.collision_y;
-
-		const distance = Math.sqrt(dx * dx + dy * dy);
+	is_enemy_near(player: player, enemy: baseEnemy) {
+		const distance = this.calc_distance(player, enemy);
 		return (
 			distance <
-			enemy.width * enemy.collision_scale + player.width * player.collision_scale + 200
+			enemy.width * enemy.collision_scale + player.width * player.collision_scale + 300
 		);
 	}
 
-	is_attack: boolean = false;
-	attack_enemy(player: player, _enemy: baseEnemy) {
-		if (!this.is_attack) {
+	is_enemy_top(player: player, enemy: baseEnemy) {
+		return enemy.x + enemy.height <= player.x;
+	}
+
+	is_attack_enemy: boolean = false;
+	attack_enemy(player: player, enemy: baseEnemy) {
+		if (!this.is_attack_enemy) {
+			this.is_attack_enemy = true;
+
 			if (player.power > 10) {
-				this.is_attack = true;
-				this.press_key("Control", 100, () => {
-					this.is_attack = false;
-				});
+				if (this.is_enemy_top(player, enemy)) {
+					console.log("top");
+					this.press_key("ArrowUp", 50, () => {
+						this.press_key("ArrowUp", 50, () => {
+							this.press_key("Control", 300, () => {
+								this.is_attack_enemy = false;
+							});
+						});
+					});
+				} else {
+					console.log("front");
+					this.press_key("Control", 100, () => {
+						this.is_attack_enemy = false;
+					});
+				}
 			} else {
-				this.is_attack = true;
 				this.press_key("ArrowDown", 3000, () => {
 					this.press_key("ArrowRight", 100, () => {
-						this.is_attack = false;
+						this.is_attack_enemy = false;
 					});
 				});
-			}
-		} else {
-			if (player.power >= 100) {
-				this.release_key("ArrowDown");
-				this.is_attack = false;
 			}
 		}
 	}
