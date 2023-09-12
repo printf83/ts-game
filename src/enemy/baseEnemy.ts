@@ -1,6 +1,7 @@
-import { COLOR, MathFloor, MathPI2, genUID } from "../util.js";
+import { MathFloor, MathPI2, genUID } from "../util.js";
 import { baseAnimation } from "../baseAnimation.js";
 import { player } from "../player.js";
+import { COLOR } from "../asset.js";
 
 export class baseEnemy extends baseAnimation {
 	debug: boolean = false;

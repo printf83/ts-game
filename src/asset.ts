@@ -1,5 +1,25 @@
-import { BTN_COLOR } from "./control.js";
-import { COLOR } from "./util.js";
+import { DPI } from "./util.js";
+
+export const COLOR = {
+	red: "255,36,0",
+	yellow: "255,215,0",
+	green: "42, 170, 138",
+	blue: "0, 150, 255",
+	light: "255, 255, 255",
+	medium: "125, 125, 125",
+	dark: "50, 50, 50",
+};
+
+export const BTN_COLOR = {
+	normal: `rgba(${COLOR.dark}, 0.5)`,
+	normal_icon: `rgba(${COLOR.dark}, 1)`,
+	click: `rgba(${COLOR.blue}, 0.5)`,
+	click_icon: `rgba(${COLOR.blue}, 1)`,
+};
+
+export const BTN_SIZE = 35 * DPI;
+export const BTN_PADDING = 20 * DPI;
+export const BTN_MARGIN = 30;
 
 export const ASSET = {
 	bg1: {
@@ -457,61 +477,61 @@ const load_all_svg_asset = (onchange: Function, callback: Function) => {
 	do_load_svg(
 		[
 			{
-				name: "ASSET.svg.right",
+				name: "ASSET.svg.right (normal)",
 				url: ASSET.svg.right,
 				size: ASSET_SIZE.svg.right,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.down",
+				name: "ASSET.svg.down (normal)",
 				url: ASSET.svg.down,
 				size: ASSET_SIZE.svg.down,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.left",
+				name: "ASSET.svg.left (normal)",
 				url: ASSET.svg.left,
 				size: ASSET_SIZE.svg.left,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.up",
+				name: "ASSET.svg.up (normal)",
 				url: ASSET.svg.up,
 				size: ASSET_SIZE.svg.up,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.full_screen",
+				name: "ASSET.svg.full_screen (normal)",
 				url: ASSET.svg.full_screen,
 				size: ASSET_SIZE.svg.full_screen,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.normal_screen",
+				name: "ASSET.svg.normal_screen (normal)",
 				url: ASSET.svg.normal_screen,
 				size: ASSET_SIZE.svg.normal_screen,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.lightning",
+				name: "ASSET.svg.lightning (normal)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.record",
+				name: "ASSET.svg.record (normal)",
 				url: ASSET.svg.record,
 				size: ASSET_SIZE.svg.record,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.pause",
+				name: "ASSET.svg.pause (normal)",
 				url: ASSET.svg.pause,
 				size: ASSET_SIZE.svg.pause,
 				color: BTN_COLOR.normal_icon,
 			},
 			{
-				name: "ASSET.svg.start",
+				name: "ASSET.svg.start (normal)",
 				url: ASSET.svg.start,
 				size: ASSET_SIZE.svg.start,
 				color: BTN_COLOR.normal_icon,
@@ -601,25 +621,25 @@ const load_all_svg_asset = (onchange: Function, callback: Function) => {
 				color: `rgb(${COLOR.green})`,
 			},
 			{
-				name: "ASSET.svg.life (gray)",
+				name: "ASSET.svg.life (medium)",
 				url: ASSET.svg.life,
 				size: ASSET_SIZE.svg.life,
 				color: `rgb(${COLOR.medium})`,
 			},
 			{
-				name: "ASSET.svg.lightning (gray)",
+				name: "ASSET.svg.lightning (medium)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
 				color: `rgb(${COLOR.medium})`,
 			},
 			{
-				name: "ASSET.svg.stopwatch (gray)",
+				name: "ASSET.svg.stopwatch (medium)",
 				url: ASSET.svg.stopwatch,
 				size: ASSET_SIZE.svg.stopwatch,
 				color: `rgb(${COLOR.medium})`,
 			},
 			{
-				name: "ASSET.svg.shield (gray)",
+				name: "ASSET.svg.shield (medium)",
 				url: ASSET.svg.shield,
 				size: ASSET_SIZE.svg.shield,
 				color: `rgb(${COLOR.medium})`,

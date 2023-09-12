@@ -18,7 +18,6 @@ import { fire } from "./fire.js";
 import { player } from "./player.js";
 import { progress } from "./progress.js";
 import {
-	COLOR,
 	MathFloor,
 	MathRandom,
 	clearArray,
@@ -34,6 +33,7 @@ import { score } from "./score.js";
 import { dust } from "./dust.js";
 import { control } from "./control.js";
 import { gui } from "./gui.js";
+import { COLOR } from "./asset.js";
 
 const enemyDB = {
 	enemy1: enemy1,

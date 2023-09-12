@@ -1,7 +1,8 @@
-import { COLOR, MathFloor, draw_text } from "./util.js";
+import { COLOR } from "./asset.js";
+import { MathFloor, draw_text } from "./util.js";
 
 export class score {
-	ctx: CanvasRenderingContext2D
+	ctx: CanvasRenderingContext2D;
 	img: ImageBitmap;
 
 	text: string;
@@ -15,7 +16,7 @@ export class score {
 	mark_delete: boolean;
 	timer: number;
 	constructor(opt: {
-		ctx: CanvasRenderingContext2D
+		ctx: CanvasRenderingContext2D;
 		text: string;
 		value: number;
 		x: number;

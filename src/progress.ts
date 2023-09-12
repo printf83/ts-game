@@ -1,4 +1,5 @@
-import { COLOR, MathFloor } from "./util.js";
+import { COLOR } from "./asset.js";
+import { MathFloor } from "./util.js";
 
 export class progress {
 	ctx: CanvasRenderingContext2D;
@@ -40,12 +41,12 @@ export class progress {
 		radius?: number;
 		padding?: number;
 	}) {
-		opt.shadow_color ??= "#555555";
+		opt.shadow_color ??= `rgb(${COLOR.dark})`;
 		opt.shadow_blur ??= 1;
-		opt.bg_color ??= "#FFFFFF";
-		opt.bar_color ??= "#555555";
-		opt.radius ??= 5;
-		opt.padding ??= 2;
+		opt.bg_color ??= `rgb(${COLOR.light})`;
+		opt.bar_color ??= `rgb(${COLOR.medium})`;
+		opt.radius ??= 2;
+		opt.padding ??= 4;
 		opt.min ??= 0;
 		opt.max ??= 1000;
 		opt.height ??= 20;

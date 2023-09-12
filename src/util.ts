@@ -1,3 +1,5 @@
+import { COLOR } from "./asset.js";
+
 export const MathPI = Math.PI;
 export const MathPI2 = MathPI * 2;
 export const MathFloor = (n: number) => (n + (n < 0 ? -1 : 0)) >> 0;
@@ -17,16 +19,6 @@ export const genUID = () => {
 	return Array(3)
 		.fill(0)
 		.map((_i) => MathFloor(MathRandom() * 255));
-};
-
-export const COLOR = {
-	red: "255,36,0",
-	yellow: "255,215,0",
-	green: "42, 170, 138",
-	blue: "0, 150, 255",
-	light: "255, 255, 255",
-	medium: "128, 128, 128",
-	dark: "0, 0, 0",
 };
 
 export const isTouchDevice = () => "ontouchstart" in window || navigator.maxTouchPoints > 0;

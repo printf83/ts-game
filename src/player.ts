@@ -1,4 +1,4 @@
-import { ASSET, ASSETIMG, ASSETSVG } from "./asset.js";
+import { ASSET, ASSETIMG, ASSETSVG, COLOR } from "./asset.js";
 import { baseAnimation } from "./baseAnimation.js";
 import { game } from "./game.js";
 import { input } from "./input.js";
@@ -19,7 +19,7 @@ import {
 	state_sit,
 	state_type,
 } from "./state.js";
-import { COLOR, MathFloor, MathPI2 } from "./util.js";
+import { MathFloor, MathPI2 } from "./util.js";
 
 export class player extends baseAnimation {
 	debug: boolean = false;

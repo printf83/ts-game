@@ -1,5 +1,5 @@
-import { ASSET, ASSETIMG, ASSETSVG } from "./asset.js";
-import { COLOR, clear_text, draw_text } from "./util.js";
+import { ASSET, ASSETIMG, ASSETSVG, COLOR } from "./asset.js";
+import { clear_text, draw_text } from "./util.js";
 
 class box {
 	ctx: CanvasRenderingContext2D;
@@ -114,13 +114,8 @@ class progress {
 	height: number;
 
 	bg_color: string;
-	shadow_color?: string;
-	shadow_blur?: number;
-
-	shadow_x: number;
-	shadow_y: number;
-	shadow_width: number;
-	shadow_height: number;
+	border_color?: string;
+	border_size?: number;
 
 	radius: number;
 
@@ -131,15 +126,15 @@ class progress {
 		width: number;
 		height?: number;
 		bg_color?: string;
-		shadow_color?: string;
-		shadow_blur?: number;
+		border_color?: string;
+		border_size?: number;
 		radius?: number;
 		debug?: boolean;
 	}) {
 		opt.height ??= 20;
-		opt.shadow_color ??= "#555555";
-		opt.shadow_blur ??= 1;
-		opt.bg_color ??= "#FFFFFF";
+		opt.border_color ??= `rgba(${COLOR.dark}, 0.8)`;
+		opt.border_size ??= 2;
+		opt.bg_color ??= `rgba(${COLOR.light}, 0.8)`;
 		opt.radius ??= 5;
 		opt.debug ??= false;
 
@@ -154,31 +149,26 @@ class progress {
 
 		this.radius = opt.radius;
 		this.bg_color = opt.bg_color;
-		this.shadow_color = opt.shadow_color;
-		this.shadow_blur = opt.shadow_blur;
-
-		this.shadow_x = this.x - this.shadow_blur;
-		this.shadow_y = this.y - this.shadow_blur;
-		this.shadow_width = this.width + this.shadow_blur * 2;
-		this.shadow_height = this.height + this.shadow_blur * 2;
+		this.border_color = opt.border_color;
+		this.border_size = opt.border_size;
 	}
 	clear() {
-		if (this.shadow_color && this.shadow_blur)
+		if (this.border_color && this.border_size)
 			this.ctx.clearRect(
-				this.shadow_x - 2,
-				this.shadow_y - 2,
-				this.shadow_width + 4,
-				this.shadow_height + 4
+				this.x - this.border_size,
+				this.y - this.border_size,
+				this.width + this.border_size * 2,
+				this.height + this.border_size * 2
 			);
 		else this.ctx.clearRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 
 		if (this.debug) {
-			if (this.shadow_color && this.shadow_blur)
+			if (this.border_color && this.border_size)
 				this.ctx.strokeRect(
-					this.shadow_x - 2,
-					this.shadow_y - 2,
-					this.shadow_width + 4,
-					this.shadow_height + 4
+					this.x - this.border_size,
+					this.y - this.border_size,
+					this.width + this.border_size * 2,
+					this.height + this.border_size * 2
 				);
 			else this.ctx.strokeRect(this.x - 1, this.y - 1, this.width + 2, this.height + 2);
 		}
@@ -187,37 +177,20 @@ class progress {
 		this.clear();
 
 		this.ctx.save();
+		this.ctx.beginPath();
 
-		if (this.radius) {
-			if (this.shadow_color && this.shadow_blur) {
-				this.ctx.beginPath();
-				this.ctx.fillStyle = this.shadow_color;
-				this.ctx.roundRect(
-					this.shadow_x,
-					this.shadow_y,
-					this.shadow_width,
-					this.shadow_height,
-					[this.radius]
-				);
-				this.ctx.fill();
-			}
-			this.ctx.beginPath();
-			this.ctx.fillStyle = this.bg_color;
-			this.ctx.roundRect(this.x, this.y, this.width, this.height, [this.radius]);
-			this.ctx.fill();
-		} else {
-			if (this.shadow_color && this.shadow_blur) {
-				this.ctx.fillStyle = this.shadow_color;
-				this.ctx.fillRect(
-					this.shadow_x,
-					this.shadow_y,
-					this.shadow_width,
-					this.shadow_height
-				);
-			}
-			this.ctx.fillStyle = this.bg_color;
-			this.ctx.fillRect(this.x, this.y, this.width, this.height);
+		if (this.border_color && this.border_size) {
+			this.ctx.strokeStyle = this.border_color;
+			this.ctx.lineWidth = this.border_size;
 		}
+
+		this.ctx.fillStyle = this.bg_color;
+
+		if (this.radius) this.ctx.roundRect(this.x, this.y, this.width, this.height, [this.radius]);
+		else this.ctx.fillRect(this.x, this.y, this.width, this.height);
+
+		this.ctx.fill();
+		if (this.border_color && this.border_size) this.ctx.stroke();
 
 		this.ctx.restore();
 	}

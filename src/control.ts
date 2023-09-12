@@ -1,17 +1,6 @@
-import { ASSETSVG } from "./asset.js";
+import { ASSETSVG, BTN_COLOR, BTN_MARGIN, BTN_PADDING, BTN_SIZE, COLOR } from "./asset.js";
 import { game } from "./game.js";
-import { MathPI2, DPI, genUID, COLOR, MathPI, isFullscreen } from "./util.js";
-
-const BTN_SIZE = 35 * DPI;
-const BTN_PADDING = 20 * DPI;
-const BTN_MARGIN = 30;
-
-export const BTN_COLOR = {
-	normal: `rgba(${COLOR.dark}, 0.1)`,
-	normal_icon: `rgba(${COLOR.dark}, 0.3)`,
-	click: `rgba(${COLOR.blue}, 0.5)`,
-	click_icon: `rgba(${COLOR.blue}, 0.5)`,
-};
+import { MathPI2, DPI, genUID, MathPI, isFullscreen } from "./util.js";
 
 class button {
 	debug: boolean;
