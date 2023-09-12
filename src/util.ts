@@ -21,6 +21,19 @@ export const genUID = () => {
 		.map((_i) => MathFloor(MathRandom() * 255));
 };
 
+export const getURLParam = (url: string) => {
+	const paramArr = url.slice(url.indexOf("?") + 1).split("&");
+	const params: { [key: string]: string } = {};
+
+	paramArr.map((param) => {
+		const [key, val] = param.split("=");
+		if (key && val) {
+			params[key] = decodeURIComponent(val);
+		}
+	});
+	return params;
+};
+
 export const isTouchDevice = () => "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
 export const isFullscreen = () => window.innerHeight === screen.height;

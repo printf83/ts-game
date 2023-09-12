@@ -4,8 +4,7 @@ import { ai } from "./ai.js";
 import { LOAD_ALL_ASSET } from "./asset.js";
 import { cookie } from "./cookie.js";
 import { game } from "./game.js";
-import { MathFloor } from "./util.js";
-const DEBUG = false;
+import { MathFloor, getURLParam } from "./util.js";
 
 const canvas_game = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const canvas_static = document.getElementById("guiCanvas") as HTMLCanvasElement;
@@ -37,6 +36,10 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 
 (function () {
 	window.addEventListener("load", () => {
+		const { debug, useai } = getURLParam(document.URL);
+		const DEBUG = debug === "true" ? true : false;
+		const AI = useai === "true" ? true : false;
+
 		LOAD_ALL_ASSET(LOAD_CHANGE, () => {
 			if (
 				canvas_game &&
@@ -67,7 +70,7 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 				} else {
 					canvas_mark.classList.add("hide");
 					canvas_pointer.classList.add("hide");
-					// canvas_ai.classList.add("hide");
+					canvas_ai.classList.add("hide");
 				}
 
 				canvas_game.addEventListener("game_up", (e) => {
@@ -86,23 +89,30 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 					canvas_control: canvas_control,
 					canvas_pointer: canvas_pointer,
 					canvas_mark: canvas_mark,
-
 					debug: DEBUG,
 				});
 
-				const a = new ai({ game: d, canvas: canvas_ai });
-
 				setTimeout(() => {
-					// console.log("game start");
 					const data = cookie.get("data");
 					if (data) {
 						d.game_start(JSON.parse(data));
 					} else {
-						d.game_start();
+						if (DEBUG) {
+							d.game_start({
+								game_level: 10,
+								game_score: 0,
+								player_life: 100,
+								player_power: 100,
+							});
+						} else {
+							d.game_start();
+						}
 					}
 
-					// if (DEBUG) a.start();
-					a.start();
+					if (AI) {
+						const a = new ai({ game: d, canvas: canvas_ai });
+						a.start();
+					}
 				}, 1000);
 
 				window.addEventListener("resize", () => {
