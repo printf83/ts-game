@@ -1,5 +1,6 @@
 //base on : https://www.youtube.com/watch?v=GFO_txvwK_c&t=13054s
 
+import { ai } from "./ai.js";
 import { LOAD_ALL_ASSET } from "./asset.js";
 import { cookie } from "./cookie.js";
 import { game } from "./game.js";
@@ -12,6 +13,7 @@ const canvas_value = document.getElementById("valueCanvas") as HTMLCanvasElement
 const canvas_control = document.getElementById("controlCanvas") as HTMLCanvasElement;
 const canvas_pointer = document.getElementById("pointerCanvas") as HTMLCanvasElement;
 const canvas_mark = document.getElementById("markerCanvas") as HTMLCanvasElement;
+const canvas_ai = document.getElementById("aiCanvas") as HTMLCanvasElement;
 
 const loading_text = document.getElementById("loading_text") as HTMLElement;
 const loading_counter = document.getElementById("loading_counter") as HTMLElement;
@@ -42,7 +44,8 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 				canvas_value &&
 				canvas_control &&
 				canvas_pointer &&
-				canvas_mark
+				canvas_mark &&
+				canvas_ai
 			) {
 				[
 					canvas_game,
@@ -51,6 +54,7 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 					canvas_control,
 					canvas_pointer,
 					canvas_mark,
+					canvas_ai,
 				].forEach((i) => {
 					i.width = 1300;
 					i.height = 700;
@@ -59,9 +63,11 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 				if (DEBUG) {
 					canvas_mark.classList.remove("hide");
 					canvas_pointer.classList.remove("hide");
+					canvas_ai.classList.remove("hide");
 				} else {
 					canvas_mark.classList.add("hide");
 					canvas_pointer.classList.add("hide");
+					// canvas_ai.classList.add("hide");
 				}
 
 				canvas_game.addEventListener("game_up", (e) => {
@@ -84,6 +90,8 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 					debug: DEBUG,
 				});
 
+				const a = new ai({ game: d, canvas: canvas_ai });
+
 				setTimeout(() => {
 					// console.log("game start");
 					const data = cookie.get("data");
@@ -92,6 +100,9 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 					} else {
 						d.game_start();
 					}
+
+					// if (DEBUG) a.start();
+					a.start();
 				}, 1000);
 
 				window.addEventListener("resize", () => {

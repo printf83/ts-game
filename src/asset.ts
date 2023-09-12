@@ -1,4 +1,4 @@
-import { DPI } from "./util.js";
+const DPI = window.devicePixelRatio;
 
 export const COLOR = {
 	red: "255,36,0",

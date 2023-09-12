@@ -105,7 +105,8 @@ GAME */
 #valueCanvas,
 #controlCanvas,
 #pointerCanvas,
-#markerCanvas {
+#markerCanvas,
+#aiCanvas {
     max-width: 100%;
     max-height: 100%;
     position: absolute;
@@ -121,11 +122,13 @@ GAME */
 }
 
 #markerCanvas,
-#pointerCanvas {
+#pointerCanvas,
+#aiCanvas {
     opacity: 0.5;
 }
 #markerCanvas.hide,
 #pointerCanvas.hide,
+#aiCanvas.hide,
 .hide {
     opacity: 0;
 }
