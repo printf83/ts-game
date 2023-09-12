@@ -26,9 +26,9 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 		)}% Complete`;
 	} else if (name && file_size) {
 		if (file_size > 1000000) {
-			loading_text.innerText = `Download ${(file_size / 1000000).toFixed(2)}Mb - ${name}`;
+			loading_text.innerText = `Download ${(file_size / 1000000).toFixed(2)}Mb : ${name}`;
 		} else {
-			loading_text.innerText = `Download ${(file_size / 1000).toFixed(2)}Kb - ${name}`;
+			loading_text.innerText = `Download ${(file_size / 1000).toFixed(2)}Kb : ${name}`;
 		}
 	}
 };

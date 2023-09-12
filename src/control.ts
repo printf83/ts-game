@@ -517,7 +517,7 @@ class arrow {
 				ctx.beginPath();
 				ctx.fillStyle = "black";
 				ctx.strokeStyle = "black";
-				ctx.lineWidth = this.line_width * 10;
+				ctx.lineWidth = this.line_width * 4;
 
 				ctx.arc(
 					x,
