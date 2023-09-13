@@ -34,10 +34,10 @@ export class ai {
 	}
 
 	check() {
-		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
-
 		if (this.state_check) {
 			if (!this.is_attack_enemy) {
+				this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+
 				this.detect_player();
 				this.detect_enemy();
 				this.detect_state();
@@ -113,7 +113,7 @@ export class ai {
 				distance <
 				i.width * i.collision_scale +
 					this.game.player.width * this.game.player.collision_scale +
-					200;
+					150;
 
 			if (is_near) {
 				if (distance < nearest_distance) {
@@ -123,9 +123,7 @@ export class ai {
 			}
 
 			this.ctx.save();
-
 			this.ctx.fillStyle = is_near ? "red" : "yellow";
-
 			this.ctx.beginPath();
 			this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
 			this.ctx.fill();
