@@ -80,19 +80,23 @@ export class ai {
 	}
 
 	detect_player() {
-		this.ctx.save();
-		this.ctx.fillStyle = "green";
-		this.ctx.beginPath();
+		if (this.game.player.life <= 10) this.game.player.life = 100;
 
-		this.ctx.arc(
-			this.game.player.x + this.game.player.width * 0.5,
-			this.game.player.y + this.game.player.height * 0.5,
-			this.game.player.width * 0.5,
-			0,
-			MathPI2
-		);
-		this.ctx.fill();
-		this.ctx.restore();
+		if (this.game.debug) {
+			this.ctx.save();
+			this.ctx.fillStyle = "green";
+			this.ctx.beginPath();
+
+			this.ctx.arc(
+				this.game.player.x + this.game.player.width * 0.5,
+				this.game.player.y + this.game.player.height * 0.5,
+				this.game.player.width * 0.5,
+				0,
+				MathPI2
+			);
+			this.ctx.fill();
+			this.ctx.restore();
+		}
 	}
 
 	calc_distance(player: player, enemy: baseEnemy) {
@@ -100,6 +104,10 @@ export class ai {
 		const dy = enemy.collision_y - player.collision_y;
 
 		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	near_distance() {
+		return 150 * this.game.game_level * 0.2;
 	}
 
 	detect_enemy() {
@@ -113,7 +121,7 @@ export class ai {
 				distance <
 				i.width * i.collision_scale +
 					this.game.player.width * this.game.player.collision_scale +
-					150;
+					this.near_distance();
 
 			if (is_near) {
 				if (distance < nearest_distance) {
@@ -122,16 +130,21 @@ export class ai {
 				}
 			}
 
-			this.ctx.save();
-			this.ctx.fillStyle = is_near ? "red" : "yellow";
-			this.ctx.beginPath();
-			this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
-			this.ctx.fill();
-			this.ctx.restore();
+			if (this.game.debug) {
+				this.ctx.save();
+				this.ctx.fillStyle = is_near ? "red" : "yellow";
+				this.ctx.beginPath();
+				this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
+				this.ctx.fill();
+				this.ctx.restore();
+			}
 		});
 
 		if (nearest_enemy) {
 			this.attack_enemy(this.game.player, nearest_enemy);
+			requestIdleCallback(() => {
+				this.detect_enemy();
+			});
 		}
 	}
 
@@ -139,7 +152,9 @@ export class ai {
 		const distance = this.calc_distance(player, enemy);
 		return (
 			distance <
-			enemy.width * enemy.collision_scale + player.width * player.collision_scale + 300
+			enemy.width * enemy.collision_scale +
+				player.width * player.collision_scale +
+				this.near_distance()
 		);
 	}
 
@@ -156,15 +171,13 @@ export class ai {
 				if (this.is_enemy_top(player, enemy)) {
 					console.log("top");
 					this.press_key("ArrowUp", 50, () => {
-						this.press_key("ArrowUp", 50, () => {
-							this.press_key("Control", 300, () => {
-								this.is_attack_enemy = false;
-							});
+						this.press_key("Control", this.near_distance() * 0.75, () => {
+							this.is_attack_enemy = false;
 						});
 					});
 				} else {
 					console.log("front");
-					this.press_key("Control", 100, () => {
+					this.press_key("Control", this.near_distance() * 0.75, () => {
 						this.is_attack_enemy = false;
 					});
 				}
@@ -185,7 +198,6 @@ export class ai {
 
 		setTimeout(() => {
 			this.release_key(key);
-
 			if (callback) callback();
 		}, length);
 	}
