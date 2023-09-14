@@ -35,10 +35,18 @@ export class shadow extends baseAnimation {
 		this.ground = opt.ground;
 	}
 
-	update() {
+	update(opt: {
+		delta_time: number;
+		onframechange?: (() => void) | undefined;
+		onframecomplete?: (() => void) | undefined;
+	}): void {
 		this.mark_delete = this.element.mark_delete;
 
-		this.x = this.element.x + this.element.width * 0.25;
-		this.y = this.ground - this.height * 0.25;
+		if (!this.mark_delete) {
+			this.x = this.element.x + this.element.width * 0.25;
+			this.y = this.ground - this.height * 0.25;
+
+			super.update(opt);
+		}
 	}
 }

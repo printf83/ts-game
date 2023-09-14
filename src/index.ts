@@ -23,7 +23,7 @@ const LOAD_CHANGE = (size_downloaded: number, name?: string, file_size?: number)
 		total_size_downloaded += size_downloaded;
 		// console.log(total_size_downloaded);
 		loading_counter.innerText = `${MathFloor(
-			(total_size_downloaded / 3462356) * 100
+			(total_size_downloaded / 3470156) * 100
 		)}% Complete`;
 	} else if (name && file_size) {
 		if (file_size > 1000000) {
