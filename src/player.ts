@@ -89,20 +89,14 @@ export class player extends baseAnimation {
 		this.game = opt.game;
 
 		this.img_life = ASSETSVG("life", `rgb(${COLOR.red})`);
-
 		this.img_power = ASSETSVG("lightning", `rgb(${COLOR.yellow})`);
-
 		this.img_stopwatch = ASSETSVG("stopwatch", `rgb(${COLOR.blue})`);
-
 		this.img_shield = ASSETSVG("shield", `rgb(${COLOR.green})`);
 
-		this.img_life_inactive = ASSETSVG("life", `rgb(${COLOR.medium})`);
-
-		this.img_power_inactive = ASSETSVG("lightning", `rgb(${COLOR.medium})`);
-
-		this.img_stopwatch_inactive = ASSETSVG("stopwatch", `rgb(${COLOR.medium})`);
-
-		this.img_shield_inactive = ASSETSVG("shield", `rgb(${COLOR.medium})`);
+		this.img_life_inactive = ASSETSVG("life", `rgb(${COLOR.light})`);
+		this.img_power_inactive = ASSETSVG("lightning", `rgb(${COLOR.light})`);
+		this.img_stopwatch_inactive = ASSETSVG("stopwatch", `rgb(${COLOR.light})`);
+		this.img_shield_inactive = ASSETSVG("shield", `rgb(${COLOR.light})`);
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;

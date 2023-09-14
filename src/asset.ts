@@ -11,8 +11,8 @@ export const COLOR = {
 };
 
 export const BTN_COLOR = {
-	normal: `rgba(${COLOR.dark}, 0.5)`,
-	normal_icon: `rgba(${COLOR.dark}, 1)`,
+	normal: `rgba(${COLOR.light}, 0.5)`,
+	normal_icon: `rgba(${COLOR.light}, 1)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
 	click_icon: `rgba(${COLOR.blue}, 1)`,
 };
@@ -91,6 +91,7 @@ export const ASSET = {
 	boom: "./res/boom.png",
 	boom_wav: "./res/boom.wav",
 	fire: "./res/fire.png",
+	shadow: "./res/shadow.png",
 	player: "./res/player.png",
 	svg: {
 		down: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -211,6 +212,7 @@ export const ASSET_SIZE = {
 	boom: 72200,
 	boom_wav: 318000,
 	fire: 38200,
+	shadow: 7800,
 	player: 1760000,
 	svg: {
 		down: 286,
@@ -359,6 +361,7 @@ const load_all_img_asset = (onchange: Function, callback: Function) => {
 			{ name: "ASSET.player", url: ASSET.player, size: ASSET_SIZE.player },
 			{ name: "ASSET.boom", url: ASSET.boom, size: ASSET_SIZE.boom },
 			{ name: "ASSET.fire", url: ASSET.fire, size: ASSET_SIZE.fire },
+			{ name: "ASSET.shadow", url: ASSET.shadow, size: ASSET_SIZE.shadow },
 			{ name: "ASSET.bg1.layer1", url: ASSET.bg1.layer1, size: ASSET_SIZE.bg1.layer1 },
 			{ name: "ASSET.bg1.layer2", url: ASSET.bg1.layer2, size: ASSET_SIZE.bg1.layer2 },
 			{ name: "ASSET.bg1.layer3", url: ASSET.bg1.layer3, size: ASSET_SIZE.bg1.layer3 },
@@ -621,28 +624,28 @@ const load_all_svg_asset = (onchange: Function, callback: Function) => {
 				color: `rgb(${COLOR.green})`,
 			},
 			{
-				name: "ASSET.svg.life (medium)",
+				name: "ASSET.svg.life (light)",
 				url: ASSET.svg.life,
 				size: ASSET_SIZE.svg.life,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.lightning (medium)",
+				name: "ASSET.svg.lightning (light)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.stopwatch (medium)",
+				name: "ASSET.svg.stopwatch (light)",
 				url: ASSET.svg.stopwatch,
 				size: ASSET_SIZE.svg.stopwatch,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.shield (medium)",
+				name: "ASSET.svg.shield (light)",
 				url: ASSET.svg.shield,
 				size: ASSET_SIZE.svg.shield,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 		],
 		0,

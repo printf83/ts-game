@@ -24,10 +24,7 @@ export class ai {
 
 	start() {
 		this.state_check = true;
-		requestIdleCallback(() => {
-			this.check();
-			window.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" }));
-		});
+		this.check();
 	}
 	pause() {
 		this.state_check = false;
@@ -39,7 +36,8 @@ export class ai {
 				this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
 
 				this.detect_player();
-				this.detect_enemy();
+				const nearest_enemy = this.detect_enemy(this.get_near_distance());
+				if (nearest_enemy) this.attack_enemy(this.game.player, nearest_enemy);
 				this.detect_state();
 			}
 
@@ -61,31 +59,25 @@ export class ai {
 				this.game.game_pause
 			) {
 				this.press_key("Enter", 100, () => {
-					setTimeout(() => {
-						requestIdleCallback(() => {
-							this.is_detect_state = false;
-						});
-					}, 1000);
+					this.is_detect_state = false;
 				});
 			} else {
 				if (this.game.player.current_state?.current_state === "idle") {
 					this.press_key("ArrowRight");
 				} else if (
 					this.game.player.current_state?.current_state === "sit" &&
-					this.game.player.power >= 100
+					this.game.player.power >= 100 &&
+					!this.is_attack_enemy
 				) {
 					this.press_key("ArrowRight");
 				}
 
-				requestIdleCallback(() => {
-					this.is_detect_state = false;
-				});
+				this.is_detect_state = false;
 			}
 		}
 	}
 
 	detect_player() {
-		if (this.game.player.life <= 10) this.game.player.life = 100;
 
 		if (this.game.debug) {
 			this.ctx.save();
@@ -111,61 +103,53 @@ export class ai {
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	near_distance() {
-		return 300 * this.game.game_level * 0.2;
-	}
+	detect_enemy(near_distance: number) {
+		let nearest_enemy: baseEnemy | null = null;
+		let nearest_distance = Number.MAX_VALUE;
 
-	detect_enemy() {
-		if (
-			!(
-				this.game.game_over ||
-				this.game.game_up ||
-				this.game.game_ready ||
-				this.game.game_pause
-			)
-		) {
-			let nearest_enemy: baseEnemy | null = null;
-			let nearest_distance = Number.MAX_VALUE;
+		this.game.enemy_list.forEach((i) => {
+			const distance = this.calc_distance(this.game.player, i);
 
-			this.game.enemy_list.forEach((i) => {
-				const distance = this.calc_distance(this.game.player, i);
+			const is_near =
+				distance <
+				i.width * i.collision_scale +
+					this.game.player.width * this.game.player.collision_scale +
+					near_distance;
 
-				const is_near =
-					distance <
-					i.width * i.collision_scale +
-						this.game.player.width * this.game.player.collision_scale +
-						this.near_distance();
-
-				if (is_near) {
-					if (distance < nearest_distance) {
-						nearest_enemy = i;
-						nearest_distance = distance;
-					}
+			if (is_near) {
+				if (distance < nearest_distance) {
+					nearest_enemy = i;
+					nearest_distance = distance;
 				}
+			}
 
-				if (this.game.debug) {
-					this.ctx.save();
-					this.ctx.fillStyle = is_near ? "red" : "yellow";
-					this.ctx.beginPath();
-					this.ctx.arc(
-						i.x + i.width * 0.5,
-						i.y + i.height * 0.5,
-						i.width * 0.5,
-						0,
-						MathPI2
-					);
-					this.ctx.fill();
-					this.ctx.restore();
-				}
-			});
+			// if (this.game.debug) {
+			// 	this.ctx.save();
+			// 	this.ctx.fillStyle = is_near ? "red" : "yellow";
+			// 	this.ctx.beginPath();
+			// 	this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
+			// 	this.ctx.fill();
+			// 	this.ctx.restore();
+			// }
+		});
 
-			if (nearest_enemy) {
-				this.attack_enemy(this.game.player, nearest_enemy);
-				requestIdleCallback(() => {
-					this.detect_enemy();
-				});
+		if (this.game.debug) {
+			if (nearest_enemy !== null) {
+				let i = nearest_enemy as baseEnemy;
+				this.ctx.save();
+				this.ctx.fillStyle = "red";
+				this.ctx.beginPath();
+				this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
+				this.ctx.fill();
+				this.ctx.restore();
 			}
 		}
+
+		return nearest_enemy;
+	}
+
+	get_near_distance() {
+		return 200 + this.game.game_level * 10;
 	}
 
 	is_enemy_near(player: player, enemy: baseEnemy) {
@@ -174,7 +158,7 @@ export class ai {
 			distance <
 			enemy.width * enemy.collision_scale +
 				player.width * player.collision_scale +
-				this.near_distance()
+				this.get_near_distance()
 		);
 	}
 
@@ -189,36 +173,47 @@ export class ai {
 
 			if (player.power > 20) {
 				if (this.is_enemy_top(player, enemy)) {
-					if (this.game.debug) console.log("Enemy on top");
-					this.press_key("ArrowUp", 50, () => {
-						let press_time = this.near_distance() * 0.75;
-						if (press_time > 3000) press_time = 3000;
-						this.press_key("Control", press_time, () => {
-							if (press_time >= 3000) {
-								this.press_key(" ", 100, () => {
-									this.is_attack_enemy = false;
-								});
-							} else this.is_attack_enemy = false;
-						});
-					});
-				} else {
-					if (this.game.debug) console.log("Enemy in front");
-					let press_time = this.near_distance() * 0.75;
-					if (press_time > 3000) press_time = 3000;
-					this.press_key("Control", press_time, () => {
-						if (press_time >= 3000) {
-							this.press_key(" ", 100, () => {
+					if (this.game.debug) console.log("top");
+
+					if (player.life > 50) {
+						this.press_key("ArrowUp", 500, () => {
+							this.press_key("ArrowDown", 300, () => {
 								this.is_attack_enemy = false;
 							});
-						} else this.is_attack_enemy = false;
+							// this.press_key("Control", 100, () => {
+							// 	this.is_attack_enemy = false;
+							// });
+
+						});
+					} else {
+						this.is_attack_enemy = false;
+					}
+				} else {
+
+					if (this.game.debug) console.log("front");
+
+					this.press_key("Control", 100, () => {
+						this.is_attack_enemy = false;
 					});
 				}
 			} else {
-				this.press_key(" ", 100, () => {
-					this.press_key("ArrowDown", 3000, () => {
-						this.press_key("ArrowRight", 100, () => {
-							this.is_attack_enemy = false;
-						});
+				this.press_key("ArrowDown", 3000, () => {
+					// const nearest_enemy = this.detect_enemy(this.get_near_distance() * 0.5);
+					// if (nearest_enemy) {
+					// 	console.log("this enemy is near me");
+					// 	this.is_attack_enemy = false;
+
+					// 	requestIdleCallback(() => {
+					// 		this.attack_enemy(player, nearest_enemy);
+					// 	});
+					// } else {
+					// 	this.press_key("ArrowRight", 100, () => {
+					// 		this.is_attack_enemy = false;
+					// 	});
+					// }
+					this.press_key("ArrowRight", 100, () => {
+						this.is_attack_enemy = false;
+
 					});
 				});
 			}

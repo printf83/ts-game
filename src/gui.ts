@@ -132,9 +132,11 @@ class progress {
 		debug?: boolean;
 	}) {
 		opt.height ??= 20;
-		opt.border_color ??= `rgba(${COLOR.dark}, 0.8)`;
-		opt.border_size ??= 2;
-		opt.bg_color ??= `rgba(${COLOR.light}, 0.8)`;
+
+		opt.border_color ??= `rgba(${COLOR.dark}, 1)`;
+		opt.border_size ??= 0;
+		opt.bg_color ??= `rgba(${COLOR.light}, 1)`;
+
 		opt.radius ??= 5;
 		opt.debug ??= false;
 
@@ -208,6 +210,7 @@ class text {
 	text_align: CanvasTextAlign;
 	font_weight: number;
 	font_family: string;
+	font_bold: boolean;
 	text_color: string | CanvasGradient | CanvasPattern;
 	shadow_color: string;
 	shadow_blur: number;
@@ -220,12 +223,14 @@ class text {
 		text_align?: CanvasTextAlign;
 		font_weight?: number;
 		font_family?: string;
+		font_bold?: boolean;
 		text_color?: string | CanvasGradient | CanvasPattern;
 		shadow_color?: string;
 		shadow_blur?: number;
 		debug?: boolean;
 	}) {
 		opt.font_family ??= "Creepster";
+		opt.font_bold ??= false;
 		opt.font_weight ??= 20;
 		opt.text_color ??= `rgb(${COLOR.light})`;
 		opt.shadow_color ??= `rgb(${COLOR.dark})`;
@@ -244,6 +249,7 @@ class text {
 		this.text_align = opt.text_align;
 		this.font_weight = opt.font_weight;
 		this.font_family = opt.font_family;
+		this.font_bold = opt.font_bold;
 		this.text_color = opt.text_color;
 		this.shadow_color = opt.shadow_color;
 		this.shadow_blur = opt.shadow_blur;
@@ -261,6 +267,7 @@ class text {
 			text_align: this.text_align,
 			font_weight: this.font_weight,
 			font_family: this.font_family,
+			font_bold: this.font_bold,
 			shadow_blur: this.shadow_blur,
 		});
 	}
@@ -279,6 +286,7 @@ class text {
 			text_align: this.text_align,
 			font_weight: this.font_weight,
 			font_family: this.font_family,
+			font_bold: this.font_bold,
 			text_color: this.text_color,
 			shadow_color: this.shadow_color,
 			shadow_blur: this.shadow_blur,
@@ -365,7 +373,8 @@ export class gui {
 				text: "https://github.com/printf83/ts-game",
 				text_align: "left",
 				font_family: "Arial",
-				shadow_blur: 0,
+				font_bold: true,
+				shadow_blur: 1,
 				text_color: `rgb(${COLOR.light})`,
 				font_weight: 15,
 				debug: this.debug,
@@ -379,7 +388,8 @@ export class gui {
 				text: "https://printf83.github.io/ts-game/",
 				text_align: "right",
 				font_family: "Arial",
-				shadow_blur: 0,
+				font_bold: true,
+				shadow_blur: 1,
 				text_color: `rgb(${COLOR.light})`,
 				font_weight: 15,
 				debug: this.debug,

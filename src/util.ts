@@ -48,10 +48,12 @@ export const measure_text = (opt: {
 	text: string;
 	font_weight?: number;
 	font_family?: string;
+	font_bold?: boolean;
 	text_align?: CanvasTextAlign;
 }) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
+	opt.font_bold ??= false;
 	opt.text_align ??= "left";
 
 	opt.ctx.save();
@@ -74,11 +76,13 @@ export const clear_text = (opt: {
 	text_align?: CanvasTextAlign;
 	font_weight?: number;
 	font_family?: string;
+	font_bold?: boolean;
 	shadow_blur?: number;
 	debug?: boolean;
 }) => {
 	opt.font_family ??= "Creepster";
 	opt.font_weight ??= 20;
+	opt.font_bold ??= false;
 	opt.shadow_blur ??= 2;
 	opt.text_align ??= "left";
 	opt.debug ??= false;
@@ -88,6 +92,7 @@ export const clear_text = (opt: {
 		text: opt.text,
 		font_weight: opt.font_weight,
 		font_family: opt.font_family,
+		font_bold: opt.font_bold,
 		text_align: opt.text_align,
 	});
 
@@ -140,12 +145,14 @@ export const draw_clear_text = (opt: {
 	text_align?: CanvasTextAlign;
 	font_weight?: number;
 	font_family?: string;
+	font_bold?: boolean;
 	text_color?: string | CanvasGradient | CanvasPattern;
 	shadow_color?: string;
 	shadow_blur?: number;
 	debug?: boolean;
 }) => {
 	opt.font_family ??= "Creepster";
+	opt.font_bold ??= false;
 	opt.font_weight ??= 20;
 	opt.text_color ??= `rgb(${COLOR.light})`;
 	opt.shadow_color ??= `rgb(${COLOR.dark})`;
@@ -164,12 +171,14 @@ export const draw_text = (opt: {
 	text_align?: CanvasTextAlign;
 	font_weight?: number;
 	font_family?: string;
+	font_bold?: boolean;
 	text_color?: string | CanvasGradient | CanvasPattern;
 	shadow_color?: string;
 	shadow_blur?: number;
 	debug?: boolean;
 }) => {
 	opt.font_family ??= "Creepster";
+	opt.font_bold ??= false;
 	opt.font_weight ??= 20;
 	opt.text_color ??= `rgb(${COLOR.light})`;
 	opt.shadow_color ??= `rgb(${COLOR.dark})`;
@@ -180,7 +189,7 @@ export const draw_text = (opt: {
 	opt.ctx.save();
 
 	opt.ctx.textAlign = opt.text_align;
-	opt.ctx.font = `${opt.font_weight}px ${opt.font_family}`;
+	opt.ctx.font = `${opt.font_bold ? "bold " : ""}${opt.font_weight}px ${opt.font_family}`;
 
 	opt.ctx.fillStyle = opt.shadow_color;
 	opt.ctx.fillText(

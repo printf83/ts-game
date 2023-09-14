@@ -45,8 +45,8 @@ export class progress {
 		opt.shadow_blur ??= 1;
 		opt.bg_color ??= `rgb(${COLOR.light})`;
 		opt.bar_color ??= `rgb(${COLOR.medium})`;
-		opt.radius ??= 2;
-		opt.padding ??= 4;
+		opt.radius ??= 4;
+		opt.padding ??= 2;
 		opt.min ??= 0;
 		opt.max ??= 1000;
 		opt.height ??= 20;
