@@ -117,15 +117,27 @@ export class ai {
 				}
 			}
 
-			if (this.game.debug) {
+			// if (this.game.debug) {
+			// 	this.ctx.save();
+			// 	this.ctx.fillStyle = is_near ? "red" : "yellow";
+			// 	this.ctx.beginPath();
+			// 	this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
+			// 	this.ctx.fill();
+			// 	this.ctx.restore();
+			// }
+		});
+
+		if (this.game.debug) {
+			if (nearest_enemy !== null) {
+				let i = nearest_enemy as baseEnemy;
 				this.ctx.save();
-				this.ctx.fillStyle = is_near ? "red" : "yellow";
+				this.ctx.fillStyle = "red";
 				this.ctx.beginPath();
 				this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
 				this.ctx.fill();
 				this.ctx.restore();
 			}
-		});
+		}
 
 		return nearest_enemy;
 	}
@@ -178,15 +190,22 @@ export class ai {
 				}
 			} else {
 				this.press_key("ArrowDown", 3000, () => {
-					const nearest_enemy = this.detect_enemy(this.get_near_distance() * 0.5);
-					if (nearest_enemy) {
+					// const nearest_enemy = this.detect_enemy(this.get_near_distance() * 0.5);
+					// if (nearest_enemy) {
+					// 	console.log("this enemy is near me");
+					// 	this.is_attack_enemy = false;
+
+					// 	requestIdleCallback(() => {
+					// 		this.attack_enemy(player, nearest_enemy);
+					// 	});
+					// } else {
+					// 	this.press_key("ArrowRight", 100, () => {
+					// 		this.is_attack_enemy = false;
+					// 	});
+					// }
+					this.press_key("ArrowRight", 100, () => {
 						this.is_attack_enemy = false;
-						this.attack_enemy(player, nearest_enemy);
-					} else {
-						this.press_key("ArrowRight", 100, () => {
-							this.is_attack_enemy = false;
-						});
-					}
+					});
 				});
 			}
 		}

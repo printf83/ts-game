@@ -20,6 +20,8 @@ export class baseEnemy extends baseAnimation {
 	explode_in: boolean;
 	explode_out: boolean;
 	have_particle: boolean;
+	have_shadow: boolean;
+	can_move: boolean;
 
 	collision_x: number;
 	collision_y: number;
@@ -49,6 +51,9 @@ export class baseEnemy extends baseAnimation {
 		explode_out?: boolean;
 
 		have_particle?: boolean;
+		have_shadow?: boolean;
+		can_move?: boolean;
+
 		fps?: number;
 
 		point?: number;
@@ -66,6 +71,8 @@ export class baseEnemy extends baseAnimation {
 		opt.explode_in ??= false;
 		opt.explode_out ??= false;
 		opt.have_particle ??= false;
+		opt.have_shadow ??= true;
+		opt.can_move ??= true;
 		opt.point ??= 1;
 		opt.collision_scale ??= 0.5;
 		opt.collision_x ??= 0;
@@ -84,6 +91,8 @@ export class baseEnemy extends baseAnimation {
 		this.explode_out = opt.explode_out;
 
 		this.have_particle = opt.have_particle;
+		this.have_shadow = opt.have_shadow;
+		this.can_move = opt.can_move;
 
 		this.point = opt.point;
 

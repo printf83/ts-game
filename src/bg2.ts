@@ -21,6 +21,7 @@ export class bg2 extends baseBg {
 			img_width: 1667,
 			img_height: 500,
 			ground: 500 * 0.1,
+			support_shadow: true,
 		});
 	}
 }

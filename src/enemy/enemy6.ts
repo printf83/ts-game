@@ -34,6 +34,8 @@ export class enemy6 extends baseEnemy {
 			sprite_height,
 			sprite_length,
 
+			have_shadow: false,
+
 			point: 4,
 		});
 

@@ -34,6 +34,7 @@ import { dust } from "./dust.js";
 import { control } from "./control.js";
 import { gui } from "./gui.js";
 import { COLOR } from "./asset.js";
+import { shadow } from "./shadow.js";
 
 const enemyDB = {
 	enemy1: enemy1,
@@ -101,6 +102,7 @@ export class game {
 	explosion_list: explosion[] = [];
 	dust_list: dust[] = [];
 	fire_list: fire[] = [];
+	shadow_list: shadow[] = [];
 	score_list: score[] = [];
 	progress_list: progress[] = [];
 
@@ -275,7 +277,7 @@ export class game {
 		this.clean_ctx_value_message();
 
 		if (this.game_level % 2 === 0) {
-			this.bg = new bg1({
+			this.bg = new bg2({
 				ctx: this.ctx_game,
 				canvas_width: this.canvas_width,
 				canvas_height: this.canvas_height,
@@ -290,6 +292,16 @@ export class game {
 
 		this.base_height = this.canvas_height - this.bg.ground;
 		this.player.canvas_height = this.base_height;
+	}
+
+	add_player_shadow() {
+		this.shadow_list.push(
+			new shadow({
+				ctx: this.ctx_game,
+				ground: this.base_height,
+				element: this.player,
+			})
+		);
 	}
 
 	game_start(opt?: {
@@ -323,6 +335,7 @@ export class game {
 		clearArray(this.explosion_list);
 		clearArray(this.dust_list);
 		clearArray(this.fire_list);
+		clearArray(this.shadow_list);
 		clearArray(this.score_list);
 
 		this.player.set_state("idle");
@@ -344,6 +357,8 @@ export class game {
 		this.draw_timer();
 		this.draw_score();
 		this.draw_level();
+		this.add_player_shadow();
+
 		// this.ctl.draw_pause();
 
 		// if (isTouchDevice() || this.debug) {
@@ -362,7 +377,6 @@ export class game {
 
 			this.clean_ctx_value_message();
 			this.animate(timestamp, animation_id);
-
 			this.game_ready = true;
 
 			// this.ctl.clear_control();
@@ -388,6 +402,7 @@ export class game {
 		clearArray(this.enemy_list);
 		clearArray(this.explosion_list);
 		clearArray(this.dust_list);
+		clearArray(this.shadow_list);
 		clearArray(this.fire_list);
 
 		this.player.set_state("idle");
@@ -405,6 +420,7 @@ export class game {
 		this.draw_timer();
 		this.draw_level();
 		this.ctl.draw_pause();
+		this.add_player_shadow();
 
 		if (isTouchDevice() || this.debug) {
 			this.ctl.draw_control();
@@ -789,24 +805,37 @@ export class game {
 					debug: this.debug,
 				});
 
-				//add explosion if explode in
-				if (new_enemy.explode_in) {
-					this.explosion_list.push(
-						new explosion({
-							ctx: this.ctx_game,
-							x: new_enemy.x + new_enemy.width * 0.5,
-							y: new_enemy.y + new_enemy.height * 0.5,
-							scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
-							play_sound: false,
-						})
-					);
+				if (this.player.speed > 0 || (this.player.speed === 0 && new_enemy.can_move)) {
+					//add explosion if explode in
+					if (new_enemy.explode_in) {
+						this.explosion_list.push(
+							new explosion({
+								ctx: this.ctx_game,
+								x: new_enemy.x + new_enemy.width * 0.5,
+								y: new_enemy.y + new_enemy.height * 0.5,
+								scale: (new_enemy.width / new_enemy.sprite_width) * 1.5,
+								play_sound: false,
+							})
+						);
+					}
+
+					//add shadow for new enemy
+					if (new_enemy.have_shadow && this.bg.support_shadow) {
+						this.shadow_list.push(
+							new shadow({
+								ctx: this.ctx_game,
+								ground: this.base_height,
+								element: new_enemy,
+							})
+						);
+					}
+
+					//add enemy to list
+					this.enemy_list.push(new_enemy);
+
+					//sort enemy base on width
+					this.enemy_list.sort((a, b) => a.width - b.width);
 				}
-
-				//add enemy to list
-				this.enemy_list.push(new_enemy);
-
-				//sort enemy base on width
-				this.enemy_list.sort((a, b) => a.width - b.width);
 			}
 
 			//reset timer
@@ -816,13 +845,15 @@ export class game {
 		} else this.enemy_index += delta_time;
 
 		//fire, particle and explosion
-		[...this.fire_list, ...this.dust_list, ...this.explosion_list].forEach((i) => {
-			//update location
-			i.update({ delta_time });
+		[...this.fire_list, ...this.dust_list, ...this.shadow_list, ...this.explosion_list].forEach(
+			(i) => {
+				//update location
+				i.update({ delta_time });
 
-			//update location base on player speed
-			i.set_position({ game_speed: this.player.speed });
-		});
+				//update location base on player speed
+				i.set_position({ game_speed: this.player.speed });
+			}
+		);
 
 		//floating score
 		this.score_list.forEach((i) => {
@@ -870,6 +901,7 @@ export class game {
 		//remove mark delete
 		this.score_list = this.score_list.filter((i) => !i.mark_delete);
 		this.dust_list = this.dust_list.filter((i) => !i.mark_delete);
+		this.shadow_list = this.shadow_list.filter((i) => !i.mark_delete);
 		this.fire_list = this.fire_list.filter((i) => !i.mark_delete);
 		this.explosion_list = this.explosion_list.filter((i) => !i.mark_delete);
 		this.enemy_list = this.enemy_list.filter((i) => !i.mark_delete);
@@ -886,6 +918,7 @@ export class game {
 			this.bg,
 			...this.fire_list,
 			...this.dust_list,
+			...this.shadow_list,
 			...this.score_list,
 			...this.enemy_list,
 			this.player,

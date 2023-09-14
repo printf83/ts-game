@@ -8,6 +8,7 @@ export class baseBg {
 	img_height: number;
 	canvas_width: number;
 	canvas_height: number;
+	support_shadow: boolean;
 
 	bg_list: layer[] = [];
 
@@ -19,12 +20,16 @@ export class baseBg {
 		img_height: number;
 		canvas_width: number;
 		canvas_height: number;
+		support_shadow?: boolean;
 	}) {
+		opt.support_shadow ??= false;
+
 		this.ctx = opt.ctx;
 
 		this.img_width = opt.img_width;
 		this.img_height = opt.img_height;
 		this.ground = opt.ground;
+		this.support_shadow = opt.support_shadow;
 
 		this.canvas_width = opt.canvas_width;
 		this.canvas_height = opt.canvas_height;
