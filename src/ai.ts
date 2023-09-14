@@ -24,10 +24,7 @@ export class ai {
 
 	start() {
 		this.state_check = true;
-		requestIdleCallback(() => {
-			this.check();
-			window.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight" }));
-		});
+		this.check();
 	}
 	pause() {
 		this.state_check = false;
@@ -39,7 +36,8 @@ export class ai {
 		if (this.state_check) {
 			if (!this.is_attack_enemy) {
 				this.detect_player();
-				this.detect_enemy();
+				const nearest_enemy = this.detect_enemy(this.get_near_distance());
+				if (nearest_enemy) this.attack_enemy(this.game.player, nearest_enemy);
 				this.detect_state();
 			}
 
@@ -56,43 +54,40 @@ export class ai {
 
 			if (this.game.game_up || this.game.game_ready || this.game.game_pause) {
 				this.press_key("Enter", 100, () => {
-					setTimeout(() => {
-						requestIdleCallback(() => {
-							this.is_detect_state = false;
-						});
-					}, 1000);
+					this.is_detect_state = false;
 				});
 			} else {
 				if (this.game.player.current_state?.current_state === "idle") {
 					this.press_key("ArrowRight");
 				} else if (
 					this.game.player.current_state?.current_state === "sit" &&
-					this.game.player.power >= 100
+					this.game.player.power >= 100 &&
+					!this.is_attack_enemy
 				) {
 					this.press_key("ArrowRight");
 				}
 
-				requestIdleCallback(() => {
-					this.is_detect_state = false;
-				});
+				this.is_detect_state = false;
 			}
 		}
 	}
 
 	detect_player() {
-		this.ctx.save();
-		this.ctx.fillStyle = "green";
-		this.ctx.beginPath();
+		if (this.game.debug) {
+			this.ctx.save();
+			this.ctx.fillStyle = "green";
+			this.ctx.beginPath();
 
-		this.ctx.arc(
-			this.game.player.x + this.game.player.width * 0.5,
-			this.game.player.y + this.game.player.height * 0.5,
-			this.game.player.width * 0.5,
-			0,
-			MathPI2
-		);
-		this.ctx.fill();
-		this.ctx.restore();
+			this.ctx.arc(
+				this.game.player.x + this.game.player.width * 0.5,
+				this.game.player.y + this.game.player.height * 0.5,
+				this.game.player.width * 0.5,
+				0,
+				MathPI2
+			);
+			this.ctx.fill();
+			this.ctx.restore();
+		}
 	}
 
 	calc_distance(player: player, enemy: baseEnemy) {
@@ -102,7 +97,7 @@ export class ai {
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	detect_enemy() {
+	detect_enemy(near_distance: number) {
 		let nearest_enemy: baseEnemy | null = null;
 		let nearest_distance = Number.MAX_VALUE;
 
@@ -113,7 +108,7 @@ export class ai {
 				distance <
 				i.width * i.collision_scale +
 					this.game.player.width * this.game.player.collision_scale +
-					200;
+					near_distance;
 
 			if (is_near) {
 				if (distance < nearest_distance) {
@@ -122,26 +117,30 @@ export class ai {
 				}
 			}
 
-			this.ctx.save();
-
-			this.ctx.fillStyle = is_near ? "red" : "yellow";
-
-			this.ctx.beginPath();
-			this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
-			this.ctx.fill();
-			this.ctx.restore();
+			if (this.game.debug) {
+				this.ctx.save();
+				this.ctx.fillStyle = is_near ? "red" : "yellow";
+				this.ctx.beginPath();
+				this.ctx.arc(i.x + i.width * 0.5, i.y + i.height * 0.5, i.width * 0.5, 0, MathPI2);
+				this.ctx.fill();
+				this.ctx.restore();
+			}
 		});
 
-		if (nearest_enemy) {
-			this.attack_enemy(this.game.player, nearest_enemy);
-		}
+		return nearest_enemy;
+	}
+
+	get_near_distance() {
+		return 200 + this.game.game_level * 10;
 	}
 
 	is_enemy_near(player: player, enemy: baseEnemy) {
 		const distance = this.calc_distance(player, enemy);
 		return (
 			distance <
-			enemy.width * enemy.collision_scale + player.width * player.collision_scale + 300
+			enemy.width * enemy.collision_scale +
+				player.width * player.collision_scale +
+				this.get_near_distance()
 		);
 	}
 
@@ -156,25 +155,38 @@ export class ai {
 
 			if (player.power > 10) {
 				if (this.is_enemy_top(player, enemy)) {
-					console.log("top");
-					this.press_key("ArrowUp", 50, () => {
-						this.press_key("ArrowUp", 50, () => {
-							this.press_key("Control", 300, () => {
+					if (this.game.debug) console.log("top");
+
+					if (player.life > 50) {
+						this.press_key("ArrowUp", 500, () => {
+							this.press_key("ArrowDown", 300, () => {
 								this.is_attack_enemy = false;
 							});
+							// this.press_key("Control", 100, () => {
+							// 	this.is_attack_enemy = false;
+							// });
 						});
-					});
+					} else {
+						this.is_attack_enemy = false;
+					}
 				} else {
-					console.log("front");
+					if (this.game.debug) console.log("front");
+
 					this.press_key("Control", 100, () => {
 						this.is_attack_enemy = false;
 					});
 				}
 			} else {
 				this.press_key("ArrowDown", 3000, () => {
-					this.press_key("ArrowRight", 100, () => {
+					const nearest_enemy = this.detect_enemy(this.get_near_distance() * 0.5);
+					if (nearest_enemy) {
 						this.is_attack_enemy = false;
-					});
+						this.attack_enemy(player, nearest_enemy);
+					} else {
+						this.press_key("ArrowRight", 100, () => {
+							this.is_attack_enemy = false;
+						});
+					}
 				});
 			}
 		}
@@ -187,7 +199,6 @@ export class ai {
 
 		setTimeout(() => {
 			this.release_key(key);
-
 			if (callback) callback();
 		}, length);
 	}

@@ -11,8 +11,8 @@ export const COLOR = {
 };
 
 export const BTN_COLOR = {
-	normal: `rgba(${COLOR.dark}, 0.5)`,
-	normal_icon: `rgba(${COLOR.dark}, 1)`,
+	normal: `rgba(${COLOR.light}, 0.5)`,
+	normal_icon: `rgba(${COLOR.light}, 1)`,
 	click: `rgba(${COLOR.blue}, 0.5)`,
 	click_icon: `rgba(${COLOR.blue}, 1)`,
 };
@@ -621,28 +621,28 @@ const load_all_svg_asset = (onchange: Function, callback: Function) => {
 				color: `rgb(${COLOR.green})`,
 			},
 			{
-				name: "ASSET.svg.life (medium)",
+				name: "ASSET.svg.life (light)",
 				url: ASSET.svg.life,
 				size: ASSET_SIZE.svg.life,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.lightning (medium)",
+				name: "ASSET.svg.lightning (light)",
 				url: ASSET.svg.lightning,
 				size: ASSET_SIZE.svg.lightning,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.stopwatch (medium)",
+				name: "ASSET.svg.stopwatch (light)",
 				url: ASSET.svg.stopwatch,
 				size: ASSET_SIZE.svg.stopwatch,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 			{
-				name: "ASSET.svg.shield (medium)",
+				name: "ASSET.svg.shield (light)",
 				url: ASSET.svg.shield,
 				size: ASSET_SIZE.svg.shield,
-				color: `rgb(${COLOR.medium})`,
+				color: `rgb(${COLOR.light})`,
 			},
 		],
 		0,
