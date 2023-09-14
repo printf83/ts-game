@@ -31,10 +31,10 @@ export class ai {
 	}
 
 	check() {
-		this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
-
 		if (this.state_check) {
 			if (!this.is_attack_enemy) {
+				this.ctx.clearRect(0, 0, this.canvas_width, this.canvas_height);
+
 				this.detect_player();
 				const nearest_enemy = this.detect_enemy(this.get_near_distance());
 				if (nearest_enemy) this.attack_enemy(this.game.player, nearest_enemy);
@@ -52,7 +52,12 @@ export class ai {
 		if (!this.is_detect_state) {
 			this.is_detect_state = true;
 
-			if (this.game.game_up || this.game.game_ready || this.game.game_pause) {
+			if (
+				this.game.game_over ||
+				this.game.game_up ||
+				this.game.game_ready ||
+				this.game.game_pause
+			) {
 				this.press_key("Enter", 100, () => {
 					this.is_detect_state = false;
 				});
@@ -73,6 +78,7 @@ export class ai {
 	}
 
 	detect_player() {
+
 		if (this.game.debug) {
 			this.ctx.save();
 			this.ctx.fillStyle = "green";
@@ -165,7 +171,7 @@ export class ai {
 		if (!this.is_attack_enemy) {
 			this.is_attack_enemy = true;
 
-			if (player.power > 10) {
+			if (player.power > 20) {
 				if (this.is_enemy_top(player, enemy)) {
 					if (this.game.debug) console.log("top");
 
@@ -177,11 +183,13 @@ export class ai {
 							// this.press_key("Control", 100, () => {
 							// 	this.is_attack_enemy = false;
 							// });
+
 						});
 					} else {
 						this.is_attack_enemy = false;
 					}
 				} else {
+
 					if (this.game.debug) console.log("front");
 
 					this.press_key("Control", 100, () => {
@@ -205,6 +213,7 @@ export class ai {
 					// }
 					this.press_key("ArrowRight", 100, () => {
 						this.is_attack_enemy = false;
+
 					});
 				});
 			}

@@ -132,9 +132,11 @@ class progress {
 		debug?: boolean;
 	}) {
 		opt.height ??= 20;
+
 		opt.border_color ??= `rgba(${COLOR.dark}, 1)`;
 		opt.border_size ??= 0;
 		opt.bg_color ??= `rgba(${COLOR.light}, 1)`;
+
 		opt.radius ??= 5;
 		opt.debug ??= false;
 
