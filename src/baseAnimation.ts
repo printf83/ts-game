@@ -26,6 +26,8 @@ export class baseAnimation {
 	animation_repeat: number;
 	animation_repeat_index: number;
 
+	can_change_size: boolean;
+
 	constructor(opt: {
 		ctx: CanvasRenderingContext2D;
 
@@ -42,9 +44,11 @@ export class baseAnimation {
 
 		fps?: number;
 		animation_repeat?: number;
+		can_change_size?: boolean;
 	}) {
 		opt.fps ??= 24;
 		opt.animation_repeat ??= 0;
+		opt.can_change_size ??= false;
 
 		this.ctx = opt.ctx;
 
@@ -68,6 +72,7 @@ export class baseAnimation {
 		this.sprite_width = opt.sprite_width;
 		this.sprite_height = opt.sprite_height;
 
+		this.can_change_size = opt.can_change_size;
 		this.animation_repeat = opt.animation_repeat;
 		this.animation_repeat_index = 0;
 
@@ -99,7 +104,25 @@ export class baseAnimation {
 	}
 
 	draw() {
-		this.ctx.drawImage(this.img_sprite[this.frame_x]!, MathFloor(this.x), MathFloor(this.y));
+		if (this.can_change_size) {
+			this.ctx.drawImage(
+				this.img,
+				this.frame_x,
+				this.frame_y,
+				this.sprite_width,
+				this.sprite_height,
+				MathFloor(this.x),
+				MathFloor(this.y),
+				this.width,
+				this.height
+			);
+		} else {
+			this.ctx.drawImage(
+				this.img_sprite[this.frame_x]!,
+				MathFloor(this.x),
+				MathFloor(this.y)
+			);
+		}
 	}
 
 	set_position(opt: { game_speed: number }) {

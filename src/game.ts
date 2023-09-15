@@ -277,7 +277,7 @@ export class game {
 		this.clean_ctx_value_message();
 
 		if (this.game_level % 2 === 0) {
-			this.bg = new bg2({
+			this.bg = new bg1({
 				ctx: this.ctx_game,
 				canvas_width: this.canvas_width,
 				canvas_height: this.canvas_height,
@@ -295,13 +295,15 @@ export class game {
 	}
 
 	add_player_shadow() {
-		this.shadow_list.push(
-			new shadow({
-				ctx: this.ctx_game,
-				ground: this.base_height,
-				element: this.player,
-			})
-		);
+		if (this.bg.support_shadow) {
+			this.shadow_list.push(
+				new shadow({
+					ctx: this.ctx_game,
+					ground: this.base_height,
+					element: this.player,
+				})
+			);
+		}
 	}
 
 	game_start(opt?: {
@@ -322,7 +324,7 @@ export class game {
 		this.game_bg();
 
 		this.progress_index = 0;
-		this.progress_max = 1000 + this.game_level * 100;
+		this.progress_max = 1000; //1000 + this.game_level * 100;
 		this.progress_timer = performance.now() + 120000;
 		this.progress_timer_index = 120;
 
@@ -343,7 +345,7 @@ export class game {
 		if (this.player.life > 100) this.player.life = 100;
 		this.player.power = opt.player_power;
 		this.player.speed = 0;
-		this.player.max_speed = 14 + this.game_level;
+		this.player.max_speed = 20; //14 + this.game_level;
 		this.player.weight = 1;
 		this.player.velocity_y = 0;
 		this.player.y = this.base_height - this.player.height;
@@ -390,7 +392,7 @@ export class game {
 		this.game_bg();
 
 		this.progress_index = 0;
-		this.progress_max = 1000 + this.game_level * 100;
+		this.progress_max = 1000; //1000 + this.game_level * 100;
 		this.progress_timer = performance.now() + 120000;
 		this.progress_timer_index = 120;
 
@@ -409,7 +411,7 @@ export class game {
 		this.player.life += 10;
 		if (this.player.life > 100) this.player.life = 100;
 		this.player.speed = 0;
-		this.player.max_speed = 14 + this.game_level;
+		this.player.max_speed = 20; //14 + this.game_level;
 		this.player.weight = 1;
 		this.player.velocity_y = 0;
 		this.player.y = this.base_height - this.player.height;

@@ -21,7 +21,7 @@ export class shadow extends baseAnimation {
 
 			ctx: opt.ctx,
 
-			x: opt.element.x + opt.element.width * 0.25,
+			x: opt.element.x - opt.element.width * 0.5,
 			y: opt.ground,
 			width: opt.element.width * 0.5,
 			height: sprite_height * ((opt.element.width * 0.25) / sprite_width),
@@ -29,6 +29,8 @@ export class shadow extends baseAnimation {
 			sprite_width,
 			sprite_height,
 			sprite_length,
+
+			// can_change_size: true,
 		});
 
 		this.element = opt.element;
@@ -43,10 +45,9 @@ export class shadow extends baseAnimation {
 		this.mark_delete = this.element.mark_delete;
 
 		if (!this.mark_delete) {
-			this.x = this.element.x + this.element.width * 0.25;
-			this.y = this.ground - this.height * 0.25;
-
 			super.update(opt);
+			this.x = this.element.x + (this.element.width - this.width) * 0.5;
+			this.y = this.ground - this.height * 0.25;
 		}
 	}
 }
