@@ -186,6 +186,7 @@ export const draw_text = (opt: {
 	opt.text_align ??= "left";
 	opt.debug ??= false;
 
+	//shadow
 	opt.ctx.save();
 
 	opt.ctx.textAlign = opt.text_align;
@@ -198,7 +199,14 @@ export const draw_text = (opt: {
 		MathFloor(opt.y + opt.shadow_blur)
 	);
 
+	opt.ctx.restore();
+
 	//text
+	opt.ctx.save();
+
+	opt.ctx.textAlign = opt.text_align;
+	opt.ctx.font = `${opt.font_bold ? "bold " : ""}${opt.font_weight}px ${opt.font_family}`;
+
 	opt.ctx.fillStyle = opt.text_color;
 	opt.ctx.fillText(opt.text, MathFloor(opt.x), MathFloor(opt.y));
 

@@ -41,7 +41,7 @@ export class score {
 		const ctx = canvas.getContext("2d")!;
 
 		draw_text({
-			text_color: this.value <= 0 ? `rgb(${COLOR.red})` : `rgb(${COLOR.light})`,
+			text_color: this.value <= 0 ? `rgba(${COLOR.red},1)` : `rgba(${COLOR.light},1)`,
 			ctx: ctx,
 			x: 50,
 			y: 25,
