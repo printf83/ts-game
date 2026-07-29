@@ -494,7 +494,7 @@ export class game {
 		this.enemy_list.forEach((i) => {
 			if (!i.mark_delete) {
 				if (i.is_collide({ player: this.player })) {
-					if (this.player.is_powered()) {
+					if (this.player.is_powered() || this.player.is_sitting()) {
 						i.explode_out = false;
 
 						this.add_explosion(i, true);

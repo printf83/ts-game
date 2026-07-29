@@ -139,6 +139,9 @@ export class player extends baseAnimation {
 	is_powered() {
 		return this.powered || this.speed === this.max_speed;
 	}
+	is_sitting() {
+		return this.current_state === this.state_list.sit;
+	}
 	set_state = (state: state_type) => {
 		this.current_state?.exit();
 		this.current_state = this.state_list[state];
