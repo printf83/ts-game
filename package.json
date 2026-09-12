@@ -1,6 +1,6 @@
 {
 	"name": "@printf83/ts-game",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "typescript game",
 	"main": "index.ts",
 	"scripts": {
@@ -33,10 +33,10 @@
 		"terser-webpack-plugin": "^5.6.1",
 		"ts-loader": "^9.6.2",
 		"typescript": "^5.9.3",
-		"webpack": "^5.109.2",
+		"webpack": "^5.110.3",
 		"webpack-cli": "^5.1.4"
 	},
 	"overrides": {
-		"fast-uri": "^3.1.5"
+		"fast-uri": "^3.1.6"
 	}
 }
